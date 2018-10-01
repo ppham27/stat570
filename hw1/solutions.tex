@@ -1,5 +1,9 @@
 \documentclass[letterpaper]{article}
 
+\usepackage[hmargin=1.25in,vmargin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{lmodern}
+\usepackage{microtype}
 
 \title{Coursework 1: STAT 570}
 \author{Philip Pham}
@@ -22,9 +26,27 @@
   We will consider five covariates for modeling the response: racial composition
   in percent minority (\texttt{race} $x_{i1}$), fires per 100 housing units
   (\texttt{fire} $x_{i2}$), theft per 1000 population (\texttt{theft} $x_{i3}$),
-  percent of housing units built before 1939 (\texttt{age}` $x_{i4}$), log
+  percent of housing units built before 1939 (\texttt{age} $x_{i4}$), log
   median family income in thousands of dollars (\texttt{lincome} $x_{i5}$`),
   $i = 1,\ldots,47$.
+
+  We will examine the model with the main effects due to race, fire, theft, age
+  and $\log(\mathrm{income})$.
+
+  We let $Y_i$ represent \texttt{involact}, and
+  $x_i = \left(x_{i1}, x_{i2}, \ldots, x_{i5}\right)$, the covariates, for
+  individual $i$, $i = 1,2,\ldots,47$. We fit the model
+  \begin{equation}
+    y_i = \beta_0 + \sum_{j=1}^5x_{ij}\beta_j + \epsilon_i
+    \label{eqn:p1_model}
+  \end{equation}
+  for $i=1,\ldots,n$ using least squares.
+
+  \begin{enumerate}
+  \item Provide informative plots to illustrate what we might expect to learn
+    from the model in Equation \ref{eqn:p1_model}.
+    
+  \end{enumerate}  
 \end{enumerate}
 
 \end{document}
