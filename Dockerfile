@@ -23,3 +23,10 @@ RUN R -e "install.packages(\
     repos='http://cran.us.r-project.org');\
     devtools::install_github('IRkernel/IRkernel');\
     IRkernel::installspec(user=FALSE);"
+
+# Python Integration with R
+RUN pip install --upgrade pip
+RUN pip install rpy2
+RUN pip install tzlocal
+RUN pip install --upgrade numpy
+RUN pip install --upgrade scipy

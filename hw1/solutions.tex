@@ -1,0 +1,31 @@
+\documentclass[letterpaper]{article}
+
+
+\title{Coursework 1: STAT 570}
+\author{Philip Pham}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+\item The data we analyze are from a 1970s study that investigated insurance
+  redlining on $n = 47$ zipcodes. Information on who was being refused
+  homeowners is not available so instead we take as response the number of FAIR
+  plan policies written and renewed in Chicago by zip code over the period
+  December 1977 to May 1978. The FAIR plan was offered by the city of Chicago as
+  a default policy to homeowners who had been rejected by the voluntary market.
+  The data we will analyze are named \texttt{chredlin} and are in the
+  \texttt{faraway} package. The variable \texttt{involact} are the number of new
+  FAIR plan policies and renewals per 100 housing units.
+
+  We will consider five covariates for modeling the response: racial composition
+  in percent minority (\texttt{race} $x_{i1}$), fires per 100 housing units
+  (\texttt{fire} $x_{i2}$), theft per 1000 population (\texttt{theft} $x_{i3}$),
+  percent of housing units built before 1939 (\texttt{age}` $x_{i4}$), log
+  median family income in thousands of dollars (\texttt{lincome} $x_{i5}$`),
+  $i = 1,\ldots,47$.
+\end{enumerate}
+
+\end{document}
+
