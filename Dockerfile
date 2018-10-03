@@ -30,3 +30,4 @@ RUN pip install rpy2
 RUN pip install tzlocal
 RUN pip install --upgrade numpy
 RUN pip install --upgrade scipy
+RUN pip install seaborn

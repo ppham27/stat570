@@ -1,6 +1,7 @@
 \documentclass[letterpaper]{article}
 
 \usepackage[hmargin=1.25in,vmargin=1in]{geometry}
+\usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{lmodern}
 \usepackage{microtype}
@@ -45,9 +46,20 @@
   \begin{enumerate}
   \item Provide informative plots to illustrate what we might expect to learn
     from the model in Equation \ref{eqn:p1_model}.
-    
+
+    \begin{description}
+    \item[Solution:] See Figure \ref{fig:p1_pair_plots}.
+    \end{description}    
   \end{enumerate}  
 \end{enumerate}
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{p1_pair_plots.pdf}
+  \caption{The empirical univariate and joint distributions for the
+    \texttt{chredlin} dataset.}
+  \label{fig:p1_pair_plots}
+\end{figure}
 
 \end{document}
 
