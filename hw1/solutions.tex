@@ -1,6 +1,9 @@
-\documentclass[letterpaper]{article}
+\documentclass[letterpaper,11pt]{article}
 
+\usepackage{amsmath}
+\usepackage{amssymb}
 \usepackage[hmargin=1.25in,vmargin=1in]{geometry}
+\usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{lmodern}
@@ -48,9 +51,223 @@
     from the model in Equation \ref{eqn:p1_model}.
 
     \begin{description}
-    \item[Solution:] See Figure \ref{fig:p1_pair_plots}.
-    \end{description}    
-  \end{enumerate}  
+    \item[Solution:] See Figure \ref{fig:p1_pair_plots} and the corresponding
+      code in
+      \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw1/chredlin\_explore.ipynb}{\texttt{chredlin\_explore.ipynb}}.
+
+      \texttt{fire}, \texttt{race}, and \texttt{age} appear to be positively
+      correlated with \texttt{involact}. \texttt{income} appears to be
+      negatively correlated.
+
+      Zipcodes in the northern \texttt{side} of Chicago have a lower minority
+      population and higher income. \texttt{involact} is smaller in these
+      northern zipcodes, too.
+    \end{description}
+  \item Give interpretations of the parameters $\beta_j$, $j = 1,\ldots,5$.
+
+    \begin{table}
+      \centering
+      \input{p1_model_parameters.tex}
+      \caption{The result of fitting the model described in Equation
+        \ref{eqn:p1_model}. The procedure for obtaining the estimates and test
+        statistics is described in Part \ref{part:p1_model}.}
+      \label{tab:p1_model_parameters}
+    \end{table}          
+
+    \begin{description}
+    \item[Solution:] Fitting such a model, we get the estimates in Table
+      \ref{tab:p1_model_parameters} for $\beta_j$.
+
+      The percent of minorities (\texttt{race}) and frequency of fires
+      (\texttt{fire}) are positively correlated with the number of FAIR plan
+      policies. \texttt{involact} is the number of FAIR plans per 100 housing
+      units. Thus, every percent increase in racial minorities means about 1
+      FAIR plan, and for every fire per 100 housing units, there are 3 FAIR
+      plans.
+
+      \texttt{age} seems to have postive effect on \texttt{involact}, while
+      \texttt{theft} has a negative effect.
+
+      \texttt{log\_income} doesn't seem to tell us anything new: it's correlated
+      with other covariates, and its effect is mainly due to chance.      
+    \end{description}
+    
+  \item Reproduce every number in the handout using matrix and arithmetic
+    operations.
+    \label{part:p1_model}
+
+    \begin{description}
+    \item[Solution:] Let us assume that
+      $\epsilon_i \sim \mathcal{N}\left(0, \sigma^2\right)$. The log-likelihood
+      of this model is
+      \begin{align}
+        \sum_{i=1}^n \log\mathbb{P}\left(y_i \mid x_i, \beta, \sigma^2\right)
+        &= -\frac{n}{2}\log\left(2\pi\sigma^2\right)
+          - \frac{1}{2\sigma^2}\sum_{i=1}^n \left(y_i - x_i^\intercal\beta\right)^2
+          \nonumber \\
+        &= -\frac{n}{2}\log\left(2\pi\sigma^2\right) - \frac{1}{2\sigma^2}\left\lVert
+          y - X\beta
+          \right\rVert_2^2,
+          \label{eqn:p1_log_likelihood}
+      \end{align}
+      where we $0$-index $\beta$ and the columns of $X$, so each row of $X$ is
+      $x_i = \left(1, x_{i1}, x_{i2},\ldots,x_{i5}\right)$.
+
+      \subsection*{Estimating $\hat{\beta}$}
+
+      To maximize Equation \ref{eqn:p1_log_likelihood}, we choose $\hat{\beta}$
+      such that $X\hat{\beta}$ is the projection of $y$ onto the hyperplane
+      spanned by the columns of $X$. Thus, we must have that
+      $X^\intercal\left(y - X\hat{\beta}\right) = 0$ since the residuals will
+      orthogonal to the columns of $X$ if $X\hat{\beta}$ is the projection that
+      minimizes the squared error. Solving for $\hat{\beta}$, we have that
+      \begin{equation}
+        \hat{\beta} = \left(X^\intercal X\right)^{-1} X^\intercal y.
+        \label{eqn:p1_beta_hat}
+      \end{equation}
+      The results of apply Equation \ref{eqn:p1_beta_hat} can be seen in the
+      first column of Table \ref{tab:p1_model_parameters}.
+
+      \subsection*{Estimating $\hat{\sigma}^2$}
+
+      Let us derive an unbiased estimator for residual standard error. Consider
+      the residual random vector.
+
+      \begin{equation}
+        R = y - X\hat{\beta}
+      \end{equation}
+
+      As stated earlier, the residuals are orthogonal to hyperplane spanned by
+      the columns of $X$, so they must lie in some orthonormal hyperplane of
+      $N - p$ vectors, where $p = \dim(\beta)$. Thus, residuals are $y$
+      projected down to this space.
+
+      Let $w_1,\ldots,w_{n-p}$ be an orthonormal basis of this space. Let $W$ be
+      matrix with these basis vectors as the columns.
+
+      We have that
+      \begin{align}
+        R &= y - X\hat{\beta} \nonumber\\
+          &= W\left(W^\intercal y\right) \nonumber\\
+          &= W\left(W^\intercal\left(X\beta + \sigma\epsilon\right)\right) \nonumber\\
+          &= W\left(W^\intercal X\right)\beta + \sigma W\left(W^\intercal\epsilon\right) \nonumber\\
+          &= \sigma W\left(W^\intercal\epsilon\right).
+      \end{align}
+
+      Now, $W^\intercal\epsilon \sim \mathcal{N}\left(0, I_{n-p}\right)$. To see
+      this, note that the $i$th entry is
+      $\sum_{j=1}^n w_{ij}\epsilon_j \sim \mathcal{N}\left(0, 1\right)$, and for
+      $i \neq i^\prime$,
+      \begin{align*}
+        \operatorname{Cov}\left(
+        \left(W^\intercal\epsilon\right)_i, \left(W^\intercal\epsilon\right)_{i^\prime}\right)
+        &=
+          \mathbb{E}\left[
+          \left(\sum_{j=1}w_{ij}\epsilon_j\right)\left(\sum_{k=1}w_{i^\prime k}\epsilon_k\right)
+          \right] \\
+        &= \sum_{j=1}^n\mathbb{E}\left[w_{ij}w_{i^\prime j} \epsilon_j^2\right] +
+          2\sum_{j=1}^{n-1}\sum_{k=j+1}^n \mathbb{E}\left[w_{ij}w_{i^\prime k} \epsilon_j\epsilon_k\right] \\
+        &= w_i^\intercal w_{i^\prime} + 2\sum_{j=1}^{n-1}\sum_{k=j+1}^n w_{ij}w_{i^\prime k}
+          \mathbb{E}\left[\epsilon_j\epsilon_k\right] \\
+        &= 0,
+      \end{align*}
+      where the first term disappears by since the two vectors are orthonormal,
+      and the second term disappears because of independence of the errors.
+
+      Thus, we have that
+
+      \begin{equation}
+        R^\intercal R
+        = \sigma^2 \left(W^\intercal\epsilon\right)^\intercal W^\intercal W \left(W^\intercal\epsilon\right)
+        = \sigma^2 \left(W^\intercal\epsilon\right)^\intercal\left(W^\intercal\epsilon\right)
+        \sim \sigma^2 \chi^2_{n-p}.
+        \label{eqn:p1_residual_distribution}
+      \end{equation}
+
+      Finally, we have that
+
+      \begin{equation*}
+        \mathbb{E}\left[R^\intercal R\right] = \sigma^2\left(n - p\right)
+        \Rightarrow
+        \mathbb{E}\left[\frac{\sum_{i=1}^n \left(y - X\hat{\beta}\right)^2}{n-p}\right] = \sigma^2.
+      \end{equation*}
+
+      Our consistent estimator is
+
+      \begin{equation}
+        \hat{\sigma}^2 = \frac{\sum_{i=1}^n \left(y - X\hat{\beta}\right)^2}{n-p}.
+        \label{eqn:p1_sample_variance}
+      \end{equation}
+
+      Applying Equation \ref{eqn:p1_sample_variance}, we obtain
+      \boxed{\hat{\sigma} = \input{p1_residual_standard_error.txt}\unskip.}
+
+      \subsection*{Hypothesis Testing}
+
+      We can rewrite $y$ as $y = X\beta + \sigma \epsilon$, where each element
+      of $\epsilon$ is drawn from $\mathcal{N}\left(0, 1\right)$. Substituting,
+      we have that
+      \begin{align}
+        \hat{\beta}
+        &= \left(X^\intercal X\right)^{-1}X^\intercal\left(X\beta + \sigma\epsilon\right) \nonumber\\
+        &= \beta + \sigma\left(X^\intercal X\right)^{-1}X^\intercal \epsilon.
+          \label{eqn:p1_beta_hat_distribution}
+      \end{align}
+
+      Thus, $\hat{\beta}_j \sim \mathcal{N}\left(\beta_j, \sigma^2\left(X^\intercal X\right)^{-1}_{jj}\right)$.
+
+      This gives us that
+      \begin{equation*}
+        \frac{\hat{\beta}_j - \beta_j}{\sqrt{\sigma^2\left(X^\intercal X\right)^{-1}_{jj}}} \sim
+        \mathcal{N}\left(0, 1\right).
+      \end{equation*}
+
+      From Equations \ref{eqn:p1_residual_distribution} and \ref{eqn:p1_sample_variance},
+      \begin{equation}
+        (n - p)\frac{\hat{\sigma}^2}{\sigma^2} \sim \chi^2_{n-p}.
+      \end{equation}
+
+      $\hat{\beta}$ and $\hat{\sigma}^2$ are independent by
+      \href{https://en.wikipedia.org/wiki/Basu\%27s_theorem}{Basu's theorem}:
+      $\hat{\sigma}^2$ is an ancillary statistic that does not depend on the
+      model parameters, $\beta$. Thus, we have that
+      \begin{equation}
+        \left.
+          \frac{\hat{\beta}_j - \beta_j}{\sqrt{\sigma^2\left(X^\intercal X\right)^{-1}_{jj}}}
+          \middle/
+          \sqrt{\frac{(n - p)\frac{\hat{\sigma}^2}{\sigma^2}}{n-p}}
+        \right. 
+        = \frac{\hat{\beta}_j - \beta_j}{\sqrt{\hat{\sigma}^2\left(X^\intercal X\right)^{-1}_{jj}}}
+        \sim t_{n-p}.
+        \label{eqn:p1_beta_hat_j_distribution}
+      \end{equation}
+
+      That is, we have $t$ distribution with $n - p$ degrees of freedom. The
+      denominator of Equation \ref{eqn:p1_beta_hat_j_distribution} gives the
+      second column of Table \ref{tab:p1_model_parameters}.
+
+      For each $\beta_j$, our null hypothesis is $H_0: \beta_j = 0$. Thus, our
+      $t$-test statistic is obtain from substituting $\beta_j$ into Equation
+      \ref{eqn:p1_beta_hat_j_distribution},
+      \begin{equation*}
+        \hat{t}_j = \frac{\hat{\beta}_j}{\sqrt{\hat{\sigma}^2\left(X^\intercal X\right)^{-1}_{jj}}},
+      \end{equation*}
+      which gives us the third column of Table \ref{tab:p1_model_parameters}.
+
+      The fourth column is the probability of obtaining evidence that
+      contradicts the null hypothesis at least as much. Let $F^{-1}_{t_{n-p}}$
+      be the inverse cumulative distribution function. The $p$-value is
+      \begin{equation*}
+        \mathbb{P}\left(
+          \left\lvert T_{n - p}\right\rvert \geq
+          \left\lvert \hat{t}_j\right\rvert
+          \mid
+          \hat{t}_j
+        \right) = 
+        2\left(1 - F^{-1}_{n - p}\left(\left\lvert\hat{t}_j\right\rvert\right)\right).
+      \end{equation*}
+    \end{description}
+  \end{enumerate}
 \end{enumerate}
 
 \begin{figure}
