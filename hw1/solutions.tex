@@ -266,7 +266,63 @@
         \right) = 
         2\left(1 - F^{-1}_{n - p}\left(\left\lvert\hat{t}_j\right\rvert\right)\right).
       \end{equation*}
+
+      Finally, we have reproduced all the calculations.
     \end{description}
+    
+  \item What assumptions are valid for:
+    \begin{enumerate}
+    \item An unbiased estimate of $\beta_j$, $j = 1,\ldots,5$.
+      \begin{description}
+      \item[Solution:] From Equation \ref{eqn:p1_beta_hat_distribution}, we have
+        that
+        \begin{equation}
+          \mathbb{E}\left[\hat{\beta}\right]
+          =
+          \beta + \left(X^\intercal X\right)^{-1}X^\intercal \mathbb{E}\left[\epsilon\right]
+        \end{equation}
+        since expectation is a linear operator. In our previous calcuations, we
+        assumed that the $\epsilon_i$ were independent and normally distributed.
+
+        It's sufficient, however, that
+        $\boxed{\mathbb{E}\left[\epsilon\right] = \mathbf{0}.}$ Then, we'll have
+        \begin{equation*}
+          \operatorname{bias}\left(\hat{\beta}\right) =
+          \mathbb{E}\left[\hat{\beta}\right] - \beta
+          = \beta - \beta = 0.
+        \end{equation*}
+      \end{description}
+    \item An accurate estimate of the standard error of $\hat{\beta}_j$,
+      $j = 1,\ldots,5$.
+
+      \begin{description}
+      \item[Solution:] From Equation \ref{eqn:p1_beta_hat_distribution}, we can
+        estimate the standard error exactly if $\sigma^2$ is known. For
+        $\hat{\beta}_j$, we get $\sigma\sqrt{\left(X^\intercal X\right)_{jj}^{-1}}$.
+
+        When $\sigma^2$ is unknown, but our errors are still independent and
+        normally distributed, we apply Equation
+        \ref{eqn:p1_beta_hat_j_distribution}. Since $\hat{\beta}_j$ has Student's
+        $t$-distribution, we can estimate the standard error for $\hat{\beta}_j$
+        with $\sqrt{\hat{\sigma}^2\left(X^\intercal X\right)_{jj}^{-1}}$.
+
+        If our errors are not normally distributed, our estimate is only
+        accurate if the number of observations is large, and our errors have a
+        distribution that converges to a normal distribution.
+      \end{description}
+    \item Accurate coverage probabilities for $100\left(1 - \alpha\right)\%$
+      confidence intervals of the form
+      \begin{equation}
+        \hat{\beta}_j \pm \hat{\sigma}_jz_{1-\alpha/2},
+      \end{equation}
+      where $z_{1-\alpha/2}$ represents the $\left(1-\alpha/2\right)$ quantile
+      of an $\mathcal{N}\left(0, 1\right)$ random variable, and
+      $\hat{\sigma}_j^2 = \hat{\sigma}^2\left(X^\intercal X\right)_{jj}^{-1}$.
+
+      \begin{description}
+      \item[Solution:] 
+      \end{description}
+    \end{enumerate}
   \end{enumerate}
 \end{enumerate}
 
