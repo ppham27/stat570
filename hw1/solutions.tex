@@ -49,6 +49,7 @@
   \begin{enumerate}
   \item Provide informative plots to illustrate what we might expect to learn
     from the model in Equation \ref{eqn:p1_model}.
+    \label{part:p1a}
 
     \begin{description}
     \item[Solution:] See Figure \ref{fig:p1_pair_plots} and the corresponding
@@ -64,7 +65,7 @@
       northern zipcodes, too.
     \end{description}
   \item Give interpretations of the parameters $\beta_j$, $j = 1,\ldots,5$.
-
+    \label{part:p1b}
     \begin{table}
       \centering
       \input{p1_model_parameters.tex}
@@ -72,7 +73,7 @@
         \ref{eqn:p1_model}. The procedure for obtaining the estimates and test
         statistics is described in Part \ref{part:p1_model}.}
       \label{tab:p1_model_parameters}
-    \end{table}          
+    \end{table}
 
     \begin{description}
     \item[Solution:] Fitting such a model, we get the estimates in Table
@@ -267,12 +268,15 @@
         2\left(1 - F^{-1}_{n - p}\left(\left\lvert\hat{t}_j\right\rvert\right)\right).
       \end{equation*}
 
-      Finally, we have reproduced all the calculations.
+      These calculations are carried out in
+      \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw1/chredlin\_model.ipynb}{\texttt{chredlin\_explore.ipynb}}.
     \end{description}
     
   \item What assumptions are valid for:
     \begin{enumerate}
     \item An unbiased estimate of $\beta_j$, $j = 1,\ldots,5$.
+      \label{part:p1di}
+        
       \begin{description}
       \item[Solution:] From Equation \ref{eqn:p1_beta_hat_distribution}, we have
         that
@@ -313,16 +317,363 @@
     \item Accurate coverage probabilities for $100\left(1 - \alpha\right)\%$
       confidence intervals of the form
       \begin{equation}
-        \hat{\beta}_j \pm \hat{\sigma}_jz_{1-\alpha/2},
+        \hat{\beta}_j \pm \sqrt{\hat{\sigma}_j^2}z_{1-\alpha/2},
+        \label{eqn:p1_confidence_interval_normal}
       \end{equation}
       where $z_{1-\alpha/2}$ represents the $\left(1-\alpha/2\right)$ quantile
       of an $\mathcal{N}\left(0, 1\right)$ random variable, and
       $\hat{\sigma}_j^2 = \hat{\sigma}^2\left(X^\intercal X\right)_{jj}^{-1}$.
 
       \begin{description}
-      \item[Solution:] 
+      \item[Solution:] Firstly, the assumptions from the previous part must hold
+        for $\hat{\sigma}_j^2$ to be meaningful.
+
+        From Equation \ref{eqn:p1_beta_hat_j_distribution}, $\hat{\sigma}_j^2$
+        has Student's $t$-distribution, so the normal approximation for the the
+        confidence interval (Equation \ref{eqn:p1_confidence_interval_normal})
+        only holds when $n$ is large.
+      \end{description}
+            
+    \item Accurate coverage probabilities for $100\left(1 - \alpha\right)\%$
+      confidence intervals of the form
+
+      \begin{equation}
+        \hat{\beta}_j \pm \sqrt{\hat{\sigma}_j^2}t_{n-p}\left(1-\alpha/2\right),
+        \label{eqn:p1_confidence_interval_t}
+      \end{equation}
+      where $p = \dim\left(\beta\right)$ and $t_{n-p}\left(1-\alpha/2\right)$
+      represents the $\left(1-\alpha/2\right)$ quantile of standard Student's
+      $t$ random variable with $n - p$ degrees of freedom.
+
+      \begin{description}
+      \item[Solution:] Equation \ref{eqn:p1_beta_hat_j_distribution} shows that
+        this is exactly the correct distribution when the $\epsilon_i$ are
+        independent and identically distributed as normal random variables with
+        mean zero.
+
+        It may still prove to be an accurate confidence interval if the errors
+        have distributions that are well-approximated by the normal
+        distribution and the number of observations is large.
+      \end{description}
+    \item An accurate prediction for an \emph{observed} outcome at $x_0$.
+      
+      \begin{description}
+      \item[Solution:] Suppose we were to observe
+        $\left(x_0, y_0 = x_0^\intercal\beta + \epsilon_0\right)$. Let our
+        prediction be $\hat{y}_0 = x_0^\intercal\hat{\beta}$. If the conditions
+        in Part \ref{part:p1di} are satisfied, the error has mean zero, and our
+        estimate for $\hat{\beta}$ is unbiased, so
+        \begin{equation*}
+          \mathbb{E}\left[y_0\right]
+          = x_0^\intercal\beta
+          = \mathbb{E}\left[\hat{y}_0\right].
+        \end{equation*}
+        
+        We want to compare our prediction with $\hat{y}_0$ with some
+        hypothetical observed response $y_0$. We'll call our prediction
+        accurate within $\delta > 0$ if
+        \begin{equation*}
+          \hat{y}_0 - \delta \leq y_0 \leq \hat{y}_0 + \delta.
+        \end{equation*}
+
+        We want the probability of this event to be high, so we'll say accurate
+        within $\delta$ at confidence level $1 - \alpha$ if
+        \begin{equation*}
+          \mathbb{P}\left(\hat{y}_0 - \delta \leq y_0 \leq \hat{y}_0 + \delta\right)
+          = \mathbb{P}\left(-\delta \leq y_0 - \hat{y}_0 \leq \delta\right)
+          \geq 1 - \alpha.
+        \end{equation*}
+        Our prediction is accurate if for small $\alpha$, we have small
+        $\delta$.
+
+        If we assume normality, we can calculate the minimum $\delta$ for a
+        specific $\alpha$, which we'll denote $\delta_\alpha$.
+
+        Since $\hat{\beta}$ satisfies
+        $\left(X^\intercal X\right)\hat{\beta} = X^\intercal y$, we have that
+        the intercept estimate is
+        \begin{equation}
+          \hat{\beta}_0 = \bar{y} - \sum_{j=1}^p \hat{\beta}_j \bar{X}_{:,j}.
+        \end{equation}
+
+        Consider trying to predict $\hat{y} = x^\intercal\hat{\beta}$ for some
+        $x$. We have that
+        \begin{equation}
+          \hat{y} = \bar{y} + \sum_{j=1}^p \left(x_i - \bar{X}_{:,j}\right)\hat{\beta}_j,
+        \end{equation}
+        so the variance of the prediction increases with values far from data.
+
+        Let $\bar{X}$ be the vector of column-wise means of $X$. Since
+        $\bar{\epsilon}$ is an ancillary statistic, this can also be written as
+
+        \begin{equation}
+          \hat{y} \mid x \sim \mathcal{N}\left(
+            x^\intercal \beta,
+            \sigma^2 \left(
+              \frac{1}{n} +
+              \left(x - \bar{X}\right)^\intercal
+              \left(X^\intercal X\right)^{-1}
+              \left(x - \bar{X}\right)
+            \right)
+          \right).
+        \end{equation}
+
+        Using the same method as in deriving Equation
+        \ref{eqn:p1_beta_hat_j_distribution}, if we replace $\beta$ with
+        $\hat{\beta}$ and $\sigma^2$ with $\hat{\sigma}^2$, we have
+        \begin{equation}
+          \frac{\hat{y} - x^\intercal\hat{\beta}}{
+            \sqrt{\hat{\sigma}^2\left(\frac{1}{n} +
+              \left(x - \bar{X}\right)^\intercal
+              \left(X^\intercal X\right)^{-1}
+              \left(x - \bar{X}\right)\right)}}
+          \sim t_{n-p}.
+          \label{eqn:p1_response_confidence_interval}
+        \end{equation}
+
+        Noting that
+        $y_0 \sim \mathcal{N}\left(x_0^\intercal\beta, \sigma^2\right)$, we can
+        apply Equation \ref{eqn:p1_response_confidence_interval} to
+        $\left(x_0, y_0\right)$, which gives us
+        \begin{equation*}
+          \boxed{
+            \delta_\alpha
+            =
+            t_{n-p}\left(1 - \alpha/2\right)
+            \sqrt{\hat{\sigma}^2\left(
+                1 + \frac{1}{n} +
+                \left(x_0 - \bar{X}\right)^\intercal
+                \left(X^\intercal X\right)^{-1}
+                \left(x_0 - \bar{X}\right)
+              \right).
+            }
+          }
+        \end{equation*}
+
+        Thus, our predictions will always have standard error of at least
+        $\sigma$, but they will be more accurate when $x_0$ is close to
+        $\bar{X}$.
       \end{description}
     \end{enumerate}
+  \item Summarize the relationship between $y$, and $x_1$, $x_2$, $x_3$, $x_4$,
+    $x_5$, fitting any other models that you see fit to.
+
+    \begin{description}
+    \item[Solution:] The relationship between $y$ and the covariates was
+      described in Parts \ref{part:p1a} and \ref{part:p1b}.
+
+      Particularly, we see \texttt{income} does not explain much about
+      \texttt{involact} due to multicollinearity: it is correlated with
+      \texttt{race} and \texttt{fire}.
+
+      Removing \texttt{log\_income} from the model gives us the model parameters
+      in Table \ref{tab:p1_model_parameters_custom}. The residual standard error
+      for this model was \input{p1_residual_standard_error_custom.txt}\unskip,
+      which is actually ever so slightly smaller than the model that includes
+      income.
+
+      \begin{table}
+        \centering
+        \input{p1_model_parameters_custom.tex}
+        \caption{The result of fitting a model without considering income.}
+        \label{tab:p1_model_parameters_custom}
+      \end{table}
+
+      I tried adding an indicator for \texttt{side} but it suffers from the same
+      issue as \texttt{income}: its effect is already explained by the other
+      covariates.
+    \end{description}
+  \end{enumerate}
+
+  \pagebreak
+\item Consider the following distributions:
+  \begin{description}
+  \item[Poisson:] \begin{equation}
+      p\left(y \mid \mu\right) = \frac{\exp\left(-\mu\right)\mu^y}{y!},
+      \label{eqn:p2_poisson}
+    \end{equation}
+    for $y = 0,1,2,\ldots$.
+    
+  \item[Gamma:] \begin{equation}
+      p\left(y \mid \alpha, \beta\right) =
+      \frac{\beta^\alpha}{\Gamma(\alpha)}y^{\alpha - 1}\exp(-\beta y)
+      \label{eqn:p2_gamma}
+    \end{equation}
+    for $y > 0$ and with $\alpha$ known.
+    
+  \item[Inverse Gaussian:]
+    \begin{equation*}
+      p\left(y \mid \mu, \delta\right) =
+      \left(\frac{\delta}{2\pi y^3}\right)^{1/2}
+      \exp\left[
+        \frac{-\delta\left(y-\mu\right)^2}{2\mu^2y}
+      \right]
+      \label{eqn:p2_inverse_gaussian}
+    \end{equation*}
+    for $y > 0$ and $\delta$ known.
+
+  \end{description}
+
+  A distribution is said to be a member of the one parameter exponential family
+  of distributions if it can be written as
+  \begin{equation}
+    p\left(y \mid \eta_1,\eta_2\right) = h(y)\exp\left[
+      \eta_1y + \eta_2T_2(y) - A\left(\eta_1,\eta_2\right)
+    \right],
+    \label{eqn:p2_exponential}    
+  \end{equation}
+  where $\eta_2$ is known.
+  
+  \begin{enumerate}
+  \item Show that each of the above distributions is a member of the exponential
+    family and identify $\eta_1$, $\eta_2$, $T_2(y)$,
+    $A\left(\eta_1,\eta_2\right)$, and $h(y)$.
+    \label{part:p2a}
+    \begin{description}
+    \item[Solution:] For each distribution, we can do some algebra.
+      
+      \begin{description}
+      \item[Poisson:] We can rewrite Equation \ref{eqn:p2_poisson} as Equation
+        \ref{eqn:p2_exponential}, where
+        \begin{align*}
+          \eta_1 &= \log\mu \\
+          \eta_2 &= 0 \\
+          T_2(y) &= 0 \\          
+          A\left(\eta_1,\eta_2\right) &= \exp(\eta_1) \\
+          h(y) &= \frac{1}{y!}.
+        \end{align*}
+      \item[Gamma:] We can rewrite Equation \ref{eqn:p2_gamma} as Equation
+        \ref{eqn:p2_exponential}, where
+        \begin{align*}
+          \eta_1 &= -\beta \\
+          \eta_2 &= \alpha - 1 \\
+          T_2(y) &= \log(y) \\
+          A\left(\eta_1,\eta_2\right)
+                 &=-\left(\eta_2 + 1\right)\log\left(-\eta_1\right) +
+                   \log\Gamma\left(\eta_2 + 1\right)\\
+          h(y) &= 1.
+        \end{align*}
+      \item[Inverse Gaussian:] We can rewrite Equation \ref{eqn:p2_inverse_gaussian} as
+        Equation \ref{eqn:p2_exponential}, where
+        \begin{align*}
+          \eta_1 &= -\frac{\delta}{2\mu^2} \\
+          \eta_2 &= -\frac{\delta}{2} \\
+          T(y) &= \frac{1}{y} \\
+          A\left(\eta_1,\eta_2\right)
+                 &= -2\sqrt{\eta_1\eta_2} -
+                   \frac{1}{2}\log\left(-2\eta_2\right) \\
+          h(y) &= \frac{1}{\sqrt{2\pi y^3}}.
+        \end{align*}
+      \end{description}      
+    \end{description}
+  \item Identify $\mathbb{E}\left[Y \mid \theta\right]$ and
+    $\operatorname{Var}\left(Y \mid \theta\right)$.
+    \begin{description}
+    \item[Solution:] We can derive a general formula for computing the mean and
+      variance from Equation \ref{eqn:p2_exponential}.
+
+      The log-likelihood function is
+      \begin{equation}
+        l\left(
+          \eta_1, \eta_2
+        \right) =
+        \log h(y) + \eta_1y + \eta_2 T_2(y) - A\left(\eta_1,\eta_2\right).
+      \end{equation}
+
+      If $\eta_2$ is known, the score function is
+      \begin{equation}
+        S\left(\eta_1, \eta_2\right) = \frac{\partial l\left(\eta_1,\eta_2\right)}{\partial \eta_1}
+        =
+        y - \frac{\partial A\left(\eta_1,\eta_2\right)}{\partial \eta_1}.
+      \end{equation}
+
+      The expectation of the score is $0$, so
+      \begin{equation}
+        \boxed{\mathbb{E}\left[y \mid \eta_1, \eta_2\right] =
+        \frac{\partial A\left(\eta_1,\eta_2\right)}{\partial \eta_1}.}
+        \label{eqn:p2_score_mean}
+      \end{equation}
+
+      The variance of the score is Fisher information, so
+      \begin{align}
+        \mathcal{I}\left(\eta_1, \eta_2\right)
+        &=
+        \operatorname{Var}\left(
+        S\left(\eta_1, \eta_2\right)
+          \right) \nonumber\\
+        &= \mathbb{E}\left[
+          \left(y -
+          \frac{\partial A\left(\eta_1,\eta_2\right)}{\partial \eta_1}
+          \right)^2
+          \mid
+          \eta_1, \eta_2
+          \right]\nonumber\\
+        &= \operatorname{Var}\left(y \mid \eta_1, \eta_2\right)
+          \label{eqn:p2_fisher_variance}
+      \end{align}
+      by Equation \ref{eqn:p2_score_mean}
+      and using that the mean of the score function is $0$.
+
+      An alternative definition of the Fisher information is the expected value
+      of the observed information:
+      \begin{equation}
+        \mathcal{I}\left(\eta_1, \eta_2\right) =
+        - \frac{\partial^2 l\left(\eta_1,\eta_2\right)}{\partial\eta_1^2}
+        = \frac{\partial^2 A\left(\eta_1,\eta_2\right)}{\partial\eta_1^2}.
+        \label{eqn:p2_fisher_expectation}
+      \end{equation}
+
+      Combining Equations \ref{eqn:p2_fisher_variance} and
+      \ref{eqn:p2_fisher_expectation}, we obtain
+      \begin{equation}
+        \boxed{
+          \operatorname{Var}\left(y \mid \eta_1, \eta_2\right)
+          =
+          \frac{\partial^2 A\left(\eta_1,\eta_2\right)}{\partial\eta_1^2}.
+        }
+        \label{eqn:p2_score_variance}
+      \end{equation}
+
+      We can now apply Equations \ref{eqn:p2_score_mean} and
+      \ref{eqn:p2_score_variance} to our the results from Part \ref{part:p2a}.
+      \begin{description}
+      \item[Poisson:]
+        \begin{align*}
+          \mathbb{E}\left[y \mid \eta_1, \eta_2\right]
+          &= \exp\left(\eta_1\right) = \mu \\
+          \operatorname{Var}\left(y \mid \eta_1, \eta_2\right)
+          &= \exp\left(\eta_1\right) = \mu.
+        \end{align*}
+      \item[Gamma:]
+        \begin{align*}
+          \mathbb{E}\left[y \mid \eta_1, \eta_2\right]
+          &= -\frac{\eta_2 + 1}{\eta_1} = \frac{\alpha}{\beta} \\
+          \operatorname{Var}\left(y \mid \eta_1, \eta_2\right)
+          &= \frac{\eta_2 + 1}{\eta_1^2} = \frac{\alpha}{\beta^2}.
+        \end{align*}
+      \item[Inverse Gaussian:]
+        \begin{align*}
+          \mathbb{E}\left[y \mid \eta_1, \eta_2\right]
+          &= \sqrt{\frac{\eta_2}{\eta_1}} = \mu \\
+          \operatorname{Var}\left(y \mid \eta_1, \eta_2\right)
+          &= \frac{1}{2}\sqrt{\frac{\eta_2}{\eta_1^3}} = \frac{\mu^3}{\delta}.
+        \end{align*}
+      \end{description}
+    \end{description}
+
+  \item The canonical link function is such that $g(\mu) = \eta_1$. Determine the
+    canonical link for each distribution.
+    \begin{description}
+    \item[Solution:] We can use the results from Part \ref{part:p2a}.
+      \begin{description}
+      \item[Poisson:] $\displaystyle g(\mu) = \exp(\mu)$.
+      \item[Gamma:] $\displaystyle g(\mu) = -\frac{\alpha}{\mu} \propto \mu^{-1}$,
+        where $\alpha$ is known.
+      \item[Inverse Gaussian:]
+        $\displaystyle g(\mu) = -\frac{\delta}{2\mu^2} \propto \mu^{-2}$, where $\delta$ is
+        known.
+      \end{description}
+    \end{description}
   \end{enumerate}
 \end{enumerate}
 
