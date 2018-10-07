@@ -26,8 +26,17 @@ RUN R -e "install.packages(\
 
 # Python Integration with R
 RUN pip install --upgrade pip
+RUN pip install nose
 RUN pip install rpy2
 RUN pip install tzlocal
 RUN pip install --upgrade numpy
 RUN pip install --upgrade scipy
 RUN pip install seaborn
+
+# Install class-specific Python package
+ADD stat570 /tmp/stat570_install/stat570/
+ADD setup.py /tmp/stat570_install/
+WORKDIR /tmp/stat570_install
+RUN pip --no-cache-dir install --upgrade .
+WORKDIR /
+

@@ -1,0 +1,83 @@
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[hmargin=1.25in,vmargin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+\title{Coursework 2: STAT 570}
+\author{Philip Pham}
+\date{\today}
+
+\begin{document}
+\maketitle
+\begin{enumerate}
+\item Consider the simple linear regression model
+  \begin{equation*}
+    Y_i = \beta_0 + \beta_1x_i + \epsilon_i,~i = 1,\ldots,n,
+    \label{eqn:p1_model}    
+  \end{equation*}
+  where the error terms $\epsilon_i$ are such that
+  $\mathbb{E}\left[\epsilon_i\right] = 0$,
+  $\operatorname{Var}\left(\epsilon_i\right) = \sigma^2$, and
+  $\operatorname{Cov}\left(\epsilon_i, \epsilon_j\right) = 0$ for $i \neq j$.
+
+  In the following you will consider
+  $x_i \sim_{\mathrm{iid}} \mathcal{N}\left(20, 3^2\right)$, with $\beta_0 = 2$
+  and $\beta_1 = -2.5$ and $n=15,30$.
+
+  Consider the model in Equation \ref{eqn:p1_model} with the error terms
+  $\epsilon_i$, independent and identically distributed, from the distributions:
+  \begin{itemize}
+  \item The normal distribution with mean $0$ and variance $2^2$.
+  \item The uniform distribution on the range $(-r,r)$ for $r = 2$.
+  \item A skew normal distribution with $\alpha = 5$, $\omega = 1$, and $\xi$
+    chosen to given mean $0$.
+  \end{itemize}
+
+  \begin{enumerate}
+  \item What is the theoretical bias for $\hat{\beta}$ if the errors are of the
+    form specified?
+
+    \begin{description}
+    \item[Solution:] The theoretical bias for $\hat{\beta}$ is $0$. Let
+      \begin{equation}
+        X = \begin{pmatrix}
+          1 & x_1 \\
+          1 & x_2 \\
+          \vdots & \vdots \\
+          1 & x_n
+        \end{pmatrix}
+        \label{eqn:p1_X}
+      \end{equation}
+      
+      If we use the least squares estimate, we have
+      \begin{align}
+        \hat{\beta}
+        &= \left(X^\intercal X\right)^{-1}X^\intercal y \nonumber\\
+        &= \left(X^\intercal X\right)^{-1}X^\intercal\left(X\beta + \epsilon \right) \nonumber\\
+        &= \beta + \left(X^\intercal X\right)^{-1}X^\intercal\epsilon,
+          \label{eqn:p1_beta_hat}
+      \end{align}
+
+      Thus, using Equation \ref{eqn:p1_beta_hat} and linearity of expectations,
+      we have
+      \begin{equation}
+        \boxed{
+          \operatorname{bias}\left(\hat{\beta}\right) =
+          \mathbb{E}\left[\hat{\beta}\right] - \beta =
+          \beta +
+          \left(X^\intercal X\right)^{-1}X^\intercal
+          \mathbb{E}\left[\epsilon\right] - \beta
+          = 0.
+        }
+        \label{eqn:p1_beta_hat_bias}
+      \end{equation}
+    \end{description}
+  \end{enumerate}
+\end{enumerate}
+\end{document}
