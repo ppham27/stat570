@@ -8,6 +8,7 @@
 \usepackage{hyperref}
 \usepackage{lmodern}
 \usepackage{microtype}
+\usepackage{subcaption}
 
 \title{Coursework 2: STAT 570}
 \author{Philip Pham}
@@ -81,6 +82,24 @@
   \item Compare the variance of the estimator as reported by least squares, with
     that which follows from the sampling distribution of the estimator.
 
+    \begin{description}
+    \item[Solution:] 
+    \end{description}
+    
+  \item Examine the distribution of the resultant estimators (across
+    simulations) of $\beta_0$ and $\beta_1$, in particular with respect to
+    normality. For each parameter find the coverage probability of a 95\%
+    confidence interval, that is the proportion of times that the confidence
+    intervals contain the true value.
+
+    \begin{description}
+    \item[Solution:] 
+    \end{description}
+    
+  \item \textbf{Bonus:} Can you ``break'' least squares? i.e., find a
+    distribution of the errors (with mean zero) that produces poor confidence
+    interval coverage?
+    
     \begin{description}
     \item[Solution:] 
     \end{description}
@@ -292,14 +311,14 @@
       distribution function of the normal distribution.
 
       We have the confidence intervals
-      \begin{align*}
+      \begin{align}
         \left(
         \hat{\beta}_0 - 1.150358,
         \hat{\beta}_0 + 1.150358
         \right)
         &= \left(
           -3.97150839, -1.67079212
-        \right)\\
+        \right) \nonumber\\
         \left(
         \hat{\beta}_1 - 0.171986669,
         \hat{\beta}_1 + 0.171986669
@@ -307,15 +326,77 @@
         &= \left(
           0.12934909, 0.47332243
           \right)
-      \end{align*}
+          \label{eqn:p2_confidence_interval}
+      \end{align}
       for $\hat{\beta}_0$ and $\hat{\beta}_1$, respectively.
       
 
       All calcuations can be found in
       \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw2/exponential\_regression.ipynb}{\texttt{exponential\_regression.ipynb}}.
     \end{description}
+  \item Plot the log-likelihood function $l\left(\beta_0,\beta_1\right)$ and
+    compare with the log of the asymptotic normal approximation to the sampling
+    distribution of the MLE.
+    \label{part:2d}
+
+    \begin{description}
+    \item[Solution:] The two plots can be found in Figure
+      \ref{fig:p2_beta_hat_likelihood}.
+
+      The log-likelihood function can be found in Figure
+      \ref{fig:p2_log_likelihood}, and the asymptotic normal approximation is
+      plotted in Figure \ref{fig:p2_asymptotic_normal}.
+
+      The distributions are similar, and the asymptotic normal approximation
+      accurately captures the covariance structure of $\hat{\beta}$.  The
+      asymptotic normal approximation, however, does underestimate the
+      variance. This is unsurprising since the inverse of the Fisher information
+      matrix is a lower bound on variance according to the Cram\'er-Rao bound.
+
+      Code for the plots can be found in
+      \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw2/exponential\_regression.ipynb}{\texttt{exponential\_regression.ipynb}}.
+      
+      \begin{figure}
+        \begin{subfigure}[b]{\textwidth}
+          \centering
+          \includegraphics{p2_log_likelihood.pdf}
+          \caption{The log-likelihood function is centered at the MLE estimate.}
+          \label{fig:p2_log_likelihood}
+        \end{subfigure}
+        \begin{subfigure}[b]{\textwidth}
+          \centering
+          \includegraphics{p2_asymptotic_normal.pdf}
+          \caption{The asymptotic normal approximation mirrors the
+            log-likelihood with slightly less variance.}
+          \label{fig:p2_asymptotic_normal}
+        \end{subfigure}
+        \caption{Plots of the distributions of $\hat{\beta}$ for Part
+          \ref{part:2d}.}
+        \label{fig:p2_beta_hat_likelihood}
+      \end{figure}      
+    \end{description}
     
-  \end{enumerate}
+  \item Summarize the results of the estimation presented above in a manner that
+    would address the question of whether increasing concentrations of the
+    contaminant had an effect on a rat's life expectancy.
+
+    \begin{description}
+    \item[Solution:] $\lambda_i$ can be viewed as the rate of death, so the mean
+      survival time is $\lambda_i^{-1}$. $\log\lambda_i$ has a linear
+      relationship with concentrations of the contaminant described by
+      $\beta_1$. $\beta_1 > 0$ indicates that increasing concentrations of the
+      contaminant increase death rates, and therefore, decrease life expectancy.
+
+      Indeed from Equation \ref{eqn:p2_beta_hat_mle}, our estimate of $\beta_1$,
+      $\hat{\beta}_1 = 0.30133576292327585 > 0$. From Equation
+      \ref{eqn:p2_confidence_interval}, we see that the 95\% confidence interval
+      lies entirely on the positive half-line, so the result is statistically
+      significant at level $0.05$.
+
+      Thus, it is quite likely that increasing concentrations of the contaminant
+      decrease life expectancy.
+    \end{description}
+  \end{enumerate}  
 \end{enumerate}
 
 \end{document}
