@@ -85,5 +85,237 @@
     \item[Solution:] 
     \end{description}
   \end{enumerate}
+\item Consider the exponential regression problem with independent responses
+  \begin{equation}
+    p\left(y_i \mid \lambda_i\right) = \lambda_i\exp\left(-\lambda_iy_i\right),
+    y_i > 0,
+    \label{eqn:p2_model}
+  \end{equation}
+  and $\log\lambda_i = \beta_0 + \beta_1x_i$ for given covariates $x_i$,
+  $i = 1,\ldots,n$. We wish to estimate the $2 \times 1$ regression parameter
+  $\beta = \begin{pmatrix}
+    \beta_0 & \beta_1
+  \end{pmatrix}^\intercal$ using maximum likelihood estimation (MLE).
+
+  \begin{enumerate}
+  \item Find expressions for the likelihood function $L\left(\beta\right)$,
+    log-likelihood function $l\left(\beta\right)$, score function
+    $S\left(\beta\right)$, and Fisher's information matrix $I\left(\beta\right)$.
+
+    \begin{description}
+    \item[Solution:] We can rewrite Equation \ref{eqn:p2_model} in terms of
+      $\beta$, which gives us
+      \begin{align}
+        p\left(y_i \mid \beta_0,\beta_1\right)
+        &= \exp\left(\beta_0 + \beta_1x_i\right)
+        \exp\left(- y_i\exp\left(\beta_0 + \beta_1x_i\right)\right) \nonumber\\
+        &=
+        \exp\left(
+          \beta_0 + \beta_1x_i - y_i\exp\left(\beta_0 + \beta_1x_i\right)\right)
+        \label{eqn:p2_model_beta}.
+      \end{align}
+
+      Using Equation \ref{eqn:p2_model_beta}, we can write the likelihood
+      function
+      \begin{align}
+        L\left(\beta\right)
+        &= \prod_{i=1}^n p\left(y_i \mid \beta_0,\beta_1\right) \nonumber\\
+        &= \exp\left(
+          n\beta_0 + \beta_1\sum_{i=1}^n x_i
+          -
+          \sum_{i=1}^n y_i\exp\left(\beta_0 + \beta_1x_i\right)
+          \right).
+          \label{eqn:p2_likelihood}
+      \end{align}
+
+      Taking the log of Equation \ref{eqn:p2_likelihood}, we have the
+      log-likelihood function as
+      \begin{align}
+        l\left(\beta\right)
+        &= \log L\left(\beta\right) \nonumber\\
+        &= n\beta_0 + \beta_1\sum_{i=1}^nx_i -
+          \sum_{i=1}^ny_i\exp\left(\beta_0 + \beta_1x_i\right).
+          \label{eqn:p2_log_likelihood}
+      \end{align}
+
+      Taking the gradient of Equation \ref{eqn:p2_log_likelihood}, we have the
+      score function
+      \begin{align}
+        S\left(\beta\right)
+        &= \nabla l\left(\beta\right) \nonumber\\
+        &= \begin{pmatrix}
+          n - \sum_{i=1}^ny_i\exp\left(\beta_0 + \beta_1x_i\right) \\
+          \sum_{i=1}^nx_i - \sum_{i=1}^n x_iy_i\exp\left(\beta_0 + \beta_1x_i\right)
+        \end{pmatrix}.
+        \label{eqn:p2_score}
+      \end{align}
+
+      One definition of the Fisher information is the expected value of the
+      observed information which is the negative of the second derivative of the
+      log-likelihood function. For a single observation,
+      \begin{align}
+        \mathcal{I}_1\left(\beta\right) &= \mathbb{E}\left[          
+          \begin{pmatrix}
+            Y\exp\left(\beta_0 + \beta_1x_i\right)
+            & x_iY\exp\left(\beta_0 + \beta_1x_i\right) \\
+            x_iY\exp\left(\beta_0 + \beta_1x_i\right) &
+            x_i^2Y\exp\left(\beta_0 + \beta_1x_i\right)
+          \end{pmatrix} \mid X = x_i\right] \nonumber\\
+        &= \frac{1}{\exp\left(\beta_0 + \beta_1x_i\right)} \begin{pmatrix}
+          \exp\left(\beta_0 + \beta_1x_i\right)
+          & x_i\exp\left(\beta_0 + \beta_1x_i\right) \\
+          x_i\exp\left(\beta_0 + \beta_1x_i\right) &
+          x_i^2\exp\left(\beta_0 + \beta_1x_i\right)
+        \end{pmatrix} \nonumber\\
+        &= \begin{pmatrix}
+          1 & x_i \\
+          x_i & x_i^2
+        \end{pmatrix}
+        \label{eqn:p2_fisher_information_single}      
+      \end{align}
+      by properties of the exponential distribution. Thus, Fisher information is
+      \begin{equation}
+        \mathcal{I}_n\left(\beta\right) =
+        \begin{pmatrix}
+          n & \sum_{i=1}^n x_i \\
+          \sum_{i=1}^n x_i & \sum_{i=1}^n x_i^2
+        \end{pmatrix}.
+        \label{eqn:p2_fisher_information}
+      \end{equation}
+    \end{description}
+  \item Find expressions for the maximum likelihood estimate $\hat{\beta}$. If
+    no closed form solution exists, then instead provide a functional form that
+    could be simply implemented for solution.
+
+    \begin{description}
+    \item[Solution:] We can solve for $\hat{\beta}_0$ in terms of
+      $\hat{\beta}_1$. We know that $S\left(\hat{\beta}\right) = \mathbf{0}$.
+
+      From Equation \ref{eqn:p2_score}, we can solve for $\hat{\beta}_0$,
+      \begin{align}
+        \hat{\beta}_0
+        &= \log n - \log \sum_{i=1}^n y_i\exp\left(\hat{\beta}_1x_i\right).
+        \label{eqn:p2_beta_0_hat}
+      \end{align}
+
+      Substituing Equation \ref{eqn:p2_beta_0_hat} into the second entry of
+      Equation \ref{eqn:p2_score}, we have
+      \begin{align}
+        0
+        &= \sum_{i=1}^n x_i -
+          \exp\left(\hat{\beta}_0\right)
+          \sum_{i=1}^nx_iy_i\exp\left(\hat{\beta}_1x_i\right) \nonumber\\
+        &= \sum_{i=1}^n x_i -
+          \frac{n}{\sum_{i=1}^ny_i\exp\left(\hat{\beta}_1x_i\right)}
+          \sum_{i=1}^nx_iy_i\exp\left(\hat{\beta}_1x_i\right),
+        \label{eqn:p2_beta_1_hat}
+      \end{align}
+      which we can solve numerically with a root-finding algorithm.            
+    \end{description}
+  \item For the data in Table \ref{tab:p2_data}, numerically maximize the
+    likelihood function to obtain estimates of $\beta$. These data consist of
+    the survival times ($y$) of rats as function of concentration of a
+    contaminant ($x$). Find the asymptotic covariance matrix for your estimate
+    using the information $\mathcal{I}\left(\beta\right)$. Provide a 95\%
+    confidence interval for each element of $\beta_0$ and $\beta_1$.
+    
+    \begin{table}
+      \centering
+      \begin{tabular}{crr}
+        \toprule
+        $i$ & $x_i$ & $y_i$ \\
+        \midrule
+        1 & 6.1 & 0.8 \\
+        2 & 4.2 & 3.5 \\
+        3 & 0.5 & 12.4 \\
+        4 & 8.8 & 1.1 \\
+        5 & 1.5 & 8.9 \\
+        6 & 9.2 & 2.4 \\
+        7 & 8.5 & 0.1 \\
+        8 & 8.7 & 0.4 \\
+        9 & 6.7 & 3.5 \\
+        10 & 6.5 & 8.3 \\
+        11 & 6.3 & 2.6 \\
+        12 & 6.7 & 1.5 \\
+        13 & 0.2 & 16.6 \\
+        14 & 8.7 & 0.1 \\
+        15 & 7.5 & 1.3 \\
+        \bottomrule
+      \end{tabular}
+      \caption{Each observation is a rat. $x_i$ are the concentrations of the
+        contaminant, and $y_i$ are the survival times.}
+      \label{tab:p2_data}
+    \end{table}
+
+    \begin{description}
+    \item[Solution:] Numerically solving Equations \ref{eqn:p2_beta_0_hat} and
+      \ref{eqn:p2_beta_1_hat}, we have that
+      \begin{equation}
+        \hat{\beta} =
+        \begin{pmatrix}
+          \hat{\beta}_0 \\
+          \hat{\beta}_1
+        \end{pmatrix}
+        =
+        \begin{pmatrix}
+          -2.821150253077923 \\
+          0.30133576292327585
+        \end{pmatrix}.
+        \label{eqn:p2_beta_hat_mle}
+      \end{equation}
+
+      The Fisher information gives a lower bound on the variance according to
+      the Cram\'er-Rao bound. Asymptotic normality of the MLE tells us that
+      \begin{equation*}
+        \hat{\beta}_n - \beta \rightarrow
+        \mathcal{N}\left(0, \mathcal{I}_n^{-1}\left(\beta\right)\right)
+      \end{equation*}
+      in distribution.
+
+      Thus, we have the covariance matrix
+      \begin{equation}
+        \operatorname{Var}\left(\hat{\beta}\right)
+        \approx \begin{pmatrix}
+          15 & 90.1 \\
+          90.1 & 671.07
+        \end{pmatrix}^{-1}
+        = \begin{pmatrix}
+          0.34448471 & -0.04625162 \\
+          -0.04625162 & 0.00770005
+        \end{pmatrix}.
+      \end{equation}
+
+      Using this we can approximate 95\% confidence intervals as
+      $\hat{\beta}_j \pm
+      z_{0.975}\sqrt{\operatorname{Var}\left(\hat{\beta}_j\right)}$, where
+      $z_{p} = \Phi^{-1}\left(p\right)$ and $\Phi$ is the cumulative
+      distribution function of the normal distribution.
+
+      We have the confidence intervals
+      \begin{align*}
+        \left(
+        \hat{\beta}_0 - 1.150358,
+        \hat{\beta}_0 + 1.150358
+        \right)
+        &= \left(
+          -3.97150839, -1.67079212
+        \right)\\
+        \left(
+        \hat{\beta}_1 - 0.171986669,
+        \hat{\beta}_1 + 0.171986669
+        \right)
+        &= \left(
+          0.12934909, 0.47332243
+          \right)
+      \end{align*}
+      for $\hat{\beta}_0$ and $\hat{\beta}_1$, respectively.
+      
+
+      All calcuations can be found in
+      \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw2/exponential\_regression.ipynb}{\texttt{exponential\_regression.ipynb}}.
+    \end{description}
+    
+  \end{enumerate}
 \end{enumerate}
+
 \end{document}
