@@ -83,7 +83,21 @@
     that which follows from the sampling distribution of the estimator.
 
     \begin{description}
-    \item[Solution:] 
+    \item[Solution:] The variances reported by least squares are in the column
+      titled \textbf{Least-squares Variance} in Tables
+      \ref{tab:p1_simulations_beta_0} and \ref{tab:p1_simulations_beta_1}. This
+      number is the variance reported by least squares averaged across the
+      simulations.
+
+      To obtain the sample variance, 2,048 simulations were done. The results
+      are reported in the column titled \textbf{Sample Variance} in Tables
+      \ref{tab:p1_simulations_beta_0} and \ref{tab:p1_simulations_beta_1}.
+
+      The two variance estimates are nearly identical except when the errors
+      have a $t$ distribution.
+
+      Code for calculations can be found in
+      \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw2/estimator\_variance.ipynb}{\texttt{estimator\_variance.ipynb}}.
     \end{description}
     
   \item Examine the distribution of the resultant estimators (across
@@ -93,7 +107,28 @@
     intervals contain the true value.
 
     \begin{description}
-    \item[Solution:] 
+    \item[Solution:] Several tests of normality were done. First, I checked how
+      frequently the 95\% confidence interval contains the true value of
+      $\beta_j$. In the second-to-last column of Tables
+      \ref{tab:p1_simulations_beta_0} and \ref{tab:p1_simulations_beta_1}, this
+      was always close to 95\% as one would expect.
+
+      I also performed the
+      \href{https://en.wikipedia.org/wiki/Shapiro\%E2\%80\%93Wilk\_test}{Shapiro-Wilk
+        test}, whose null hypothesis is that the estimates were drawn from a
+      normal distribution. From the last column of Tables
+      \ref{tab:p1_simulations_beta_0} and \ref{tab:p1_simulations_beta_1}, we
+      can clearly reject the null hypothesis when the errors come from a
+      $t$-distribution. For the other error distributions, the evidence is not
+      as conclusive.
+
+      Finally, I did a qualitative evaluation by plotting the histogram against
+      a fitted normal distribution. In Figures \ref{fig:p1_beta_0_distribution}
+      and \ref{fig:p1_beta_1_distribution}, we see the normal distribution
+      accurately describes the data except when the errors are $t$-distributed.
+      
+      Code for calculations and plots can be found in
+      \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw2/estimator\_variance.ipynb}{\texttt{estimator\_variance.ipynb}}.
     \end{description}
     
   \item \textbf{Bonus:} Can you ``break'' least squares? i.e., find a
@@ -101,9 +136,59 @@
     interval coverage?
     
     \begin{description}
-    \item[Solution:] 
+    \item[Solution:] Yes, it is possible to ``break'' least squares. The
+      \href{https://en.wikipedia.org/wiki/Gauss\%E2\%80\%93Markov\_theorem}{Gauss-Markov
+        theorem} gives us the conditions under which the least squares estimate
+      is the best linear unbiased estimator: (1) the errors have mean 0, (2)
+      they are homoscedastic, and (3) they are uncorrelated.
+
+      The $t$-distribution with $3/2$ degrees has infinite variance. If our
+      errors are distributed in such a manner, from Tables
+      \ref{tab:p1_simulations_beta_0} and \ref{tab:p1_simulations_beta_1} and
+      Figures \ref{fig:p1_beta_0_distribution} and
+      \ref{fig:p1_beta_1_distribution}, our estimates no longer have a normal
+      distribution.
+
+      In particular, we see that least squares poorly estimates the variance,
+      and the estimates have the greatest error from the true values of
+      $\beta_j$. Despite the non-normality and badly estimated variances,
+      confidence interval coverage is actually quite good.
     \end{description}
   \end{enumerate}
+
+  \begin{table}
+    \tiny
+    \begin{subtable}{\textwidth}
+      \centering
+      \input{p1_beta_0_summary.tex}
+      \caption{Simulations of for $\hat{\beta}_0$. Recall that $\beta_0 = 2$.}
+      \label{tab:p1_simulations_beta_0}
+    \end{subtable}
+    \begin{subtable}{\textwidth}
+      \centering
+      \input{p1_beta_1_summary.tex}
+      \caption{Simulations of for $\hat{\beta}_1$. Recall that
+        $\beta_1 = -2.5$.}
+      \label{tab:p1_simulations_beta_1}
+    \end{subtable}
+    \caption{Results for different sample sizes and error distributions.}
+    \label{tab:p1_simulations}
+  \end{table}
+
+  \begin{figure}
+    \centering
+    \includegraphics{p1_beta_hat_0_distribution.pdf}
+    \caption{The distributions of $\hat{\beta}_0$ compared to a fitted normal.}
+    \label{fig:p1_beta_0_distribution}
+  \end{figure}
+
+  \begin{figure}
+    \centering
+    \includegraphics{p1_beta_hat_1_distribution.pdf}
+    \caption{The distributions of $\hat{\beta}_1$ compared to a fitted normal.}
+    \label{fig:p1_beta_1_distribution}
+  \end{figure}
+  
 \item Consider the exponential regression problem with independent responses
   \begin{equation}
     p\left(y_i \mid \lambda_i\right) = \lambda_i\exp\left(-\lambda_iy_i\right),
@@ -398,5 +483,4 @@
     \end{description}
   \end{enumerate}  
 \end{enumerate}
-
 \end{document}
