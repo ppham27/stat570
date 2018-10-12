@@ -1,0 +1,48 @@
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[hmargin=1.25in,vmargin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{subcaption}
+
+\title{Coursework 3: STAT 570}
+\author{Philip Pham}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+\item Consider the Poisson-gamma random effects model given by
+  \begin{align}
+    Y_i \mid \mu_i, \theta_i
+    &\sim \operatorname{Poisson}\left(\mu_i\theta_i\right) \\
+    \theta_i
+    &\sim \operatorname{Gamma}\left(b, b\right),
+  \end{align}
+  which leads to a negative binomial marginal model with the variance a
+  quadratic function of the mean. Design a simulation study, along the lines of
+  that which produced Table 2.3 in the book (overdispersed Poisson example) to
+  investigate the efficiency and robustness under
+  \begin{itemize}
+  \item a Poisson model;
+  \item quasi-likelihood with $\mathbb{E}\left[Y\right] = \mu$ and
+    $\operatorname{Var}\left(Y\right) = \alpha\mu$; and
+  \item sandwich estimation.
+  \end{itemize}
+
+  Use a log-linear model
+  \begin{equation}
+    \log \mu_i = \beta_0 + \beta_1x_i,
+  \end{equation}
+  with $x_i \sim_\mathrm{iid} \mathcal{N}\left(0, 1\right)$ for
+  $i = 1,2,\ldots,n$, and $\beta_0 = -2$ and $\beta_1 = \log 2$.
+
+  
+\end{enumerate}
+\end{document}
