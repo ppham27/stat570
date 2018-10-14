@@ -125,6 +125,7 @@
         y_i - \exp\left(\beta_0 + \beta_1x_i\right) \\
         x_iy_i - x_i\exp\left(\beta_0 + \beta_1x_i\right)
       \end{pmatrix}.
+      \label{eqn:p1_score_function}
     \end{equation}
     We can estimate $\beta$ by solving for
     $S\left(\hat{\beta}\right) = \mathbf{0}$, numerically.
@@ -151,10 +152,75 @@
           -\sum_{i=1}^n x_i\hat{\mu}_i \\
           -\sum_{i=1}^n x_i\hat{\mu}_i &
           \sum_{i=1}^n \hat{\mu}_i
-        \end{pmatrix}, \label{eqn:p2_beta_hat_variance}                                         
+        \end{pmatrix}, \label{eqn:p2_beta_hat_variance}
     \end{align}
-    where $\hat{\mu_i} = \exp\left(\hat{\beta}_0 + \hat{\beta}_1x_i\right)$.
+    where $\hat{\mu}_i = \exp\left(\hat{\beta}_0 + \hat{\beta}_1x_i\right)$.
     
+    \subsection*{Quasi-likelihood}
+
+    In a quasi-likelihood model, we take inspiration from Equation
+    \ref{eqn:p1_y_mean_variance} and specify the mean and variance as
+    \begin{align}
+      \mathbb{E}\left[
+      Y_i
+      \mid x_i
+      \right]
+      &= \mu_i = \exp\left(\beta_0 + \beta_1x_i\right) \nonumber\\
+      \operatorname{Var}\left(Y_i \mid x_i\right)
+      &= \alpha \mu_i
+      \label{eqn:p1_y_quasi_mean_variance}
+    \end{align}
+
+    Then, by Equation 2.30 of Wakefield's \emph{Bayesian and Frequentist
+      Regression Methods} our estimating function is
+    \begin{align}
+      U\left(\beta\right)
+      &= D^\intercal V^{-1}\left(y - \mu\right)/\alpha \nonumber\\
+      &= \sum_{i=1}^n\begin{pmatrix}
+        \exp\left(\beta_0 + \beta_1x_i\right) \\
+        x_i\exp\left(\beta_0 + \beta_1x_i\right)
+      \end{pmatrix}
+      \frac{y_i - \exp\left(\beta_0 + \beta_1x_i\right)}{\alpha\exp\left(\beta_0 + \beta_1x_i\right)}
+      \nonumber\\
+      &= \frac{1}{\alpha}\sum_{i=1}^n\begin{pmatrix}
+        y_i - \exp\left(\beta_0 + \beta_1x_i\right) \\
+        x_iy_i - x_i\exp\left(\beta_0 + \beta_1x_i\right)
+      \end{pmatrix} = \frac{1}{\alpha}S\left(\beta\right)
+    \end{align}
+    from Equation \ref{eqn:p1_score_function}. Thus, the maximum
+    quasi-likelihood estimate will be the same as the maximum likelihood
+    estimate from the Poisson model.
+
+    Having solved for $\hat{\beta}$, we have
+    \begin{equation}
+      \hat{\mu} = \exp\left(\hat{\beta}_0 + \hat{\beta}_1x_i\right).
+      \label{eqn:p1_mu_hat}
+    \end{equation}
+
+    by Equation 2.31 of Wakefield's \emph{Bayesian and Frequentist Regression
+      Methods}, we can then compute
+    \begin{equation}
+      \hat{\alpha}_n
+      = \frac{1}{n-2}\sum_{i=1}^n \frac{\left(y_i - \hat{\mu}_i\right)^2}{\hat{\mu}_i}
+      \label{eqn:p1_alpha_hat}
+    \end{equation}
+
+    Then, the variance of our estimates is
+    \begin{align}
+      \operatorname{Var}\left(
+      \hat{\beta}
+      \right)
+      &\approx
+      \hat{\alpha}_n\left(\hat{D}^\intercal \hat{V}^{-1} \hat{D}\right)^{-1} \nonumber\\
+      &= \hat{\alpha}_n\left(\sum_{i=1}^n
+        \begin{pmatrix}
+          \hat{\mu_i} & x_i\hat{\mu_i} \\
+          x_i\hat{\mu_i} & x_i^2\hat{\mu_i}.
+        \end{pmatrix}\right)^{-1}
+        \nonumber\\
+      &= \hat{\alpha}_nI_n\left(\hat{\beta}\right)^{-1}
+    \end{align}
+    from Equation \ref{eqn:p2_beta_hat_variance}.
     
   \end{description}
 \end{enumerate}
