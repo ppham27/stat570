@@ -107,8 +107,9 @@
 
     \subsection*{Poisson Model}
 
-    In the Poisson model, we assume that $\operatorname{Var}\left(Y_i \mid
-      x_i\right) = \mu_i$, e.g. $b \rightarrow \infty$.
+    In the Poisson model, we assume that
+    $\operatorname{Var}\left(Y_i \mid x_i\right) = \mu_i$, e.g.
+    $b \rightarrow \infty$, so we neglect the overdispersion parameter.
 
     In this case, the log-likelihood function is
     \begin{equation}
@@ -136,7 +137,7 @@
       \hat{\beta}
       \right)
       &\approx
-        I_n\left(\hat{\beta}\right)^{-1} \nonumber\\
+        I_n\left(\hat{\beta}\right)^{-1} \label{eqn:p2_beta_hat_variance}\\
       &= \left(
         \sum_{i=1}^n\begin{pmatrix}
           \exp\left(\hat{\beta}_0 + \hat{\beta}_1x_i\right) &
@@ -152,14 +153,13 @@
           -\sum_{i=1}^n x_i\hat{\mu}_i \\
           -\sum_{i=1}^n x_i\hat{\mu}_i &
           \sum_{i=1}^n \hat{\mu}_i
-        \end{pmatrix}, \label{eqn:p2_beta_hat_variance}
+        \end{pmatrix}, \nonumber
     \end{align}
     where $\hat{\mu}_i = \exp\left(\hat{\beta}_0 + \hat{\beta}_1x_i\right)$.
     
     \subsection*{Quasi-likelihood}
 
-    In a quasi-likelihood model, we take inspiration from Equation
-    \ref{eqn:p1_y_mean_variance} and specify the mean and variance as
+    In a quasi-likelihood model, we specify the mean and variance as
     \begin{align}
       \mathbb{E}\left[
       Y_i
@@ -170,6 +170,8 @@
       &= \alpha \mu_i
       \label{eqn:p1_y_quasi_mean_variance}
     \end{align}
+    From Equation \ref{eqn:p1_y_mean_variance}, we see that this is not quite
+    correct, still, but it is closer to the real model than the Poisson model.
 
     Then, by Equation 2.30 of Wakefield's \emph{Bayesian and Frequentist
       Regression Methods} our estimating function is
@@ -186,6 +188,7 @@
         y_i - \exp\left(\beta_0 + \beta_1x_i\right) \\
         x_iy_i - x_i\exp\left(\beta_0 + \beta_1x_i\right)
       \end{pmatrix} = \frac{1}{\alpha}S\left(\beta\right)
+      \label{eqn:p1_quasi_likelihood_score_function}
     \end{align}
     from Equation \ref{eqn:p1_score_function}. Thus, the maximum
     quasi-likelihood estimate will be the same as the maximum likelihood
@@ -221,6 +224,48 @@
       &= \hat{\alpha}_nI_n\left(\hat{\beta}\right)^{-1}
     \end{align}
     from Equation \ref{eqn:p2_beta_hat_variance}.
+
+    \subsection*{Sandwich Estimation}
+
+    In sandwich estimation, we only need to specify an estimating function
+    $G\left(\beta\right)$. Then, we can apply Equation 2.43 of Wakefield's
+    \emph{Bayesian and Frequentist Regression Methods} to compute the variance
+    of our estimates:
+    \begin{align}
+      \operatorname{Var}\left(\hat{\beta}\right)
+      &= \hat{A}^{-1}\hat{B}\left(\hat{A}^{-1}\right)^\intercal \nonumber\\
+      \hat{A} &= -\frac{\partial}{\partial\beta}G\left(\hat{\beta}\right) \nonumber\\
+      \hat{B} &= G\left(\hat{\beta}\right)G\left(\hat{\beta}\right)^\intercal. \nonumber
+    \end{align}
+
+    We can reuse the score function from the quasi-likelihood estimate in
+    Equation \ref{eqn:p1_quasi_likelihood_score_function}. Thus, our estimate
+    for $\hat{\beta}$ will remain the same.
+
+    From Equation \ref{eqn:p1_y_quasi_mean_variance}, we have that
+    \begin{equation}
+      \hat{A} = \hat{D}\hat{V}^{-1}\hat{D} = \frac{I_n\left(\hat{\beta}\right)}{\hat{\alpha}_n}.
+    \end{equation}
+
+    From Equation \ref{eqn:p1_quasi_likelihood_score_function}, we have that
+    \begin{align}
+      \hat{B}
+      &= \hat{D}\begin{pmatrix}
+        \frac{\left(y_1 - \hat{\mu}_1\right)^2}{\hat{\alpha}_n^2\hat{\mu}_1^2} \\
+        \vdots \\
+        \frac{\left(y_n - \hat{\mu}_n\right)^2}{\hat{\alpha}_n^2\hat{\mu}_n^2}
+      \end{pmatrix}\hat{D}^\intercal =
+      \sum_{i=1}^n \frac{\left(y_i - \hat{\mu}_i\right)^2}{\hat{\alpha}_n^2\hat{\mu}_i^2}
+      \begin{pmatrix}
+        \hat{\mu}_i^2 & x_i\hat{\mu}_i^2 \\
+        x_i\hat{\mu}_i^2 & x_i^2\hat{\mu}_i^2
+      \end{pmatrix} \nonumber\\
+      &= \frac{1}{\hat{\alpha}_n^2}\sum_{i=1}^n\left(y_i-\hat{\mu}_i\right)^2
+        \begin{pmatrix}
+          1 & x_i\\
+          x_i & x_i^2
+        \end{pmatrix}.
+    \end{align}
     
   \end{description}
 \end{enumerate}
