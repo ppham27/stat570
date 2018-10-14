@@ -43,6 +43,119 @@
   with $x_i \sim_\mathrm{iid} \mathcal{N}\left(0, 1\right)$ for
   $i = 1,2,\ldots,n$, and $\beta_0 = -2$ and $\beta_1 = \log 2$.
 
-  
+  Simulate for:
+  \begin{itemize}    
+  \item $b \in \left\{0.2,1,10,1000\right\}$.
+  \item $n \in \left\{10, 20, 50, 100, 250\right\}$.
+  \end{itemize}
+
+  Summarize what your take away message is after carrying out these simulations.
+
+  \begin{description}
+  \item[Solution:] Note that
+    \begin{align}
+      \mathbb{P}\left(
+      Y_i = y \mid \mu_i
+      \right)
+      &= \int_0^\infty\mathbb{P}\left(
+      Y_i = y \mid \mu_i, \theta_i = \theta
+      \right)\mathbb{P}\left(
+      \theta_i = \theta
+      \mid b
+        \right)
+        \,\mathrm{d}\theta \nonumber\\
+      &= \int_0^\infty
+        \left(
+        \frac{\left(\mu_i\theta\right)^y}{y!}\exp\left(-\mu_i\theta\right)
+        \right)
+        \left(
+        \frac{b^b}{\Gamma(b)}\theta^{b-1}
+        \exp\left(-b\theta\right)
+        \right)        
+        \,\mathrm{d}\theta \nonumber\\
+      &= \frac{\mu_i^y b^b}{y!\Gamma(b)}
+        \int_0^\infty
+        \theta^{b + y - 1}\exp\left(-\theta(b + \mu_i)\right)
+        \,\mathrm{d}\theta \nonumber\\
+      &= \frac{\Gamma(y + b)}{y!\Gamma(b)}
+        \frac{\mu_i^y b^b}{\left(\mu_i + b\right)^{b + y}}
+        = \frac{\Gamma(y + b)}{y!\Gamma(b)}
+        \left(\frac{b}{\mu_i + b}\right)^b
+        \left(\frac{\mu_i}{\mu_i + b}\right)^y
+        \nonumber\\
+      &\sim \operatorname{NegativeBinomial}\left(
+        b,
+        \frac{\mu_i}{\mu_i + b}
+        \right).
+        \label{eqn:p1_negative_binomial}
+    \end{align}
+
+    By properties of the negative binomial distribution, we have that
+    \begin{align}
+      \mathbb{E}\left[
+      Y_i
+      \mid x_i
+      \right]
+      &= \mu_i = \exp\left(\beta_0 + \beta_1x_i\right) \nonumber\\
+      \operatorname{Var}\left(Y_i \mid x_i\right)
+      &= \mu_i\left(
+        1 + \frac{\mu_i}{b}
+        \right).
+      \label{eqn:p1_y_mean_variance}
+    \end{align}
+    Thus, smaller values of $b$ correspond to more dispersion.
+
+    \subsection*{Poisson Model}
+
+    In the Poisson model, we assume that $\operatorname{Var}\left(Y_i \mid
+      x_i\right) = \mu_i$, e.g. $b \rightarrow \infty$.
+
+    In this case, the log-likelihood function is
+    \begin{equation}
+      l\left(\beta\right) =
+      \sum_{i=1}^n\left[
+        y_i\left(\beta_0 + \beta_1x_i\right) -
+        \exp\left(\beta_0 + \beta_1x_i\right) -
+        \sum_{k=1}^{y_i}\log k
+      \right],
+    \end{equation}
+    which gives us the score function
+    \begin{equation}
+      S\left(\beta\right) = \sum_{i=1}^n\begin{pmatrix}
+        y_i - \exp\left(\beta_0 + \beta_1x_i\right) \\
+        x_iy_i - x_i\exp\left(\beta_0 + \beta_1x_i\right)
+      \end{pmatrix}.
+    \end{equation}
+    We can estimate $\beta$ by solving for
+    $S\left(\hat{\beta}\right) = \mathbf{0}$, numerically.
+
+    We can estimate the variance of the estimates from the Fisher information,
+    \begin{align}
+      \operatorname{Var}\left(
+      \hat{\beta}
+      \right)
+      &\approx
+        I_n\left(\hat{\beta}\right)^{-1} \nonumber\\
+      &= \left(
+        \sum_{i=1}^n\begin{pmatrix}
+          \exp\left(\hat{\beta}_0 + \hat{\beta}_1x_i\right) &
+          x_i\exp\left(\hat{\beta}_0 + \hat{\beta}_1x_i\right) \\
+          x_i\exp\left(\hat{\beta}_0 + \hat{\beta}_1x_i\right) &
+          x_i^2\exp\left(\hat{\beta}_0 + \hat{\beta}_1x_i\right)
+        \end{pmatrix} \right)^{-1}  \nonumber\\
+      &= \frac{1}{
+        \left(\sum_{i=1}^n \hat{\mu}_i\right)\left(\sum_{i=1}^n x_i^2\hat{\mu}_i\right)
+        - \left(\sum_{i=1}^n x_i\hat{\mu}_i\right)^2}
+        \begin{pmatrix}
+          \sum_{i=1}^n x_i^2\hat{\mu}_i &
+          -\sum_{i=1}^n x_i\hat{\mu}_i \\
+          -\sum_{i=1}^n x_i\hat{\mu}_i &
+          \sum_{i=1}^n \hat{\mu}_i
+        \end{pmatrix}, \label{eqn:p2_beta_hat_variance}                                         
+    \end{align}
+    where $\hat{\mu_i} = \exp\left(\hat{\beta}_0 + \hat{\beta}_1x_i\right)$.
+    
+    
+  \end{description}
 \end{enumerate}
 \end{document}
