@@ -357,8 +357,8 @@
       appropriateness of the exponential model via Q-Q plots.
 
       \begin{description}
-      \item[Solution:] The estimates are in Table
-        \ref{tab:p2_exponential_estimates}.
+      \item[Solution:] The estimates and standard errors for $\lambda$ are in
+        Table \ref{tab:p2_exponential_estimates}.
 
         \begin{table}
           \centering
@@ -366,6 +366,135 @@
           \caption{Results of fitting an exponential model for each length.}
           \label{tab:p2_exponential_estimates}
         \end{table}
+
+        From the Q-Q plots in Figure \ref{fig:p2_qq_exponential}, we see that
+        the exponential model is a very poor fit for the data. The sampled
+        quantiles are very different than the theoretical quantiles. Thus, the
+        model appears to be misspecified.
+
+        \begin{figure}
+          \centering
+          \includegraphics{p2_qq_exponential.pdf}
+          \caption{Q-Q plots at each length when fitting an exponential model
+            using the MLE.}
+          \label{fig:p2_qq_exponential}
+        \end{figure}
+      \end{description}
+
+      Code for calculations and plots can be found in
+      \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw3/failure\_stresses.ipynb}{\texttt{failure\_stresses.ipynb}}.
+      
+    \item Consider a quasi-likelihood approach to inference for $\lambda$ under
+      the model with
+      \begin{align}
+        \mathbb{E}\left[Y \mid \lambda \right]
+        &= \lambda^{-1} \nonumber\\
+        \operatorname{Var}\left(Y \mid \lambda\right)
+        &= \alpha\lambda^{-2}
+        \label{eqn:p2_quasi_likelihood_model}
+      \end{align}
+      with $\alpha > 0$. Suggest an estimator for $\alpha$.  Estimate $\lambda$,
+      $\alpha$, and the standard errors, separately for each of the four groups
+      in Table \ref{tab:p2_data}. What do the results suggest to you about the
+      fit of the exponential model?
+
+      \begin{description}
+      \item[Solution:] The quasi-likelihood score is
+        \begin{align}
+          U\left(\lambda\right)
+          &= D^\intercal V^{-1}
+            \left(Y - \mathbb{E}\left[Y \mid \lambda \right]\right)/\alpha \nonumber\\
+          &= \begin{pmatrix}
+            -\lambda^{-2} & \cdots & -\lambda^{-2}
+          \end{pmatrix} \begin{pmatrix}
+            \lambda^{2} & & \\
+            & \ddots & \\
+            & & \lambda^{2}
+          \end{pmatrix} \begin{pmatrix}
+            \frac{Y_1 - \lambda^{-1}}{\alpha} \\
+            \vdots \\
+            \frac{Y_n - \lambda^{-1}}{\alpha}
+          \end{pmatrix} \nonumber\\
+          &= -\frac{1}{\alpha}\sum_{i=1}^n\left(Y_i - \lambda^{-1}\right)
+            = -\frac{1}{\alpha}\left(\sum_{i=1}^nY_i - n\lambda^{-1}\right).
+            \label{eqn:p2_quasi_score}
+        \end{align}
+        
+        Solving Equation \ref{eqn:p2_quasi_score},
+        $U\left(\hat{\lambda}\right) = 0$, we get
+        $\hat{\lambda} = \bar{Y}^{-1}$, which is the same as the MLE estimate.
+
+        $\hat{\alpha}$ is given by Equation 2.31 of Wakefield's \emph{Bayesian
+          and Frequentist Regression Methods}:
+        \begin{equation}
+          \hat{\alpha}
+          = \frac{1}{n - 1}\sum_{i=1}^n\frac{\left(Y_i - \hat{\mu}\right)^2}{V\left(\hat{\mu}\right)}
+          = \frac{\hat{\lambda}^2}{n - 1}\sum_{i=1}^n\left(Y_i - \hat{\lambda}^{-1}\right)^2.
+        \end{equation}
+
+        We have that
+        \begin{equation}
+          \operatorname{Var}\left(U\left(\lambda\right)\right)
+          = \mathbb{E}\left[- \frac{\partial U}{\partial \lambda}(\lambda)\right]
+          = \frac{n\lambda^{-2}}{\alpha},
+        \end{equation}
+        we can estimate
+        \begin{equation}
+          \operatorname{Var}\left(\hat{\lambda}\right) =
+          \operatorname{Var}\left(U\left(\hat{\lambda}\right)\right)^{-1}
+          \approx \frac{\hat{\alpha}\hat{\lambda}^2}{n},
+        \end{equation}
+        which is the same as the variance for the MLE estimate multiplied by
+        $\hat{\alpha}$. The results of fitting the quasi-likelihood model can be
+        seen in Table \ref{tab:p2_quasi_likelihood_estimates}.
+
+        \begin{table}
+          \centering
+          \input{p2_quasi_likelihood_estimates.tex}
+          \caption{Results of fitting a quasi-likelihood model for each length.}
+          \label{tab:p2_quasi_likelihood_estimates}
+        \end{table}
+
+        From Equation \ref{eqn:p2_quasi_score}, we see that a quadratic variance
+        function leads to the same score function as Gamma distribution
+        with fixed shape parameter $\alpha^{-1}$ and rate parameter
+        $\lambda\alpha^{-1}$. $\alpha = 1$ would correspond to the
+        exponential distribution, so it is unsurprising to see that our estimate
+        for $\lambda$ is the same as the MLE estimate.
+
+        \begin{figure}
+          \centering
+          \includegraphics{p2_qq_quasi_likelihood.pdf}
+          \caption{Q-Q plots at each length with a Gamma distribution. The shape
+            parameter $\hat{\alpha}^{-1}$ and rate parameter
+            $\hat{\lambda}\hat{\alpha}^{-1}$ were estimated using
+            quasi-likelihood.}
+          \label{fig:p2_qq_quasi_likelihood}
+        \end{figure}
+        
+        Standard errors are much smaller than those estimated in Table
+        \ref{tab:p2_exponential_estimates}. From Figure
+        \ref{fig:p2_qq_exponential}, we see that the residuals are
+        underdispersed relative to an exponential model, so $\hat{\alpha} < 1$,
+        which leads to the smaller standard error estimates.
+
+        Q-Q plots with the theoretical quantiles derived from
+        $\operatorname{Gamma}\left(\hat{\alpha}^{-1},
+          \lambda\hat{\alpha}^{-1}\right)$ in Figure
+        \ref{fig:p2_qq_quasi_likelihood}. The points lie close the $y = x$
+        line. This suggests that the Gamma and quasi-likelihood model are more
+        appropriate. They better capture the variance model compared to the
+        exponential model.
+
+        Code for calculations and plots can be found in
+        \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw3/failure\_stresses.ipynb}{\texttt{failure\_stresses.ipynb}}.
+      \end{description}
+    \item Obtain the form of the sandwich estimate for the variance of
+      $\hat{\lambda}$. Numerically evaluate sandwich standard errors for the
+      estimate of $\lambda$ in each of the four groups.
+
+      \begin{description}
+      \item[Solution:] 
       \end{description}
     \end{enumerate}
 \end{enumerate}
