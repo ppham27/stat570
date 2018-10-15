@@ -239,28 +239,30 @@
     \end{align}
 
     We can reuse the score function from the quasi-likelihood estimate in
-    Equation \ref{eqn:p1_quasi_likelihood_score_function}. Thus, our estimate
-    for $\hat{\beta}$ will remain the same.
+    Equation \ref{eqn:p1_quasi_likelihood_score_function} without $\alpha$ since
+    it cancels out. Thus, our estimate for $\hat{\beta}$ will remain the same.
 
     From Equation \ref{eqn:p1_y_quasi_mean_variance}, we have that
     \begin{equation}
-      \hat{A} = \hat{D}\hat{V}^{-1}\hat{D} = \frac{I_n\left(\hat{\beta}\right)}{\hat{\alpha}_n}.
+      \hat{A} = \hat{D}\hat{V}^{-1}\hat{D} = I_n\left(\hat{\beta}\right)
     \end{equation}
 
     From Equation \ref{eqn:p1_quasi_likelihood_score_function}, we have that
     \begin{align}
       \hat{B}
-      &= \hat{D}\begin{pmatrix}
-        \frac{\left(y_1 - \hat{\mu}_1\right)^2}{\hat{\alpha}_n^2\hat{\mu}_1^2} \\
-        \vdots \\
-        \frac{\left(y_n - \hat{\mu}_n\right)^2}{\hat{\alpha}_n^2\hat{\mu}_n^2}
-      \end{pmatrix}\hat{D}^\intercal =
-      \sum_{i=1}^n \frac{\left(y_i - \hat{\mu}_i\right)^2}{\hat{\alpha}_n^2\hat{\mu}_i^2}
+      &= \hat{D}^\intercal\hat{V}^{-1}\operatorname{diag}\left(RR^\intercal\right)\hat{V}^{-1}\hat{D}
+      \nonumber\\
+      &= \hat{D}^\intercal\begin{pmatrix}
+        \frac{\left(y_1 - \hat{\mu}_1\right)^2}{\hat{\mu}_1^2} & & \\
+        & \ddots &\\
+        & &\frac{\left(y_n - \hat{\mu}_n\right)^2}{\hat{\mu}_n^2}
+      \end{pmatrix}\hat{D} =
+      \sum_{i=1}^n \frac{\left(y_i - \hat{\mu}_i\right)^2}{\hat{\mu}_i^2}
       \begin{pmatrix}
         \hat{\mu}_i^2 & x_i\hat{\mu}_i^2 \\
         x_i\hat{\mu}_i^2 & x_i^2\hat{\mu}_i^2
       \end{pmatrix} \nonumber\\
-      &= \frac{1}{\hat{\alpha}_n^2}\sum_{i=1}^n\left(y_i-\hat{\mu}_i\right)^2
+      &= \sum_{i=1}^n\left(y_i-\hat{\mu}_i\right)^2
         \begin{pmatrix}
           1 & x_i\\
           x_i & x_i^2
@@ -268,5 +270,103 @@
     \end{align}
     
   \end{description}
+
+\item The data in Table \ref{tab:p2_data} contain data on a typical reliability
+  experiment and give the failure stresses (in GPa) of four samples of carbon
+  fibers of lengths 1, 10, 20 and 50mm.
+
+  \begin{table}
+    \tiny
+    \centering
+    \input{p2_data.tex}
+    \caption{Failure stress data for four groups of fibers.}
+    \label{tab:p2_data}
+  \end{table}
+
+  \begin{enumerate}
+  \item The exponential distribution
+    $Y \mid \lambda \sim_\mathrm{iid} \operatorname{Exponential}(\lambda)$, is a
+    simple model for reliability data:
+    \begin{equation}
+      p\left(y \mid \lambda \right) =
+      \lambda \exp\left(-\lambda y\right),
+      \label{eqn:p2_exponential_pdf}
+    \end{equation}
+    with $\lambda, y > 0$. The hazard function is the probability of imminent
+    failure and is given by
+    \begin{equation}
+      h\left(y\mid\lambda\right) =
+      \frac{p\left(y \mid \lambda\right)}{S\left(y\mid\lambda\right)},
+      \label{eqn:p2_hazard_definition}
+    \end{equation}
+    where
+    $S\left(y\mid\lambda\right) = \mathbb{P}\left(Y > y \mid \lambda\right)$ is
+    the probability of failure beyond $y$. Derive the hazard function for the
+    exponential distribution. Suppose we have a sample $y_1,\ldots,y_n$, of size
+    $n$ from an exponential distribution. Find the form of the MLE of $\lambda$
+    and the asymptotic variance.
+      \begin{description}
+      \item[Solution:] The survival function can be derived with Equation
+        \ref{eqn:p2_exponential_pdf} as
+        \begin{align}
+          S\left(y\mid\lambda\right)
+          &= \mathbb{P}\left(Y > y \mid \lambda\right) \nonumber\\
+          &= \int_y^\infty \lambda \exp\left(-\lambda t\right)\,\mathrm{d}t \nonumber\\
+          &= \left. -\exp\left(-\lambda t\right) \right|^\infty_y \nonumber \\
+          &= \exp\left(-\lambda y\right).
+            \label{eqn:p2_survival}
+        \end{align}
+
+        With Equations \ref{eqn:p2_hazard_definition} and \ref{eqn:p2_survival},
+        the hazard function is
+        \begin{equation}
+          h\left(y\mid\lambda\right) =
+          \frac{p\left(y \mid \lambda\right)}{S\left(y\mid\lambda\right)}
+          = \frac{\lambda \exp\left(-\lambda y\right)}{\exp\left(-\lambda y\right)} = \lambda.
+          \label{eqn:p2_hazard}
+        \end{equation}
+      \end{description}
+
+      Given $y_1,\ldots,y_n$, the log-likelihood function is
+      \begin{equation}
+        l\left(\lambda\right) = n\log\lambda - \lambda\sum_{i=1}^n y_i.
+        \label{eqn:p2_exponential_log_likelihood}
+      \end{equation}
+
+      From Equation \ref{eqn:p2_exponential_log_likelihood}, the score function is
+      \begin{equation}
+        S\left(\lambda\right) = \frac{n}{\lambda} - \sum_{i=1}^n y_i.
+        \label{eqn:p2_exponential_score}
+      \end{equation}
+      Solving $S\left(\hat{\lambda}\right) = 0$, gives use the MLE,
+      $\boxed{\hat{\lambda} = \frac{n}{\sum_{i=1}^n y_i} = \frac{1}{\bar{y}}.}$
+
+      The asymptotic variance can be derived from the Fisher information
+      \begin{equation}
+        I_n\left(\hat{\lambda}\right)
+        = \operatorname{Var}\left(S\left(\hat{\lambda}\right)\right)
+        = \frac{n}{\hat{\lambda}^2}.
+      \end{equation}
+
+      Thus, we have that
+      $\boxed{\operatorname{Var}\left(\hat{\lambda}\right) =
+        \frac{\hat{\lambda}^2}{n}.}$      
+      
+    \item For each of the four groups in Table \ref{tab:p2_data}, estimate a
+      separate $\lambda$, with an associated standard error. Examine the
+      appropriateness of the exponential model via Q-Q plots.
+
+      \begin{description}
+      \item[Solution:] The estimates are in Table
+        \ref{tab:p2_exponential_estimates}.
+
+        \begin{table}
+          \centering
+          \input{p2_exponential_estimates.tex}
+          \caption{Results of fitting an exponential model for each length.}
+          \label{tab:p2_exponential_estimates}
+        \end{table}
+      \end{description}
+    \end{enumerate}
 \end{enumerate}
 \end{document}

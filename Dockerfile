@@ -32,6 +32,7 @@ RUN pip install tzlocal
 RUN pip install --upgrade numpy
 RUN pip install --upgrade scipy
 RUN pip install seaborn
+RUN pip install statsmodels
 
 # Install class-specific Python package
 ADD stat570 /tmp/stat570_install/stat570/
