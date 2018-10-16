@@ -695,13 +695,21 @@
 
     The observed information for a single observation is
     \begin{align*}
-      I_1\left(\eta, \alpha\right)
-      &= \mathbb{E}\left[-\nabla S\left(\eta,\alpha\right)\right] \\
+      I_{y_i}\left(\eta, \alpha\right)
+      &= -\nabla \nabla^\intercal l\left(\eta,\alpha\right) = \nabla S\left(\eta,\alpha\right) \\
       &= \begin{pmatrix}
-        -\frac{1}{\eta^2} - \left(\log y_1 - \log\alpha\right)^2
-        \exp\left[\eta\left(\log y_1 - \log\alpha\right)\right]
-        & -\frac{1}{\alpha}
-      \end{pmatrix}
+        \frac{1}{\eta^2} + \left(\log \frac{y_i}{\alpha}\right)^2
+        \left(\frac{y_i}{\alpha}\right)^\eta
+        &
+        \frac{1}{\alpha} - \frac{1}{\alpha}\left(\frac{y_i}{\alpha}\right)^\eta -
+        \frac{\eta}{\alpha}\left(\log \frac{y_i}{\alpha}\right)\left(\frac{y_i}{\alpha}\right)^\eta
+        \\
+        \frac{1}{\alpha} - \frac{1}{\alpha}\left(\frac{y_i}{\alpha}\right)^\eta -
+        \frac{\eta}{\alpha}\left(\log \frac{y_i}{\alpha}\right)\left(\frac{y_i}{\alpha}\right)^\eta
+        &
+        -\frac{\eta}{\alpha^2} + \frac{\eta}{\alpha^2}\left(\frac{y_i}{\alpha}\right)^\eta
+        + \left(\frac{\eta}{\alpha}\right)^2\left(\frac{y_i}{\alpha}\right)^\eta
+      \end{pmatrix}.
     \end{align*}
   \end{description}
 \end{enumerate}
