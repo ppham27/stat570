@@ -644,7 +644,65 @@
 \item Is the Weibull distribution with unknown parameters $\eta$, $\alpha$ a
   member of the exponential family? What are the implications for inference?
   \begin{description}
-  \item[Solution:] 
+  \item[Solution:] No, the Weibull distribution with unknown parameters $\eta$,
+    $\alpha$ is not a member of the exponential family. Mainly, if take the
+    $\log$ of the probability density function, we have the term
+    $\left(\frac{y}{\alpha}\right)^\eta$. This can not be written in the form
+    $\theta^\intercal T(y)$, where $\theta$ are parameters and $T(y)$ is a
+    transformation of $y$ into a finite-dimensional vector.
+
+    There are implications in inference. The
+    \href{https://en.wikipedia.org/wiki/Sufficient_statistic#Exponential\_family}{Pitman-Koopman-Darmois
+      theorem} states that only in exponential families is there a sufficient
+    statistic whose dimension remains bounded as sample size increases. Thus,
+    when inferring the parameters from a sample with maximum likelihood, all the
+    data must be used, which may make the computation intractable for large
+    datasets. Morever, when doing a Bayesian inference, the posterior must be
+    conditioned on all the data rather than a finite set of sufficient
+    statistics, so no conjugate prior will exist.
+
+    In particular, generalized linear models require that the response be
+    generated from a distribution in the exponential family. The special
+    structure of the exponential family make it so the dispersion estimate is an
+    ancillary statistic: its estimation is independent of the estimation of the
+    mean.
+  \end{description}
+
+\item For the Weibull model and a random sample of size $n$ obtain: the
+  log-likelihood, the score, and the observed information matrix.
+
+  \begin{description}
+  \item[Solution:] The log-likelihood function is
+    \begin{equation}
+      l\left(\eta,\alpha\right)
+      = \sum_{i = 1}^n\left(
+        \log\eta - \eta\log\alpha + \left(\eta - 1\right)\log y_i
+        - \exp\left[\eta\left(\log y_i - \log\alpha\right)\right]\right)
+    \end{equation}
+
+    From which, we have the score function
+    \begin{equation*}
+      S\left(\eta,\alpha\right) = \sum_{i=1}^n
+      \begin{pmatrix}
+        \frac{1}{\eta} - \log\alpha + \log y_i -
+        \left(\log y_i - \log\alpha\right)
+        \exp\left[\eta\left(\log y_i - \log\alpha\right)\right]
+        \\
+        -\frac{\eta}{\alpha}
+        +\frac{\eta}{\alpha}\exp\left[\eta\left(\log y_i - \log\alpha\right)\right]
+      \end{pmatrix}.
+    \end{equation*}
+
+    The observed information for a single observation is
+    \begin{align*}
+      I_1\left(\eta, \alpha\right)
+      &= \mathbb{E}\left[-\nabla S\left(\eta,\alpha\right)\right] \\
+      &= \begin{pmatrix}
+        -\frac{1}{\eta^2} - \left(\log y_1 - \log\alpha\right)^2
+        \exp\left[\eta\left(\log y_1 - \log\alpha\right)\right]
+        & -\frac{1}{\alpha}
+      \end{pmatrix}
+    \end{align*}
   \end{description}
 \end{enumerate}
 \end{enumerate}
