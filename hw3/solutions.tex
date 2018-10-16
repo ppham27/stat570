@@ -568,6 +568,84 @@
     the quasi-likelihood model fits the data well, so it is unsurprising that an
     empircal estimate would yield similar results.
   \end{description}
-    \end{enumerate}
+\item The Weibull distribution is a common model for survival or reliability
+  data:
+  $Y \mid \eta,\alpha \sim_\mathrm{iid}
+  \operatorname{Weibull}\left(\eta,\alpha\right)$, with $\eta > 0$, and
+  $\alpha > 0$. The random variable $Y$ has a Weibull distribution if its
+  density can be written in the form
+  \begin{equation}
+    p\left(y \mid \eta,\alpha\right) = \eta\alpha^{-\eta}y^{\eta-1}\exp\left[
+      -\left(\frac{y}{\alpha}\right)^\eta
+    \right].
+    \label{eqn:p2_weibull_pdf}
+  \end{equation}
+  
+  Find the mean, variance and hazard function of a Weibull distribution. For
+  what value of the parameters does the exponential distribution result?
+
+  \begin{description}
+  \item[Solution:] The mean can be calculated in terms of the Gamma function
+    \begin{align}
+      \mathbb{E}\left[
+      Y \mid \eta,\alpha
+      \right] = \int_0^\infty y p\left(y \mid \eta,\alpha\right)\,\mathrm{d}y
+      &= \eta\int_0^\infty \left(\frac{y}{\alpha}\right)^{\eta}
+        \exp\left[
+        -\left(\frac{y}{\alpha}\right)^\eta
+        \right]\,\mathrm{d}y\nonumber\\
+      &= \alpha\int_0^\infty u^{1 + 1/\eta - 1}\exp\left(-u\right)\,\mathrm{d}u \nonumber\\
+      &= \alpha\Gamma\left(1 + 1/\eta\right).
+        \label{eqn:p2_weibull_mean}
+    \end{align}
+
+    We can calculate the second moment similarly,
+    \begin{align}
+      \mathbb{E}\left[
+      Y^2 \mid \eta,\alpha
+      \right] = \int_0^\infty y^2 p\left(y \mid \eta,\alpha\right)\,\mathrm{d}y
+      &= \eta\int_0^\infty y\left(\frac{y}{\alpha}\right)^{\eta}
+        \exp\left[
+        -\left(\frac{y}{\alpha}\right)^\eta
+        \right]\,\mathrm{d}y\nonumber\\
+      &= \alpha^2\int_0^\infty u^{2 + 1/\eta - 1}\exp\left(-u\right)\,\mathrm{d}u \nonumber\\
+      &= \alpha^2\Gamma\left(2 + 1/\eta\right).
+    \end{align}
+
+    Thus, we have that
+    \begin{equation}
+      \operatorname{Var}\left(
+        Y \mid \eta,\alpha
+      \right) = \alpha^2\left(
+        \Gamma\left(2 + 1/\eta\right) - \left[\Gamma\left(1 + 1/\eta\right)\right]^2
+      \right).
+    \end{equation}
+
+    The survival function is
+    \begin{align}
+      S\left(y \mid \eta,\alpha\right)
+      &= \int_y^\infty p\left(t \mid \eta,\alpha\right)\,\mathrm{d}t =
+        \int_{\left(y/\alpha\right)^\eta}^\infty\exp\left(-u\right)\,\mathrm{d}u \nonumber\\
+      &= \exp\left[-\left(\frac{y}{\alpha}\right)^\eta\right].
+        \label{eqn:p2_weibull_survival}
+    \end{align}
+
+    Thus, the hazard function simplifies to
+    \begin{equation}
+      h\left(y \mid \eta,\alpha\right) =
+      \frac{p\left(y \mid \eta,\alpha\right)}{S\left(y \mid \eta,\alpha\right)} = 
+      \eta\alpha^{-\eta}y^{\eta-1}.
+      \label{eqn:p2_weibull_hazard}
+    \end{equation}
+
+    When $\eta = 1$, this is just the exponential distribution with rate
+    parameter $\lambda = \alpha^{-1}$.       
+  \end{description}
+\item Is the Weibull distribution with unknown parameters $\eta$, $\alpha$ a
+  member of the exponential family? What are the implications for inference?
+  \begin{description}
+  \item[Solution:] 
+  \end{description}
+\end{enumerate}
 \end{enumerate}
 \end{document}
