@@ -137,7 +137,7 @@
       \hat{\beta}
       \right)
       &\approx
-        I_n\left(\hat{\beta}\right)^{-1} \label{eqn:p2_beta_hat_variance}\\
+        I_n\left(\hat{\beta}\right)^{-1} \label{eqn:p1_beta_hat_variance}\\
       &= \left(
         \sum_{i=1}^n\begin{pmatrix}
           \exp\left(\hat{\beta}_0 + \hat{\beta}_1x_i\right) &
@@ -222,8 +222,9 @@
         \end{pmatrix}\right)^{-1}
         \nonumber\\
       &= \hat{\alpha}_nI_n\left(\hat{\beta}\right)^{-1}
+        \label{eqn:p1_beta_hat_quasi_variance}
     \end{align}
-    from Equation \ref{eqn:p2_beta_hat_variance}.
+    from Equation \ref{eqn:p1_beta_hat_variance}.
 
     \subsection*{Sandwich Estimation}
 
@@ -233,40 +234,55 @@
     of our estimates:
     \begin{align}
       \operatorname{Var}\left(\hat{\beta}\right)
-      &= \hat{A}^{-1}\hat{B}\left(\hat{A}^{-1}\right)^\intercal \nonumber\\
-      \hat{A} &= -\frac{\partial}{\partial\beta}G\left(\hat{\beta}\right) \nonumber\\
-      \hat{B} &= G\left(\hat{\beta}\right)G\left(\hat{\beta}\right)^\intercal. \nonumber
+      &= \frac{1}{n}\hat{A}^{-1}\hat{B}\left(\hat{A}^{-1}\right)^\intercal \nonumber\\
+      \hat{A}
+      &= -\frac{1}{n}\sum_{i=1}^n
+        \frac{\partial}{\partial\beta}G\left(\hat{\beta}, X_i, Y_i\right) \nonumber\\
+      \hat{B}
+      &= \frac{1}{n}\sum_{i=1}^n
+        G\left(\hat{\beta}, X_i, Y_i\right)G\left(\hat{\beta}, X_i, Y_i\right)^\intercal.
+        \nonumber
     \end{align}
 
     We can reuse the score function from the quasi-likelihood estimate in
-    Equation \ref{eqn:p1_quasi_likelihood_score_function} without $\alpha$ since
-    it cancels out. Thus, our estimate for $\hat{\beta}$ will remain the same.
-
-    From Equation \ref{eqn:p1_y_quasi_mean_variance}, we have that
+    Equation \ref{eqn:p1_quasi_likelihood_score_function} without $\alpha$, so
     \begin{equation}
-      \hat{A} = \hat{D}\hat{V}^{-1}\hat{D} = I_n\left(\hat{\beta}\right)
+      G\left(\hat{\beta}, X_i, Y_i\right)
+      = \begin{pmatrix}
+        Y_i - \hat{\mu}_i \\
+        X_i\left(Y_i - \hat{\mu}_i\right)
+      \end{pmatrix}
+    \end{equation}
+    Thus, our estimate for $\hat{\beta}$ will remain the same.
+
+    From Equations \ref{eqn:p1_beta_hat_variance} and
+    \ref{eqn:p1_beta_hat_quasi_variance}, we have that
+    \begin{equation}
+      \hat{A} = \frac{1}{n}\hat{D}\hat{V}^{-1}\hat{D} = \frac{1}{n}I_n\left(\hat{\beta}\right)
     \end{equation}
 
     From Equation \ref{eqn:p1_quasi_likelihood_score_function}, we have that
     \begin{align}
       \hat{B}
-      &= \hat{D}^\intercal\hat{V}^{-1}\operatorname{diag}\left(RR^\intercal\right)\hat{V}^{-1}\hat{D}
+      &= \frac{1}{n}
+        \hat{D}^\intercal\hat{V}^{-1}\operatorname{diag}\left(RR^\intercal\right)\hat{V}^{-1}\hat{D}
       \nonumber\\
-      &= \hat{D}^\intercal\begin{pmatrix}
+      &= \frac{1}{n}\hat{D}^\intercal\begin{pmatrix}
         \frac{\left(y_1 - \hat{\mu}_1\right)^2}{\hat{\mu}_1^2} & & \\
         & \ddots &\\
         & &\frac{\left(y_n - \hat{\mu}_n\right)^2}{\hat{\mu}_n^2}
       \end{pmatrix}\hat{D} =
-      \sum_{i=1}^n \frac{\left(y_i - \hat{\mu}_i\right)^2}{\hat{\mu}_i^2}
+            \frac{1}{n}\sum_{i=1}^n \frac{\left(y_i - \hat{\mu}_i\right)^2}{\hat{\mu}_i^2}
       \begin{pmatrix}
         \hat{\mu}_i^2 & x_i\hat{\mu}_i^2 \\
         x_i\hat{\mu}_i^2 & x_i^2\hat{\mu}_i^2
       \end{pmatrix} \nonumber\\
-      &= \sum_{i=1}^n\left(y_i-\hat{\mu}_i\right)^2
+      &= \frac{1}{n}\sum_{i=1}^n\left(y_i-\hat{\mu}_i\right)^2
         \begin{pmatrix}
           1 & x_i\\
           x_i & x_i^2
-        \end{pmatrix}.
+        \end{pmatrix} = \frac{1}{n}\sum_{i=1}^n
+                G\left(\hat{\beta},x_i,y_i\right)G\left(\hat{\beta},x_i,y_i\right)^\intercal.
     \end{align}
     
   \end{description}
@@ -494,8 +510,64 @@
       estimate of $\lambda$ in each of the four groups.
 
       \begin{description}
-      \item[Solution:] 
-      \end{description}
+      \item[Solution:] We apply Equation 2.43 of Wakefield's \emph{Bayesian and
+          Frequentist Regression Methods} to compute the variance of our
+        parameter estimate:
+    \begin{align}
+      \operatorname{Var}\left(\hat{\lambda}\right)
+      &= \frac{1}{n}\hat{A}^{-1}\hat{B}\left(\hat{A}^{-1}\right)^\intercal \nonumber\\
+      \hat{A}
+      &= -\frac{1}{n}\sum_{i=1}^n
+        \frac{\partial}{\partial\lambda}G\left(\hat{\lambda}, Y_i\right) \nonumber\\
+      \hat{B}
+      &= \frac{1}{n}\sum_{i=1}^n
+        G\left(\hat{\lambda}, Y_i\right)G\left(\hat{\lambda}, Y_i\right)^\intercal, \nonumber
+    \end{align}
+    where we resue the quasi-score from Equation \ref{eqn:p2_quasi_score} to
+    specify
+    \begin{equation}
+      G\left(\lambda, Y_i\right) = \frac{1}{\lambda} - Y_i
+      \label{eqn:p2_sandwich_score}
+    \end{equation}
+    as our estimating function.
+
+    Thus, we'll have that
+    \begin{align}
+      \hat{A}
+      &= \frac{1}{n}I\left(\hat{\lambda}\right) = \frac{1}{\hat{\lambda}^2} \nonumber\\
+      \hat{B}
+      &= \frac{1}{n}\sum_{i=1}^n\left(Y_i - \frac{1}{\hat{\lambda}}\right)^2.
+    \end{align}
+
+    Thus, our sandwich estimate will be
+    \begin{equation}
+      \boxed{
+        \operatorname{Var}\left(\hat{\lambda}\right)
+        = \frac{\hat{\lambda}^4}{n^2}\sum_{i=1}^n\left(Y_i - \frac{1}{\hat{\lambda}}\right)^2.
+      }
+      \label{eqn:p2_sandwich_variance}
+    \end{equation}
+    The results of applying Equations \ref{eqn:p2_sandwich_score} and
+    \ref{eqn:p2_sandwich_variance} can be seen in Table \ref{tab:p2_sandwich
+      estimates}.   
+    
+    \begin{table}
+      \centering \input{p2_sandwich_estimates.tex}
+      \caption{Results of fitting a model with sandwich estimation for each
+        length.}
+      \label{tab:p2_sandwich estimates}
+    \end{table}
+
+    The estimates for $\hat{\lambda}$ are of course the same as in Tables
+    \ref{tab:p2_exponential_estimates} and
+    \ref{tab:p2_quasi_likelihood_estimates}, since we reused the same score
+    function. The standard errors are smaller than the exponential model since
+    the data is underdispersed in that model. However, they are quite similar to
+    those in the quasi-likelihood model despite not specifying a variance
+    model. From Figure \ref{fig:p2_qq_quasi_likelihood}, we have evidence that
+    the quasi-likelihood model fits the data well, so it is unsurprising that an
+    empircal estimate would yield similar results.
+  \end{description}
     \end{enumerate}
 \end{enumerate}
 \end{document}
