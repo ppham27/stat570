@@ -711,6 +711,62 @@
         + \left(\frac{\eta}{\alpha}\right)^2\left(\frac{y_i}{\alpha}\right)^\eta
       \end{pmatrix}.
     \end{align*}
+
+    The total observed information is then $\displaystyle
+    I_n\left(\eta,\alpha\right) = \sum_{i=1}^nI_{y_i}\left(\eta,\alpha\right)$.
+  \end{description}
+  
+\item Solve the score equations in order to obtain the maximum likelihood
+  estimators (MLEs). You should obtain a single equation that needs to be
+  numerically solved.
+
+  \begin{description}
+  \item[Solution:] We want to solve the two equations given by
+    $S\left(\hat{\eta}, \hat{\alpha}\right) = \mathbf{0}$.
+
+    We can solve for $\hat{\alpha}$ in terms of $\hat{\eta}$ from the second
+    entry:
+    \begin{equation}
+      \hat{\alpha} = \left(\frac{1}{n}\sum_{i=1}^n y_i^{\hat{\eta}}\right)^{1/\hat{\eta}}.
+      \label{eqn:p2_alpha_hat}
+    \end{equation}
+
+    Substituting $\hat{\alpha}$ with Equation \ref{eqn:p2_alpha_hat}, we can
+    numerically solve for $\hat{\eta}$ in the first entry of the score function.
+  \end{description}
+\item Obtain the MLEs and standard errors for the parameters of the Weibull
+  model, for each of the groups in Table \ref{tab:p2_data}.
+  \begin{description}
+  \item[Solution:] The estimates and standard errors can be found in Table
+    \ref{tab:p2_weibull estimates}. One can see that mean of each estimated
+    distribution $\hat{\alpha}\Gamma\left(1 + 1/\hat{\eta}\right)$ is quite
+    close to corresponding mean for the exponential distribution
+    $\hat{\lambda}^{-1}$.
+
+    \begin{table}
+      \centering \input{p2_weibull_estimates.tex}
+      \caption{Results of fitting a Weibull model to each length by maximizing
+        likelihood.}
+      \label{tab:p2_weibull estimates}
+    \end{table}
+
+    \begin{figure}
+      \centering
+      \includegraphics{p2_qq_weibull.pdf}
+      \caption{Q-Q plots at each length with a Weibull distribution with
+        parameters in Table \ref{tab:p2_weibull estimates}.}
+      \label{fig:p2_qq_weibull}
+    \end{figure}
+
+    The Q-Q plots in Figure \ref{fig:p2_qq_weibull} indicate the Weibull
+    distribution fits the data quite well. However, it appears slightly worse
+    than the Gamma distribution: compared to Figure
+    \ref{fig:p2_qq_quasi_likelihood}, the lower tail is further away from the
+    $y = x$ line. That is, the data are underdispered when fitted to the Weibull
+    distribution.
+
+    Code for calculations and plots can be found in
+    \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw3/failure\_stresses.ipynb}{\texttt{failure\_stresses.ipynb}}.
   \end{description}
 \end{enumerate}
 \end{enumerate}
