@@ -8,6 +8,7 @@
 \usepackage{hyperref}
 \usepackage{lmodern}
 \usepackage{microtype}
+\usepackage{pdflscape}
 \usepackage{subcaption}
 
 \title{Coursework 3: STAT 570}
@@ -103,7 +104,8 @@
         \right).
       \label{eqn:p1_y_mean_variance}
     \end{align}
-    Thus, smaller values of $b$ correspond to more dispersion.
+    Thus, variance has a quadratic dependence on the mean, and smaller values of
+    $b$ correspond to more dispersion.
 
     \subsection*{Poisson Model}
 
@@ -284,8 +286,55 @@
         \end{pmatrix} = \frac{1}{n}\sum_{i=1}^n
                 G\left(\hat{\beta},x_i,y_i\right)G\left(\hat{\beta},x_i,y_i\right)^\intercal.
     \end{align}
+
+    \subsection*{Results}
+
+    The results of estimating $\beta_0$ and $\beta_1$ under various models for
+    different $b$ and $n$ can be seen in Tables \ref{tab:p1_results_beta_0} and
+    \ref{tab:p1_results_beta_1} for $\beta_0$ and $\beta_1$, respectively. How
+    often the 95\% confidence interval contains the true value of $\beta_j$ was
+    calculated for each simulation.
+
+    When $b \in \{10,1000\}$, there is not much dispersion, and the Poisson
+    model does well for all $n$. At smaller values of $b$, the coverage is not
+    very good.
+
+    The quasi-likelihood model does better than the Poisson model for
+    $n \geq 50$. For smaller values of $n$, its confidence intervals often fail
+    to cover the true value. The quasi-likelihood model does a poorer job as
+    covering $\beta_1$, however.
     
+    For $\beta_1$, only sandwich estimation produces good confidence intervals
+    for small $b$. However, it needs a lot of samples to do so, typically
+    $n = 250$ or $n = 1000$. When $n$ is smaller it often performs worse than
+    both the Poisson and quasi-likelihood models.
+    
+    Code for the simulations can be found at
+    \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw3/poisson\_gamma\_random\_effects.ipynb}{\texttt{poisson\_gamma\_random\_effects.ipynb}}.
   \end{description}
+
+  \begin{landscape}
+    \begin{table}
+      \tiny
+      \begin{subtable}{9in}
+        \input{p1_beta_0.tex}
+        \caption{95\% confidence interval converage for $\beta_0$.}
+        \label{tab:p1_results_beta_0}
+      \end{subtable}
+      
+      \begin{subtable}{9in}
+        \input{p1_beta_1.tex}
+        \caption{95\% confidence interval converage for $\beta_1$.}
+        \label{tab:p1_results_beta_1}
+      \end{subtable}
+
+      \caption{The results of fitting various models to the data from a
+        Poisson-gamma random effects model. 100,000 simulations were done for
+        each $(\text{model}, b, n)$ tuple.}
+      \label{tab:p1_results}  
+    \end{table}
+  \end{landscape}
+  
 
 \item The data in Table \ref{tab:p2_data} contain data on a typical reliability
   experiment and give the failure stresses (in GPa) of four samples of carbon
@@ -566,8 +615,9 @@
     those in the quasi-likelihood model despite not specifying a variance
     model. From Figure \ref{fig:p2_qq_quasi_likelihood}, we have evidence that
     the quasi-likelihood model fits the data well, so it is unsurprising that an
-    empircal estimate would yield similar results.
+    empirical estimate would yield similar results.
   \end{description}
+  
 \item The Weibull distribution is a common model for survival or reliability
   data:
   $Y \mid \eta,\alpha \sim_\mathrm{iid}
@@ -770,4 +820,5 @@
   \end{description}
 \end{enumerate}
 \end{enumerate}
+
 \end{document}
