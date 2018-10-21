@@ -1,0 +1,117 @@
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[hmargin=1.25in,vmargin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{pdflscape}
+\usepackage{subcaption}
+
+\title{Coursework 4: STAT 570}
+\author{Philip Pham}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+\item Consider the so-called Neyman-Scott problem in which
+  $Y_{ij}\mid \mu_i,\sigma_2 \sim_{\mathrm{ind}}
+  \mathcal{N}\left(\mu_i,\sigma^2\right), i=1,\ldots,n,j=1,2.$
+  \begin{enumerate}
+  \item Obtain the MLE of $\sigma^2$ and show that it is inconsistent. Why does
+    this inconsistency arise in this example?
+
+    \begin{description}
+    \item[Solution:] The likelihood is
+      \begin{align}
+        L\left(\mu,\sigma\right)
+        &= \prod_{i=1}^n \prod_{j=1}^2 \frac{1}{\sqrt{2\pi\sigma^2}}\exp\left(
+          -\frac{1}{2\sigma^2}\left(Y_{ij} - \mu_i\right)^2
+          \right) \nonumber\\
+        &= \prod_{i=1}^n \frac{1}{2\pi\sigma^2}\exp\left(
+          -\frac{1}{2\sigma^2}\left[
+          \left(Y_{i1} - \mu_i\right)^2
+          +\left(Y_{i2} - \mu_i\right)^2
+          \right]
+          \right),
+      \end{align}
+      so the log-likelikehood is
+      \begin{equation}
+        l\left(\mu,\sigma\right) = -n\log\left(2\pi\right) -n\log\left(\sigma^2\right)
+        - \frac{1}{2\sigma^2}\sum_{i=1}^n\left[
+          \left(Y_{i1} - \mu_i\right)^2
+          +\left(Y_{i2} - \mu_i\right)^2\right].
+        \label{eqn:p1_log_likelihood}
+      \end{equation}
+
+      Taking the derivative with respect to $\sigma^2$, we have
+      \begin{equation}
+        \frac{\partial}{\partial\sigma^2}l\left(\mu, \sigma^2\right)
+          = -\frac{n}{\sigma^2} +
+          \frac{1}{2\left(\sigma^2\right)^2}\sum_{i=1}^n
+          \left[
+            \left(Y_{i1} - \mu_i\right)^2 +
+            \left(Y_{i2} - \mu_i\right)^2\right].
+          \label{eqn:p1_score_sigma2}
+        \end{equation}
+
+        Solving Equation \ref{eqn:p1_score_sigma2}, where
+        $\frac{\partial}{\partial\sigma^2}l\left(\hat{\mu},
+          \hat{\sigma}^2\right) = 0$, we have
+        \begin{equation}
+          \hat{\sigma}^2 = \frac{1}{2n}\sum_{i=1}^n
+          \left[
+            \left(Y_{i1} - \hat{\mu}_i\right)^2 +
+            \left(Y_{i2} - \hat{\mu}_i\right)^2\right].
+          \label{eqn:p1_sigma_hat}
+        \end{equation}
+
+        Taking the derivative of Equation \ref{eqn:p1_log_likelihood} with respect
+        to $\mu_i$, we have
+        \begin{equation}
+          \frac{\partial}{\partial\mu_i}l\left(\mu, \sigma^2\right)
+          =
+          \frac{1}{\sigma^2}\left(Y_{i1} + Y_{i2} - 2\mu_i\right).
+          \label{eqn:p1_score_mu_i}
+        \end{equation}
+        
+        Solving Equation \ref{eqn:p1_score_mu_i}, where
+        $\frac{\partial}{\partial\mu_i}l\left(\hat{\mu},
+          \hat{\sigma}^2\right) = 0$, we have
+        \begin{equation}
+          \hat{\mu}_i = \frac{Y_{i1} + Y_{i2}}{2}.
+          \label{eqn:p1_mu_i_hat}          
+        \end{equation}
+
+        Substituting Equation \ref{eqn:p1_mu_i_hat} into Equation
+        \ref{eqn:p1_sigma_hat}, we have
+        \begin{equation}
+          \hat{\sigma}^2 = \frac{1}{n}\sum_{i=1}^n\left(\frac{Y_{i1} - Y_{i2}}{2}\right)^2.
+          \label{eqn:p1_sigma_hat_solved}
+        \end{equation}
+
+        Taking the expected value of Equation \ref{eqn:p1_sigma_hat_solved}, we have
+        \begin{align}
+          \mathbb{E}\left[\hat{\sigma}^2\right]
+          &= \frac{1}{4n}\sum_{i=1}^n \left(\mathbb{E}\left[Y_{i1}^2\right] + \mathbb{E}\left[Y_{i2}^2\right]
+            - 2\mathbb{E}\left[Y_{i1}Y_{i2}\right]\right) \nonumber\\
+          &= \frac{1}{4n}\sum_{i=1}^n \left(
+            \left(\sigma^2 + \mu_i^2\right) + \left(\sigma^2 + \mu_i^2\right) - 2\mu_i^2
+            \right) \nonumber\\
+          &= \frac{\sigma^2}{2}.
+        \end{align}
+        Clearly,
+        $\mathbb{E}\left[\hat{\sigma}^2\right] = \sigma^2/2 \nrightarrow
+        \sigma^2$, so the estimator is not consistent. This is because the MLE
+        estimate of $\sigma^2$ depends on $\mu_1,\ldots,\mu_n$, so the number of
+        parameters being estimated increases with $n$.
+      \end{description}
+  \item 
+  \end{enumerate}
+\end{enumerate}
+\end{document}
