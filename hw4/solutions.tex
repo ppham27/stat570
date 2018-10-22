@@ -39,6 +39,7 @@
           +\left(Y_{i2} - \mu_i\right)^2
           \right]
           \right),
+          \label{eqn:p1_likelihood}
       \end{align}
       so the log-likelikehood is
       \begin{equation}
@@ -107,11 +108,190 @@
         \end{align}
         Clearly,
         $\mathbb{E}\left[\hat{\sigma}^2\right] = \sigma^2/2 \nrightarrow
-        \sigma^2$, so the estimator is not consistent. This is because the MLE
-        estimate of $\sigma^2$ depends on $\mu_1,\ldots,\mu_n$, so the number of
-        parameters being estimated increases with $n$.
+        \sigma^2$, so the estimator is not consistent.
+
+        This is because the MLE estimate of $\sigma^2$ depends on
+        $\mu_1,\ldots,\mu_n$, so the number of parameters being estimated
+        increases with $n$. Thus, the model is not well-defined.
       \end{description}
-  \item 
-  \end{enumerate}
+    \item Derive the posterior distribution corresponding to the prior
+      \begin{equation}
+        \pi\left(\mu_1,\ldots,\mu_n,\sigma^2\right) \propto \sigma^{-n-2}
+        \label{eqn:p1_prior}
+      \end{equation}
+      and show that
+      \begin{equation}
+        \mathbb{E}\left[\sigma^2 \mid Y\right] = \frac{1}{2(n-1)}\sum_{i=1}^n
+        \frac{\left(Y_{i1}-Y_{i2}\right)^2}{2}.
+      \end{equation}
+
+      \begin{description}
+      \item[Solution:] Using the likelihood in Equation \ref{eqn:p1_likelihood}
+        and the prior in Equation \ref{eqn:p1_prior}. We have that
+        \begin{equation}
+          p\left(\mu, \sigma^2 \mid Y\right) \propto L\left(\mu, \sigma^2\right)\pi\left(
+            \mu_1,\ldots,\mu_n,\sigma^2
+          \right).
+          \label{eqn:p1_posterior_propto}
+        \end{equation}
+
+        We have that
+        \begin{align}
+          p\left(Y\right)
+          &= \int_{0}^\infty\int_{-\infty}^{\infty}\cdots\int_{-\infty}^{\infty}
+          L\left(\mu, \sigma^2\right)\pi\left(\mu_1,\ldots,\mu_n,\sigma^2\right)\,\mathrm{d}\mu_1\cdots
+            \mathrm{d}\mu_n\,\mathrm{d}\sigma^2 \nonumber\\
+          &= \int_{0}^\infty \frac{1}{2^n\pi^n\left(\sigma^2\right)^{(3n + 2)/2}} \left(\pi\sigma^2\right)^{n/2}
+            \prod_{i=1}^n \exp\left(-\frac{1}{4\sigma^2}\left(Y_{i1} - Y_{i2}\right)^2\right)
+            \,\mathrm{d}\sigma^2 \nonumber\\
+          &= \int_{0}^\infty \frac{1}{2^n\pi^{n/2}\left(\sigma^2\right)^{n + 1}}
+            \exp\left(-\frac{1}{4\sigma^2}\sum_{i=1}^n \left(Y_{i1} - Y_{i2}\right)^2\right)
+            \,\mathrm{d}\sigma^2 \nonumber\\
+          &= -\frac{2^n}{\pi^{n/2}}\left(\sum_{i=1}^n \left(Y_{i1} - Y_{i2}\right)^2\right)^{-n}
+            \int_\infty^0u^{n-1}\exp\left(-u\right)\,\mathrm{d}u \nonumber\\
+          &= \frac{1}{\pi^{n/2}}\left(\sum_{i=1}^n \frac{\left(Y_{i1} - Y_{i2}\right)^2}{2}\right)^{-n}\Gamma(n).
+            \label{eqn:p1_evidence}
+        \end{align}
+        Normalizing Equation \ref{eqn:p1_posterior_propto} with the evidence
+        Equation \ref{eqn:p1_evidence}, we have the posterior
+        \begin{equation}
+          \tiny
+          p\left(\mu, \sigma^2 \mid Y\right)
+          =
+          \frac{\left(\sigma^2\right)^{-(3n+2)/2}}{2^n\pi^{n/2}\Gamma(n)}
+          \left(\sum_{i=1}^n \frac{\left(Y_{i1} - Y_{i2}\right)^2}{2}\right)^{n}
+          \prod_{i=1}^n \prod_{j=1}^2 \exp\left(
+            -\frac{1}{2\sigma^2}\left(Y_{ij} - \mu_i\right)^2
+          \right).
+          \label{eqn:p1_posterior}
+        \end{equation}
+
+        Marginalizing $\mu$ in Equation \ref{eqn:p1_posterior}, we get
+        \begin{align}
+          p\left(\sigma^2 \mid Y\right)
+          &= \int_{-\infty}^\infty \cdots \int_{-\infty}^\infty
+            p\left(\mu, \sigma^2 \mid Y\right)\,\mathrm{d}\mu_1\cdots\mathrm{d}\mu_n
+            \label{eqn:p1_posterior_sigma2}\\
+          &= \frac{\left(\sigma^2\right)^{-n-1}}{2^n\Gamma(n)}
+            \left(\sum_{i=1}^n \frac{\left(Y_{i1} - Y_{i2}\right)^2}{2}\right)^{n}
+            \exp\left(-\frac{1}{4\sigma^2}\sum_{i=1}^n\left(Y_{i1} - Y_{i2}\right)^2\right).
+            \nonumber          
+        \end{align}
+
+        Taking the expectation over the distribution in Equation
+        \ref{eqn:p1_posterior_sigma2}, we have that
+        \begin{align}
+          \mathbb{E}\left[\sigma^2 \mid Y\right]
+          &= \int_{0}^\infty\sigma^2p\left(\sigma^2 \mid Y\right)\,\mathrm{d}\sigma^2 \nonumber\\
+          &= \frac{1}{\Gamma(n)}\int_{0}^\infty\left(\frac{1}{4\sigma^2}
+            \sum_{i=1}^n \left(Y_{i1} - Y_{i2}\right)^2\right)^{n}
+            \exp\left(-\frac{1}{4\sigma^2}\sum_{i=1}^n\left(Y_{i1} - Y_{i2}\right)^2\right) \nonumber\\
+          &= \frac{\sum_{i=1}^n\left(Y_{i1} - Y_{i2}\right)^2}{4\Gamma(n)}
+            \int_{0}^\infty u^{n-1-1}\exp\left(u\right)\,\mathrm{d}u
+            \nonumber\\
+          &=\frac{\Gamma(n-1)}{2\Gamma(n)}\sum_{i=1}^n\frac{\left(Y_{i1} - Y_{i2}\right)^2}{2} \nonumber\\
+          &= \frac{1}{2(n-1)}\sum_{i=1}^n\frac{\left(Y_{i1} - Y_{i2}\right)^2}{2},
+            \label{eqn:p1_posterior_sigma2_expectation}
+        \end{align}
+        which is the desired result.
+      \end{description}
+    \item Hence, using Equation \ref{eqn:p1_posterior_sigma2_expectation}, show
+      that $\mathbb{E}\left[\sigma^2\mid Y\right] \rightarrow \sigma^2/2$ as
+      $n\rightarrow\infty$, so that the posterior mean is inconsistent.
+
+      \begin{description}
+      \item[Solution:] From Equation \ref{eqn:p1_posterior_sigma2_expectation},
+        we have that
+        \begin{align}
+          \lim_{n\rightarrow\infty} \mathbb{E}\left[\sigma^2\mid Y\right]
+          &= \lim_{n\rightarrow\infty}
+          \frac{1}{2(n-1)}\sum_{i=1}^n
+          \frac{\mathbb{E}\left[\left(Y_{i1} - Y_{i2}\right)^2\right]}{2} \nonumber\\          
+          &= \lim_{n\rightarrow\infty}
+          \frac{1}{2(n-1)}\sum_{i=1}^n
+            \frac{\operatorname{Var}\left(Y_{i1} - Y_{i2}\right)}{2} \nonumber\\
+          &= \lim_{n\rightarrow\infty} \frac{n\sigma^2}{2(n-1)} \nonumber\\
+          &= \frac{\sigma^2}{2} \neq \sigma^2,
+        \end{align}
+        so the posterior mean is inconsistent.
+      \end{description}
+    \item Examine the posterior distribution corresponding to the prior
+      \begin{equation}
+        \pi\left(\mu_1,\ldots,\mu_n\sigma^2\right) \propto \sigma^{-2}.
+        \label{eqn:p1_prior2}
+      \end{equation}
+
+      \begin{description}
+      \item[Solution:] If we use Equation \ref{eqn:p1_prior2}, Equation
+        \ref{eqn:p1_evidence} becomes
+        \begin{align}
+          p\left(Y\right)
+          &= \int_{0}^\infty \frac{1}{2^n\pi^{n/2}\left(\sigma^2\right)^{n/2+1}}
+            \exp\left(-\frac{1}{4\sigma^2}\sum_{i=1}^n \left(Y_{i1} - Y_{i2}\right)^2\right)
+            \,\mathrm{d}\sigma^2 \nonumber\\
+          &= \frac{\Gamma\left(\frac{n}{2}\right)}{\pi^{n/2}}
+            \left(\sum_{i=1}^n \left(Y_{i1} - Y_{i2}\right)^2\right)^{-n/2}.
+            \label{eqn:p1_evidence2}
+        \end{align}
+        With Equation \ref{eqn:p1_evidence2}, the posterior becomes
+        \begin{equation}
+          \tiny
+          p\left(\mu, \sigma^2 \mid Y\right)
+          =
+          \frac{\left(\sigma^2\right)^{-n-1}}{2^n\pi^{n/2}\Gamma(n/2)}
+          \left(\sum_{i=1}^n \frac{\left(Y_{i1} - Y_{i2}\right)^2}{2}\right)^{n}
+          \prod_{i=1}^n \prod_{j=1}^2 \exp\left(
+            -\frac{1}{2\sigma^2}\left(Y_{ij} - \mu_i\right)^2
+          \right).
+          \label{eqn:p1_posterior2}
+        \end{equation}
+
+        Marginalizing Equation \ref{eqn:p1_posterior2} over $\mu$, we have
+        \begin{equation}
+          \scriptsize
+          p\left(\sigma^2 \mid Y\right)
+          = \frac{1}{\sigma^2\Gamma\left(n/2\right)}
+          \left(\frac{\sum_{i=1}^n \left(Y_{i1} - Y_{i2}\right)^2}{4\sigma^2}\right)^{n/2}
+          \exp\left(-\frac{\sum_{i=1}^n \left(Y_{i1} - Y_{i2}\right)^2}{4\sigma^2}\right).
+          \label{eqn:p1_posterior_sigma22}
+        \end{equation}
+        Equation \ref{eqn:p1_posterior_sigma22} is quite similar to Equation
+        \ref{eqn:p1_posterior_sigma2}, but with $n$ replaced by $n/2$ in the
+        gamma function and the exponent of the sum of squares.        
+      \end{description}
+    \item Is the posterior mean for $\sigma^2$ consistent in this case?
+      \begin{description}
+      \item[Solution:] Yes. Taking the expectation with Equation
+        \ref{eqn:p1_posterior_sigma22}, we have
+        \begin{align}
+          \mathbb{E}\left[\sigma^2 \mid Y\right]
+          &= \int_0^\infty p\left(\sigma^2 \mid Y\right)\,\mathrm{d}\sigma^2\nonumber\\
+          &= \frac{1}{4\Gamma\left(n/2\right)}\sum_{i=1}^n \left(Y_{i1} - Y_{i2}\right)^2
+            \int_0^\infty  u^{n/2 - 1 - 1}\exp\left(-u\right)\,\mathrm{d}u
+            \nonumber\\
+          &= \frac{\Gamma\left(n/2 - 1\right)}{4\Gamma\left(n/2\right)}\sum_{i=1}^n \left(Y_{i1} - Y_{i2}\right)^2
+            \nonumber\\
+          &= \frac{1}{2\left(n/2 - 1\right)}\sum_{i=1}^n \frac{\left(Y_{i1} - Y_{i2}\right)^2}{2} \nonumber\\
+          &= \frac{1}{n-2}\sum_{i=1}^n \frac{\left(Y_{i1} - Y_{i2}\right)^2}{2}.
+            \label{eqn:p1_posterior_sigma2_expectation2}
+        \end{align}
+
+        Taking the limit of Equation \ref{eqn:p1_posterior_sigma2_expectation2},
+        we have
+        \begin{align}
+          \lim_{n\rightarrow\infty}\mathbb{E}\left[\sigma^2 \mid Y\right]
+          &= \lim_{n\rightarrow\infty} \frac{1}{n-2}\sum_{i=1}^n \frac{\mathbb{E}\left[
+            \left(Y_{i1} - Y_{i2}\right)^2\right]}{2}
+            \nonumber\\
+          &= \lim_{n\rightarrow\infty} \frac{n}{\left(n-2\right)}
+            \frac{1}{n}\sum_{i=1}^n \frac{\operatorname{Var}\left(Y_{i1} - Y_{i2}\right)}{2} \nonumber\\
+          &= \lim_{n\rightarrow\infty} \frac{n}{\left(n-2\right)}
+            \frac{1}{n}\sum_{i=1}^n \frac{2\sigma^2}{2} \nonumber\\
+          &= \lim_{n\rightarrow\infty} \frac{n}{\left(n-2\right)}\sigma^2 \nonumber\\
+          &= \sigma^2,
+        \end{align}
+        so the posterior mean is consistent when the prior doesn't depend on $n$.
+      \end{description}
+    \end{enumerate}
 \end{enumerate}
 \end{document}
