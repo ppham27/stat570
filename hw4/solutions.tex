@@ -293,5 +293,74 @@
         so the posterior mean is consistent when the prior doesn't depend on $n$.
       \end{description}
     \end{enumerate}
-\end{enumerate}
+  \item The data in Table \ref{tab:p2_data} contain data on a typical
+    reliability experiment and give the failure stresses (in GPa) of four
+    samples of carbon fibers of lengths 1, 10, 20 and 50mm.
+
+    \begin{table}
+      \centering
+      \tiny
+      \input{p2_data.tex}
+      \caption{Failure stress data for four groups of fibers.}
+      \label{tab:p2_data}
+    \end{table}
+
+    \begin{enumerate}
+    \item Consider a Bayesian analysis with an exponential likelihood and a
+      gamma prior, $\lambda \sim \operatorname{Gamma}(a,b)$. Derive the form of
+      the posterior distribution for $\lambda$.
+
+      \begin{description}
+      \item[Solution:] Suppose that we observe independent and identically
+        distributed $Y_i \sim \operatorname{Exponential}(\lambda)$ for
+        $i = 1,\ldots,n$. Let $Y = \left(Y_1,\ldots,Y_n\right)$. Then, we have
+        the likelihood function
+        \begin{equation}
+          L(\lambda) = p\left(Y\mid\lambda\right) = \lambda^n\exp\left(
+            -\lambda\sum_{i=1}^nY_i
+          \right).
+          \label{eqn:p2_likelihood}
+        \end{equation}
+
+        From Equation \ref{eqn:p2_likelihood}, we have the posterior
+        \begin{align}
+          p\left(\lambda \mid Y\right)
+          &\propto p\left(Y\mid\lambda\right)p\left(\lambda\right) \nonumber\\
+          &\propto \left(
+            \lambda^n\exp\left(
+            -\lambda\sum_{i=1}^nY_i
+            \right)
+            \right)
+            \left(
+            \frac{b^a}{\Gamma(a)}\lambda^{a - 1}\exp\left(-b\lambda\right)
+            \right) \nonumber\\
+          &\propto \lambda^{a + n - 1}\exp\left(
+            -\left(b + \sum_{i=1}^nY_i\right)\lambda
+            \right),
+            \label{eqn:p2_posterior_propto}
+        \end{align}
+        which equal to the Gamma probability density function up to a constant
+        factor independent of $\lambda$. Thus, we have that $\lambda \mid Y \sim
+        \Gamma\left(a + n, b + \sum_{i=1}^nY_i\right)$, and
+        \begin{equation}
+          p\left(\lambda \mid Y \right)
+          = \frac{\left(b + \sum_{i=1}^nY_i\right)^{a+n}}{\Gamma\left(a + n\right)}
+          \lambda^{a + n - 1}\exp\left(-\left(b + \sum_{i=1}^nY_i\right)\lambda\right).
+          \label{eqn:p2_posterior}
+        \end{equation}
+      \end{description}
+    \item Choose $a$ and $b$ so that the prior probability that $\lambda$ lies
+      between 0.05 and 1 is 0.95.
+      \begin{description}
+      \item[Solution:] For a specified mean $\mu$, we specify our prior as the
+        gamma distribution $\operatorname{Gamma}\left(k\mu,k\right)$ for some
+        $k$. Let $F$ be the cumulative distribution function. We choose $k$ such
+        that
+        \begin{equation}
+          F\left(1\right) - F\left(0.05\right) = 0.95.
+          \label{eqn:p2_hyperparameter_equation}
+        \end{equation}
+      \end{description}
+    \end{enumerate}
+  \end{enumerate}
 \end{document}
