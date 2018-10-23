@@ -351,6 +351,7 @@
       \end{description}
     \item Choose $a$ and $b$ so that the prior probability that $\lambda$ lies
       between 0.05 and 1 is 0.95.
+      \label{part:p2_prior}
       \begin{description}
       \item[Solution:] For a specified mean $\mu$, we specify our prior as the
         gamma distribution $\operatorname{Gamma}\left(k\mu,k\right)$ for some
@@ -360,6 +361,75 @@
           F\left(1\right) - F\left(0.05\right) = 0.95.
           \label{eqn:p2_hyperparameter_equation}
         \end{equation}
+
+        Choosing $a \approx 3.634$ and $b \approx 7.268$ satisfies Equation
+        \ref{eqn:p2_hyperparameter_equation}. These values were obtained
+        numerically in
+        \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw4/failure\_stresses.ipynb}{\texttt{failure\_stresses.ipynb}}.
+      \end{description}
+    \item Obtain the posterior means and posterior standard deviations for
+      $\lambda$ and give histogram representations of
+      $p\left(\lambda\mid y\right)$ for each of the groups in Table
+      \ref{tab:p2_data}. Compare inference with the frequentist analyses.  Also
+      give histogram representations of the posterior for $\lambda^{-1}$, again
+      for each of the four groups.
+      \begin{description}
+      \item[Solution:] The posterior parameters, means, and standard deviations
+        can be seen in Table \ref{tab:p2_gamma_posteriors}. The first two
+        columns are the shape and rate parameters of the gamma posterior,
+        respectively.        
+
+        \begin{table}
+          \centering
+          \input{p2_gamma_posteriors.tex}
+          \caption{The results of updating the prior belief in Part
+            \ref{part:p2_prior} with the data.}
+          \label{tab:p2_gamma_posteriors}
+        \end{table}
+
+        The means are similar to the estimates from frequentist analyses in the
+        previous homework but are drawn towards the prior mean of 0.5. The
+        standard errors are slightly smaller tahn those obtained from fitting
+        the exponential model but are much larger than either the
+        quasi-likelihood model or sandwich estimates.
+
+        For the posterior distribution of $\lambda^{-1}$, we have that
+        \begin{align}
+          p\left(\lambda^{-1} \mid Y\right)
+          &= p\left(\lambda \mid Y\right)\left\lvert
+            \frac{\mathrm{d}}{\mathrm{d}\lambda^{-1}}\left(\lambda^{-1}\right)^{-1}
+          \right\rvert = p\left(\lambda \mid Y\right)\lambda^{2} \nonumber\\
+          &= \frac{\left(b + \sum_{i=1}^nY_i\right)^{a+n}}{\Gamma\left(a + n\right)}
+          \lambda^{a + n + 1}\exp\left(-\left(b + \sum_{i=1}^nY_i\right)\lambda\right),
+          \label{eqn:p2_posterior_inverse}
+        \end{align}
+        where we used Equation \ref{eqn:p2_posterior} and transformation of
+        random variables, so
+        $\lambda^{-1} \mid Y \sim \operatorname{InverseGamma}\left(
+          a + n,
+          b + \sum_{i=1}^nY_i
+        \right)$.
+
+        Theoretical histograms along with their density are plotted in Figure
+        \ref{fig:p2_posterior_lambda_inverse}.
+
+        \begin{figure}
+          \centering
+          \includegraphics{p2_posterior_lambda_inverse.pdf}
+          \caption{Histograms and probability density for samples drawn from the
+            posteriors for $\lambda^{-1}$.}
+          \label{fig:p2_posterior_lambda_inverse}
+        \end{figure}
+
+        Unlike the MLE, the posterior mean is not invariant under
+        reparameterization:
+        \[
+          \mathbb{E}\left[\lambda^{-1} \mid Y\right] = \frac{b^\prime}{a^\prime - 1}
+          \gneq  \frac{b^\prime}{a^\prime} = \frac{1}{\mathbb{E}\left[\lambda \mid Y\right]}.
+        \]
+
+        See
+        \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw4/failure\_stresses.ipynb}{\texttt{failure\_stresses.ipynb}} for code to reproduce plots.
       \end{description}
     \end{enumerate}
   \end{enumerate}
