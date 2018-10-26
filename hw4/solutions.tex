@@ -432,5 +432,418 @@
         \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw4/failure\_stresses.ipynb}{\texttt{failure\_stresses.ipynb}} for code to reproduce plots.
       \end{description}
     \end{enumerate}
+  \item In this question we will consider inference when the sampling model is
+    multivariate hypergeometric. Suppose a population contains objects of $K$
+    different types, with $X_1,\ldots,X_K$ being the number of each type,
+    $\sum_{k=1}^K X_k = N$. A simple random sample of size $n$ is taken and the
+    number of each type, $Y_1,\ldots,Y_K$, is recorded (so that
+    $\sum_{k=1}^K y_k = n$).
+
+    An obvious model for $Y_1,\ldots,Y_K$, is the multivariate hypergeometric
+    distribution:
+    \begin{equation}
+      \mathbb{P}\left(Y_1 = y_1,\ldots,Y_K=y_K \mid x_1,\ldots,x_K\right) =
+      \frac{\prod_{k=1}^K{x_k \choose y_k}}{{N \choose n}},
+      \label{eqn:p3_hypergeometric}
+    \end{equation}
+    with means and variances:
+    \begin{align}
+      \mathbb{E}\left[Y_k \mid x_k\right]
+      &= n\frac{x_k}{N} \label{eqn:p3_mean}\\
+      \operatorname{Var}\left(Y_k \mid x_k\right)
+      &= n\frac{x_k}{N}\left(1 - \frac{x_k}{N}\right)\frac{N-n}{N-1}.
+        \label{eqn:p3_variance}
+    \end{align}
+
+    Suppose we take a sample from a population of $K$ distinct objects, and
+    record $y_1,\ldots,y_K$, but the numbers $X_1,\ldots,X_K$ are unknown (but
+    $N$ is known).
+    \begin{enumerate}
+    \item Using Equation \ref{eqn:p3_mean}, write down an estimator for $X_k$,
+      $k = 1,\ldots,K$. We will refer to this a method of moments
+      estimator. Using Equation \ref{eqn:p3_variance}, give a form for the
+      variance of this estimator, along with the estimator of this variance.
+
+      \begin{description}
+      \item[Solution:] A simple estimator for $X_k$ can be obtained from
+        Equation \ref{eqn:p3_mean} by substituting
+        $\mathbb{E}\left[Y_k \mid x_k\right]$ with the observed $y_k$:
+        \begin{equation}
+          y_k = n\frac{\hat{x}_k}{N} \implies \hat{x}_k = \frac{N}{n}y_k.
+          \label{eqn:p3_xk_method_of_moments}
+        \end{equation}
+
+        If we treat $\hat{x}_k$ like a random variable, then the variance of our
+        estimator is
+        \begin{align}
+          \operatorname{Var}\left(\hat{x}_k\right)
+          &= \operatorname{Var}\left(\frac{N}{n}Y_k\right)
+            = \left(\frac{N}{n}\right)^2
+            \operatorname{Var}\left(Y_k\right)\nonumber\\
+          &= \left(\frac{N}{n}\right)^2\left(
+            n\frac{x_k}{N}\left(1 - \frac{x_k}{N}\right)\frac{N-n}{N-1}
+            \right) \nonumber\\
+          &= x_k\left(\frac{N}{n}\right)
+            \left(1 - \frac{x_k}{N}\right)\frac{N-n}{N-1}
+            \label{eqn:p3_xk_method_of_moments_variance}
+        \end{align}
+
+        Since we don't know $x_k$, we substitute $x_k$ with $\hat{x}_k$ to get
+        the estimated variance:
+        \begin{align}
+          \hat{\operatorname{Var}}\left(\hat{x}_k\right)
+          &= \hat{x}_k\left(\frac{N}{n}\right)
+            \left(1 - \frac{\hat{x}_k}{N}\right)\frac{N-n}{N-1} \nonumber\\
+          &= y_k\left(\frac{N}{n}\right)^2
+            \left(1 - \frac{y_k}{n}\right)\frac{N-n}{N-1} \nonumber\\
+          &= \left(N - n\right)\frac{y_k}{n}\left(1 - \frac{y_k}{n}\right)
+            \left(\frac{N^2}{n\left(N-1\right)}\right)
+            \label{eqn:p3_xk_method_of_moments_variance_factored}
+        \end{align}
+      \end{description}
+    \item We now consider a Bayesian approach to inference. Consider a
+      multinomial distribution for counts $X_1,\ldots,X_K$,
+      \begin{equation}
+        \mathbb{P}\left(
+          X_1 = x_1,\ldots,X_K = x_K \mid p_1,\ldots,p_K
+        \right)
+        = \frac{N!}{\prod_{k=1}^Kx_k!}\prod_{k=1}^K p_k^{x_k},
+        \label{eqn:p3_multionomial}
+      \end{equation}
+      with $p_k > 0$ and $\sum_{k=1}^Kp_k = 1$. Show that the Dirichlet:
+      \begin{equation}
+        \pi\left(p_1,\ldots,p_K\right) = \frac{\Gamma\left(
+            \alpha_+
+          \right)}{\prod_{k=1}^K\Gamma\left(\alpha_k\right)}
+        \prod_{k=1}^Kp_k^{\alpha_k-1},
+        \label{eqn:p3_dirichlet}
+      \end{equation}
+      where $\alpha_k > 0$, $k = 1,\ldots,K$ and
+      $\alpha_+ = \sum_{k=1}^K\alpha_k$ is the conjugate distribution to the
+      multinomial sampling model.
+
+      \begin{description}
+      \item[Solution:] We use the definition of conjugate distributions and show
+        that
+        $\left(p_1,\ldots,p_K\right) \mid \left(X_1 = x_1,\ldots,X_K =
+          x_k\right)$ is of the same distribution family as
+        $\left(p_1,\ldots,p_K\right)$.
+
+        We have that
+        \begin{align}
+          p\left(p_1,\ldots,p_K \mid x_1,\ldots,x_k\right)
+          &\propto \mathbb{P}\left(
+            x_1,\ldots,x_K \mid p_1,\ldots,p_K
+            \right)\pi\left(p_1,\ldots,p_K\right) \nonumber\\
+          &\propto \prod_{k=1}^K p_k^{x_k + \alpha_k - 1},
+            \label{eqn:p3_posterior_propto}
+        \end{align}
+        which we recognize as the form of the Dirichlet family.
+
+        Thus, we have that
+        \begin{equation}
+          p\left(p_1,\ldots,p_K \mid x_1,\ldots,x_k\right)
+          =
+          \frac{\Gamma\left(\alpha_+ + N\right)}{\prod_{k=1}^K\Gamma\left(\alpha_k + x_k\right)}
+          \prod_{k=1}^K p_k^{\alpha_k + x_k  - 1},
+          \label{eqn:p3_posterior}          
+        \end{equation}
+        so the Dirichlet distribution is the conjugate distribution to the
+        multinomial sampling model.
+      \end{description}
+    \item The compound multinomial distribution,
+      $\operatorname{CMult}\left(N,\alpha\right)$, is defined as
+      \begin{equation}
+        \mathbb{P}\left(
+          X_1 = x_1,\ldots,X_K = x_K
+        \right) =
+        \frac{N!\Gamma\left(\alpha_+\right)}{\Gamma\left(N + \alpha_+\right)}
+        \prod_{k=1}^K\frac{\Gamma\left(x_k + \alpha_k\right)}{x_k!\Gamma\left(\alpha_k\right)}
+        \label{eqn:p3_compound_multinomial}
+      \end{equation}
+      where $\alpha = \left(\alpha_1,\ldots,\alpha_K\right)$. Show that the
+      prior predictive distribution, obtained as the marginal distribution when
+      the likelihood is Equation \ref{eqn:p3_multionomial} and the prior is
+      Equation \ref{eqn:p3_dirichlet}, is of the compound multinomial
+      form with parameters that you should identify.
+
+      \begin{description}
+      \item[Solution:] Let $\mathbf{p} = \left(p_1,\ldots,p_K\right)$. We simply
+        integrate:
+        \begin{align*}
+          \mathbb{P}\left(
+          X_1 = x_1,\ldots,X_K = x_K
+          \right)
+          &=
+            \int \mathbb{P}\left(
+            x_1,\ldots,x_K \mid p_1,\ldots,p_K
+            \right) \pi\left(p_1,\ldots,p_K\right)\,\mathrm{d}\mathbf{p} \\
+          &= 
+            \frac{N!}{\prod_{k=1}^Kx_k!}
+            \frac{\Gamma\left(
+            \alpha_+
+            \right)}{\prod_{k=1}^K\Gamma\left(\alpha_k\right)}
+            \int
+            \prod_{k=1}^K p_k^{x_k + \alpha_k - 1}
+            \,\mathrm{d}\mathbf{p} \\
+          &= \frac{N!\Gamma\left(\alpha_+\right)}{\prod_{k=1}^Kx_k!\Gamma\left(\alpha_k\right)}\left(
+            \frac{\prod_{k=1}^K\Gamma\left(x_k + \alpha_k\right)}{\Gamma\left(N + \alpha_+\right)}
+            \right) \\
+          &= \frac{N!\Gamma\left(\alpha_+\right)}{\Gamma\left(N + \alpha_+\right)}
+            \prod_{k=1}^K\frac{\Gamma\left(x_k + \alpha_k\right)}{x_k!\Gamma\left(\alpha_k\right)},
+        \end{align*}
+        where we have used that the Dirichlet probability density function must
+        integrate to $1$ to compute the integral.
+      \end{description}
+    \item Find the mean $\mathbb{E}\left[X_k\right]$ and variance
+      $\operatorname{Var}\left(X_k\right)$, $k = 1,\ldots,K$, of a compound
+      multinomial distribution.
+
+      \begin{description}
+      \item[Solution:] We can use the law of total expectation for the mean:
+        \begin{equation}
+          \mathbb{E}\left[
+            X_k
+          \right] =
+          \mathbb{E}_\pi\left[
+          \mathbb{E}\left[
+            X_k \mid p_k
+          \right]
+        \right]
+        =
+        \mathbb{E}_\pi\left[Np_k
+        \right]
+        = N\frac{\alpha_k}{\alpha_+},
+        \label{eqn:p3_cmult_expectation}
+      \end{equation}
+      where we have taken advantage of the known means of the multinomial and
+      Dirichlet distributions.
+
+      For the variance we can use the law of total variance:
+      \begin{align}
+        \operatorname{Var}\left(X_k\right)
+        &= \mathbb{E}_\pi\left[\operatorname{Var}\left(X_k \mid p_k\right)\right]
+          + \operatorname{Var}\left(
+          \mathbb{E}\left[
+          X_k \mid p_k
+          \right]
+          \right) \nonumber\\
+        &= \mathbb{E}_\pi\left[Np_k\left(1-p_k\right)\right]
+          + \operatorname{Var}\left(Np_k\right)
+          \nonumber\\
+        &= N\left(\mathbb{E}_\pi\left[p_k\right] - \mathbb{E}_\pi\left[p_k^2\right]
+          \right) + 
+          N^2\operatorname{Var}\left(p_k\right) \nonumber\\
+        &= N\left(\frac{\alpha_k}{\alpha_+}
+          - \frac{\alpha_k\left(\alpha_+ - \alpha_k\right)}
+          {\alpha_+^2\left(\alpha_+ + 1\right)} -
+          \left(\frac{\alpha_k}{\alpha_+}\right)^2
+          \right)
+          + N^2\frac{\alpha_k\left(\alpha_+ - \alpha_k\right)}
+          {\alpha_+^2\left(\alpha_+ + 1\right)} \nonumber\\
+        &= N\frac{\alpha_k}{\alpha_+}\left(
+          1 - \frac{1 + \alpha_k}{1 + \alpha_+}
+          \right) +
+          N\frac{\alpha_k}{\alpha_+}\left(N
+          \frac{\alpha_+ - \alpha_k}{\alpha_+\left(\alpha_+ + 1\right)}
+          \right) \nonumber\\
+        &= N\frac{\alpha_k}{\alpha_+}
+          \left(
+          \frac{\alpha_+\left(\alpha_+ - \alpha_k\right)}{\alpha_+\left(1 + \alpha_+\right)} + 
+          \frac{N\left(\alpha_+ - \alpha_k\right)}{\alpha_+\left(1 + \alpha_+\right)}
+          \right) \nonumber \\
+        &= N\frac{\alpha_k}{\alpha_+}
+          \left(
+          \frac{\left(\alpha_+ - \alpha_k\right)\left(N + \alpha_+\right)}{\alpha_+\left(1 + \alpha_+\right)}\right) \nonumber\\
+        &= N\frac{\alpha_k}{\alpha_+}
+          \left(
+          1 - \frac{\alpha_k}{\alpha_+}
+          \right)
+          \left(
+          \frac{N + \alpha_+}{1 + \alpha_+}
+          \right).
+        \label{eqn:p3_cmult_variance}
+      \end{align}
+    \end{description}
+  \item Let $W_k = X_k - y_k$ represent the unobserved counts, $k= 1,\ldots,K$.
+    Show that the posterior distribution
+    $\mathbb{P}\left(W_1,\ldots,W_K|y_1,\ldots,y_K\right)$ is compound multinomial
+    $\operatorname{CMult}\left(N-n,\alpha+y\right)$, where $y= (y_1,\ldots,y_K)$.
+
+    \begin{description}
+    \item[Solution:] Given $y$, $W = \left(W_1,\ldots,W_K\right)$ is just a
+      reparameterization of $X = \left(X_1,\ldots,X_k\right)$. However, the
+      domain is different since $W_k \geq 0$, so we need a normalization
+      constant.
+
+      Using Equation \ref{eqn:p3_compound_multinomial} as our prior and Equation
+      \ref{eqn:p3_hypergeometric} as our likelihood, we can compute the posterior
+      \begin{align}
+        \mathbb{P}
+        &\left(
+          W_1 = w_1,\ldots,W_K = w_K
+          \mid y_1,\ldots,y_K
+          \right) \nonumber\\
+        &\propto \mathbb{P}\left(
+          y_1,\ldots, y_K
+          \mid X
+          \right)          
+        \mathbb{P}\left(
+          X_1 = w_1 + y_1,
+          \ldots,
+          X_K = w_K + y_K
+          \right) \nonumber\\
+        &\propto
+          \left(\frac{\prod_{k=1}^K{w_k + y_k \choose y_k}}{{N \choose n}}\right)
+          \left(\frac{N!\Gamma\left(\alpha_+\right)}{\Gamma\left(N + \alpha_+\right)}
+          \prod_{k=1}^K\frac{\Gamma\left(w_k + y_k + \alpha_k\right)}{\left(w_k + y_k\right)!\Gamma\left(\alpha_k\right)}\right) \nonumber\\
+        &\propto
+          \frac{\left(N - n\right)!n!\Gamma\left(\alpha_+\right)}{\Gamma\left(N + \alpha_+\right)}
+          \prod_{k=1}^K\frac{\Gamma\left(w_k + y_k + \alpha_k\right)}{w_k!y_k!\Gamma\left(\alpha_k\right)} \nonumber\\
+        & \propto \prod_{k=1}^K\frac{\Gamma\left(w_k + y_k + \alpha_k\right)}{w_k!},
+          \label{eqn:p3_posterior_w_propto}
+      \end{align}nn
+      which we recognize as the from the compound multionomial
+      distribution. Since Equation \ref{eqn:p3_posterior_w_propto} must sum to 1
+      to be a proper probability distribution over the support of the prior
+      $0 \leq W_1 + \cdots + W_K \leq N - n$, we get that      
+      \begin{align}
+        \mathbb{P}
+        &\left(
+          W_1 = w_1,\ldots,W_K = w_K
+          \mid y_1,\ldots,y_K
+          \right) \nonumber\\
+        &= \frac{\left(N - n\right)!\Gamma\left(n + \alpha_+\right)}{\Gamma\left(\left(N - n\right) + \left(n + \alpha_+\right)\right)}
+          \prod_{k=1}^K\frac{\Gamma\left(w_k + \left(y_k + \alpha_k\right)\right)}{w_k!\Gamma\left(y_k + \alpha_k\right)},
+          \label{eqn:p3_posterior_w}  
+      \end{align}
+      which is the $\operatorname{CMult}\left(N - n, y + \alpha\right)$
+      distribution.      
+    \end{description}
+  \item Write down the posterior mean and posterior variance of $X_k$,
+    $k= 1,\ldots,K$.  Comment on the case when $\alpha_k = 0$, $k = 1,\ldots,K$.
+    \begin{description}
+    \item[Solution:] Using the results from Equation \ref{eqn:p3_posterior_w},
+      \ref{eqn:p3_cmult_expectation}, and \ref{eqn:p3_cmult_variance}, we have
+      \begin{align}
+        \mathbb{E}\left[
+        X_k \mid y_1,\ldots,y_K
+        \right]
+        &= \mathbb{E}\left[
+          W_k \mid y_1,\ldots,y_K
+          \right] + y_k \nonumber\\
+        &= y_k + \left(N - n\right)\frac{y_k + \alpha_k}{n + \alpha_+}.
+          \label{eqn:p3_posterior_x_expectation} \\
+        \operatorname{Var}\left(X_k \mid y_1,\ldots,y_K \right)
+        &= \operatorname{Var}\left(W_k \mid y_1,\ldots,y_K \right) \label{eqn:p3_posterior_x_variance}
+        \\
+        &= \left(N - n\right)\frac{y_k + \alpha_k}{n + \alpha_+}
+          \left(1 - \frac{y_k + \alpha_k}{n + \alpha_+}\right)
+          \left(\frac{N + \alpha_+}{1 + n + \alpha_+}\right). 
+          \nonumber  
+      \end{align}
+
+      When $\alpha = \mathbf{0}$, the expectation and variance are similar to
+      those of the multinomial distribution with $p_k = y_k/n$, but the variance
+      has the additional $\frac{N}{1 + n}$ factor. These are similar to the
+      method of the moments estimators in Equations
+      \ref{eqn:p3_xk_method_of_moments} and
+      \ref{eqn:p3_xk_method_of_moments_variance_factored}. The mean estimate is
+      same as posterior mean, and the variance has a
+      $\frac{N^2}{n\left(N - 1\right)}$ has is quite close to $\frac{N}{1 + n}$,
+      especially for large values of $N$ and $n$.
+    \end{description}
+  \item A certain infectious disease can be caused by one of three different
+    pathogens, A, B, or C. Over a 1 year period population surveillance is
+    carried out, and 750 individuals are observed to be infected. A random
+    sample of 60 cases is selected for labtesting, i.e., to determine the
+    pathogen responsible.  Of these 60 selected cases,the numbers who were
+    infected by pathogens A, B, C, were 42, 18, 0, respectively. We wish to
+    estimate the numbers of the total population of cases that were infected by
+    each of the pathogens.
+
+    \begin{enumerate}
+    \item Calculate the method of moments estimators and the associated standard
+      errors.
+
+      \begin{description}
+      \item[Solution:] Let $X_1$, $X_2$, and $X_3$ correspond to the total
+        population with pathogens A, B, and C, respectively. Let $Y_1$, $Y_2$,
+        and $Y_3$ be the corresponding samples.
+
+        We substitute $N = 750$, $n = 60$, $y_1 = 42$, $y_2 = 18$, and
+        $y_3 = 0$ into Equations \ref{eqn:p3_xk_method_of_moments} and
+        \ref{eqn:p3_xk_method_of_moments_variance}.
+
+        For the estimated means, we have
+        \begin{align}
+          \hat{x}_1
+          &= 750\frac{42}{60} = 525 \nonumber\\
+          \hat{x}_2
+          &= 750\frac{18}{60} = 225 \nonumber\\
+          \hat{x}_3
+          &= 750\frac{0}{60} = 0.
+            \label{eqn:p3_method_of_moment_means}
+        \end{align}
+
+        For estimated standard errors, we have
+        \begin{align}
+          \sqrt{\hat{\operatorname{Var}}\left(\hat{x}_1\right)}
+          &\approx 42.587 \nonumber\\
+          \sqrt{\hat{\operatorname{Var}}\left(\hat{x}_2\right)}
+          &\approx 42.587 \nonumber\\
+          \sqrt{\hat{\operatorname{Var}}\left(\hat{x}_3\right)}
+          &= 0. \label{eqn:p3_method_of_moment_standard_errors}
+        \end{align}
+                
+      \end{description}
+    \item Calculate the Bayesian posterior mean and posterior standard
+      deviation, with prior specification, $\alpha_k= 1$, $k= 1,\ldots,K$. Which
+      estimates are the most reasonable?
+      \begin{description}
+      \item[Solution:] Here, we substitute into Equations
+        \ref{eqn:p3_posterior_x_expectation} and
+        \ref{eqn:p3_posterior_x_variance}.
+
+        We have that
+        \begin{align}
+          \mathbb{E}\left[X_1 \mid y\right]
+          &= 42 + \left(690\right)\frac{42 + 1}{60 + 3} = 42 + \frac{9890}{21}
+            \approx 512.952 \nonumber\\
+          \mathbb{E}\left[X_2 \mid y\right]
+          &= 18 + \left(690\right)\frac{18 + 1}{60 + 3} = 18 + \frac{4370}{21}
+            \approx 226.095 \nonumber\\
+          \mathbb{E}\left[X_3 \mid y\right]
+          &= 0 + \left(690\right)\frac{1}{63} = \frac{230}{21} \approx 10.952,
+            \label{eqn:p3_posterior_mean_examples}
+        \end{align}
+        and
+        \begin{align}
+          \sqrt{\operatorname{Var}\left[X_1 \mid y\right]}
+          &\approx 41.941 \nonumber\\
+          \sqrt{\operatorname{Var}\left[X_2 \mid y\right]}
+          &\approx 41.352 \nonumber\\
+          \sqrt{\operatorname{Var}\left[X_3 \mid y\right]}
+          &\approx 11.261.
+            \label{eqn:p3_posterior_variance_examples}
+        \end{align}
+
+        The estimates in Equations \ref{eqn:p3_posterior_mean_examples} and
+        \ref{eqn:p3_posterior_variance_examples} are similar to those in
+        Equations \ref{eqn:p3_method_of_moment_means} and
+        \ref{eqn:p3_method_of_moment_standard_errors} for $X_1$ and $X_2$ but
+        are pulled slightly closer together since the prior specifies that the
+        pathogens occur in about equal proportions.
+
+        The estimate for $X_3$ is much different, however. In Equations
+        \ref{eqn:p3_method_of_moment_means} and
+        \ref{eqn:p3_method_of_moment_standard_errors}, the estimate and standard
+        error is $0$ because there were no observations. If we know that at
+        least one person carries pathogen C, this estimate is deeply
+        disturbing. It could simply be that no one in our sample carried the
+        pathogen, so the Bayesian estimates are most reasonable.
+      \end{description}
+    \end{enumerate}
+  \end{enumerate}
   \end{enumerate}
 \end{document}
