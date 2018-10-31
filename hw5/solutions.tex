@@ -31,20 +31,174 @@
   \begin{equation}
     p_1 = \mathbb{P}\left(X = 1 \mid Y = 1\right)~\text{and}~
     p_2 = \mathbb{P}\left(X = 1 \mid Y = 0\right),
+    \label{eqn:p1_pi_definition}
   \end{equation}
-  respectively.
+  respectively. Further, let $X_1$ be the number exposed from $n_1$ cases and
+  $X_2$ be the number exposed from $n_2$ controls. Suppose
+  $X_i \mid p_i \sim \operatorname{Binomial}(n_i,p_i)$ in the case ($i = 1$) and
+  control ($i = 2$) groups.
   
   \begin{table}
     \centering
     \begin{tabular}{l|cc|c}
       & $X = 0$ & $X = 1$ & \\
-      \midrule
+      \hline
+      $Y = 1$ & 104 & 96 & 200 \\
+      $Y = 0$ & 666 & 109 & 775 \\
     \end{tabular}
     \caption{Case-control data: $Y = 1$ corresponds to the event of esophageal
       cancer, and $X = 1$ exposure to greater than 80g of alcohol per day. There
       are 200 cases and 775 controls.}
     \label{tab:p1_data}
   \end{table}
-  
+
+  \begin{enumerate}
+  \item Of particular interest in studies such as this is the odds ratio defined
+    by
+    \begin{equation}
+      \theta = \frac{\mathbb{P}\left(Y = 1 \mid X = 1\right)/\mathbb{P}\left(Y = 0 \mid X = 1\right)}
+      {\mathbb{P}\left(Y = 1 \mid X = 0\right)/\mathbb{P}\left(Y = 0 \mid X = 0\right)}.
+      \label{eqn:p1_odds_ratio}
+    \end{equation}
+
+    Show that the odds ratio is equal to
+    \begin{equation}
+      \theta
+      = \frac{\mathbb{P}\left(X = 1 \mid Y = 1\right)/\mathbb{P}\left(X = 0 \mid Y = 1\right)}
+      {\mathbb{P}\left(X = 1 \mid Y = 0\right)/\mathbb{P}\left(X = 0 \mid Y = 0\right)}
+      = \frac{p_1/(1 - p_1)}{p_2/(1-p_2)}.
+      \label{eqn:p1_odds_ratio_solution}
+    \end{equation}
+
+    \begin{description}
+    \item[Solution:] We have that
+      \begin{equation}
+        \mathbb{P}\left(Y = y \mid X = x\right)
+        = \frac{\mathbb{P}\left(X = x \mid Y = y\right)\mathbb{P}\left(Y = y\right)}{\mathbb{P}\left(
+            X = x
+          \right)}
+        \label{eqn:p1_bayes_rule}
+      \end{equation}
+      by Bayes' rule. Applying Equation \ref{eqn:p1_bayes_rule} to Equation
+      \ref{eqn:p1_odds_ratio}, we get
+      \begin{equation}
+        \theta = \frac{
+          \left[
+            \mathbb{P}\left(X = 1 \mid Y = 1\right)\mathbb{P}\left(Y = 1\right)
+          \right]/\left[
+            \mathbb{P}\left(X = 0 \mid Y = 1\right)\mathbb{P}\left(Y = 0\right)
+          \right]}{
+          \left[
+            \mathbb{P}\left(X = 0 \mid Y = 1\right)\mathbb{P}\left(Y = 1\right)
+          \right]/\left[
+            \mathbb{P}\left(X = 0 \mid Y = 0\right)\mathbb{P}\left(Y = 0\right)
+          \right]}.
+      \end{equation}
+      The $\mathbb{P}\left(Y = y\right)$ factors cancel and we obtain the first
+      part of Equation \ref{eqn:p1_odds_ratio_solution}. Using Equation
+      \ref{eqn:p1_pi_definition}, we substitute to obtain the second part of
+      Equation \ref{eqn:p1_odds_ratio_solution}.
+    \end{description}
+  \item Obtain the MLE and a 90\% confidence interval for $\theta$, for the data
+    of Table \ref{tab:p1_data}.
+
+    \begin{description}
+    \item[Solution:]
+      The likelihood and log-likelihood functions are
+      \begin{align}
+        L\left(p_1,p_2\right)
+        &= {n_1 \choose x_1}p_1^{x_1}\left(1 - p_1\right)^{n_1 - x_1} +
+          {n_2 \choose x_2}p_2^{x_2}\left(1 - p_2\right)^{n_2 - x_2} \\
+        l\left(p_1,p_2\right)
+        &= \log L\left(p_1,p_2\right) \nonumber\\
+        &= \sum_{i=1}^2\left[
+          \log {n_i \choose x_i} + x_i \log p_i + \left(n_i - x_i\right)\log\left(1 - p_i\right)
+          \right],
+        \nonumber
+      \end{align}
+      so the score function is
+      \begin{equation}
+        S\left(p_1,p_2\right)
+        = \nabla \log L\left(p_1,p_2\right)
+        = \begin{pmatrix}
+          \frac{x_1 - n_1p_1}{p_1\left(1 - p_1\right)} \\
+          \frac{x_2 - n_2p_2}{p_2\left(1 - p_2\right)}.
+        \end{pmatrix}
+        \label{eqn:p1_score}
+      \end{equation}
+      
+      Thus, the Fisher information is
+      \begin{equation}
+        I\left(p_1,p_2\right) = mathbb{E}\left[
+          S\left(p_1,p_2\right)S\left(p_1,p_2\right)^\intercal
+        \right]= \begin{pmatrix}
+          \frac{n_1}{p_1\left(1 - p_1\right)} & 0 \\
+          0 & \frac{n_2}{p_2\left(1 - p_2\right)}
+        \end{pmatrix}.
+        \label{eqn:p1_fisher_information}
+      \end{equation}
+
+      From Equation \ref{eqn:p1_score}, we can solve
+      $S\left(\hat{p}_1,\hat{p}_2\right) = \mathbf{0}$ to get the MLEs
+      $\hat{p}_1 = x_1/n_1$ and $\hat{p}_2 = x_2/n_2$. Since the MLE is
+      invariant to reparameterization, we have the MLE for $\theta$:
+      \begin{equation}
+        \boxed{\hat{\theta} = \frac{\hat{p}_1/\left(1 - \hat{p}_1\right)}{\hat{p}_2/\left(1 - \hat{p}_2\right)} = \frac{1992}{1417} \approx 5.640.}
+      \end{equation}
+
+      We estimate the confidence interval for $\log\hat{\theta}$ which works
+      since $\log$ is a monotonic transform. Using the delta method and Equation
+      \ref{eqn:p1_fisher_information}, we have that
+      \begin{align}
+        \operatorname{Var}\left(
+        \log\hat{\theta}\right)
+        &\approx \left(\nabla \log\hat{\theta}\right)^\intercal
+        \left(I\left(\hat{p}_1,\hat{p}_2\right)\right)^{-1}
+          \left(\nabla \log\hat{\theta}\right) \nonumber\\
+        &=
+          \begin{pmatrix}
+            \frac{1}{\hat{p}_1\left(1 - \hat{p}_1\right)} &
+            \frac{1}{\hat{p}_2\left(1 - \hat{p}_2\right)}
+          \end{pmatrix}
+          \begin{pmatrix}
+            \frac{\hat{p}_1\left(1 - \hat{p}_1\right)}{n_1} & 0 \\
+            0 & \frac{\hat{p}_2\left(1 - \hat{p}_2\right)}{n_2}
+          \end{pmatrix}
+                \begin{pmatrix}
+                  \frac{1}{\hat{p}_1\left(1 - \hat{p}_1\right)} \\
+                  \frac{1}{\hat{p}_2\left(1 - \hat{p}_2\right)}
+                \end{pmatrix} \nonumber\\
+        &= \frac{1}{n_1\hat{p}_1\left(1 - \hat{p}_1\right)} +
+          \frac{1}{n_2\hat{p}_2\left(1 - \hat{p}_2\right)} \nonumber\\
+        &= \frac{1}{n_1\hat{p}_1} + \frac{1}{n_1\left(1 - \hat{p}_1\right)} +
+          \frac{1}{n_2\hat{p}_2} + \frac{1}{n_2\left(1 - \hat{p}_2\right)}.
+      \end{align}
+      Numerically, this is
+      $\operatorname{Var}\left(\log\hat{\theta}\right) \approx 0.0307$.
+
+      The 90\% confidence interval for $\log\hat{\theta}$ is approximately
+      \begin{equation}
+        \left(
+          \log\hat{\theta} -
+          \Phi^{-1}\left(0.95\right)
+          \sqrt{\operatorname{Var}\left(\log\hat{\theta}\right)},
+          \log\hat{\theta} +
+          \Phi^{-1}\left(0.95\right)
+          \sqrt{\operatorname{Var}\left(\log\hat{\theta}\right)}
+        \right),
+      \end{equation}
+      which is about $\left(1.441, 2.018\right)$. Taking the exponent of both
+      sides, we have a 90\% confidence interval for $\hat{\theta}$ of
+      $\boxed{\left(4.228, 7.524\right).}$
+    \end{description}
+  \item We now consider a Bayesian analysis. Assume that the prior distribution
+    for $p_i$ is the beta distribution $\operatorname{Beta}\left(a, b\right)$
+    for $i = 1, 2$. Show that the posterior distribution $p_i \mid x_i$ is given
+    by the beta distribution $\operatorname{Beta}\left(a+x_i, b + n_i - x_i\right)$,
+    $i=1,2$.
+    \begin{description}
+    \item[Solution:] 
+    \end{description}
+  \end{enumerate}
 \end{enumerate}
 \end{document}

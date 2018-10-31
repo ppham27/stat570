@@ -404,3 +404,5 @@ TSWLatexianTemp*
 
 # standalone packages
 *.sta
+
+_region_.tex
