@@ -108,7 +108,8 @@
       \begin{align}
         L\left(p_1,p_2\right)
         &= {n_1 \choose x_1}p_1^{x_1}\left(1 - p_1\right)^{n_1 - x_1} +
-          {n_2 \choose x_2}p_2^{x_2}\left(1 - p_2\right)^{n_2 - x_2} \\
+          {n_2 \choose x_2}p_2^{x_2}\left(1 - p_2\right)^{n_2 - x_2}
+          \label{eqn:p1_likelihood}\\
         l\left(p_1,p_2\right)
         &= \log L\left(p_1,p_2\right) \nonumber\\
         &= \sum_{i=1}^2\left[
@@ -194,8 +195,122 @@
   \item We now consider a Bayesian analysis. Assume that the prior distribution
     for $p_i$ is the beta distribution $\operatorname{Beta}\left(a, b\right)$
     for $i = 1, 2$. Show that the posterior distribution $p_i \mid x_i$ is given
-    by the beta distribution $\operatorname{Beta}\left(a+x_i, b + n_i - x_i\right)$,
+    by the beta distribution $\operatorname{Beta}\left(a + x_i, b + n_i - x_i\right)$,
     $i=1,2$.
+    \begin{description}
+    \item[Solution:] From Equation \ref{eqn:p1_likelihood}, we have that the
+      posterior:
+      \begin{align*}
+        p\left(p_i \mid X_i = x_i\right)
+        &\propto \mathbb{P}\left(X_i = x_i \mid p_i\right)p\left(p_i\right) \\
+        &\propto p_i^{x_i + a - 1}\left(1 - p_i\right)^{n_i - x_i + b - 1}.
+      \end{align*}
+      Integration from $0$ to $1$, we have the beta fnction, so
+      \begin{equation}
+        p\left(p_i \mid X_i = x_i\right)
+        = \frac{\Gamma\left(a + x_i + b + n_i - x_i\right)}{\Gamma\left(a + x_i\right)\Gamma\left(b + n_i - x_i\right)}p_i^{a + x_i - 1}\left(1 - p_i\right)^{b + n_i - x_i - 1},
+      \end{equation}
+      which is the $\operatorname{Beta}\left(a + x_i, b + n_i - x_i\right)$
+      distribution.
+    \end{description}
+  \item Consider the case $a = b = 1$. Obtain expressions for the posterior
+    mean, mode, and standard deviation. Evaluate these posterior summaries for
+    the data of Table \ref{tab:p1_data}. Report 90\% posterior credible
+    intervals for $p_1$ and $p_2$.
+
+    \begin{description}
+    \item[Solution:] For $a = b = 1$, we have that
+      $p_1 \mid x_1 \sim \operatorname{Beta}\left(97, 105\right)$ and
+      $p_2 \mid x_2 \sim \operatorname{Beta}\left(110, 667\right)$.
+
+      For the posterior means, we have that
+      $\mathbb{E}\left[p_1 \mid x_1\right] = 97/202$ and
+      $\mathbb{E}\left[p_2 \mid x_2\right] = 110/777$.
+
+      The mode of a $\operatorname{Beta}\left(\alpha,\beta\right)$ distributed
+      random variable is $\frac{\alpha - 1}{\alpha + \beta - 2}$. So, for the
+      posterior modes, we have that
+      $\operatorname{mode}\left(p_1 \mid x_1\right) = 12/25$ and
+      $\operatorname{mode}\left(p_2 \mid x_2\right) = 109/775$.
+
+      The variance of a $\operatorname{Beta}\left(\alpha,\beta\right)$
+      distributed random variable is
+      $\frac{\alpha\beta}{(\alpha+\beta)^2(\alpha + \beta + 1)}$. For
+      $p_1 \mid x_1$ and $p_2 \mid x_2$, we have standard errors:      
+      \begin{align*}
+        \sigma_{p_1 \mid x_1}
+        &= \frac{1}{202}\sqrt{\frac{10185}{203}} \approx 0.0351 \\
+        \sigma_{p_2 \mid x_2}
+        &= \frac{1}{777}\sqrt{\frac{36685}{389}} \approx 0.0125.
+      \end{align*}
+
+      For the 90\% credible interval, I choose $l$ and $u$ such that
+      $\mathbb{P}\left(\left[l, u\right]\right) = 0.9$,
+      $\mathbb{P}\left(\left(-\infty, l\right)\right) = 0.05$ and
+      $\mathbb{P}\left(\left(u, \infty\right)\right) = 0.05$. This is called the
+      \emph{equal-tailed interval}.
+
+      For $p_1 \mid x_1$, the interval is $\left[0.4226, 0.5380\right]$. For
+      $p_2 \mid x_2$, the inverval is $\left[0.1215, 0.1626\right]$ This is
+      computed numerically with \texttt{scipy.stats.beta.interval} in
+      \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw5/case\_control.ipynb}{\texttt{case\_control.ipynb}}.
+    \end{description}
+  \item Obtain the asymptotic form of the posterior distribution and obtain 90\%
+    credible intervals for $p_1$ and $p_2$. Compare this interval with the exact
+    calculation of the previous part.
+
+    \begin{description}
+    \item[Solution:] 
+    \end{description}
+  \end{enumerate}
+\item
+  \begin{enumerate}
+  \item Consider the likelihood,
+    $\hat\theta \mid \theta \sim \mathcal{N}\left(\theta,V\right)$ and the prior
+    $\theta \sim \mathcal{N}\left(0,W\right)$ with $V$ and $W$ known. Show that
+    $\theta \mid \hat{\theta} \sim \mathcal{N}\left(r\hat{\theta},rV\right)$, where
+    $r=W/\left(V +W\right)$.
+    \begin{description}
+    \item[Solution:] This result follows from the conjugacy of the normal
+      distribution with itself:
+      \begin{align}
+        p\left(\theta \mid \hat{\theta}\right)
+        &\propto p\left(\hat{\theta}\mid \theta \right)p\left(\theta\right) \nonumber\\
+        &\propto \exp\left(
+          -\frac{1}{2V}\left(\hat{\theta} - \theta\right)^2
+          -\frac{1}{2W}\theta^2
+          \right) \nonumber\\
+        &\propto \exp\left(
+          -\frac{V + W}{2\left(VW\right)}
+          \left(\frac{W}{V+W}\hat{\theta}^2 -2\frac{W}{V+W}\hat\theta\theta + \theta^2\right)
+          \right) \nonumber\\
+        &\propto \exp\left(
+          -\frac{V + W}{2\left(VW\right)}
+          \left(\theta - \frac{W}{V+W}\hat{\theta}\right)^2
+          \right) = \exp\left(
+          -\frac{1}{2\left(rV\right)}
+          \left(\theta - r\hat{\theta}\right)^2
+          \right) \nonumber
+      \end{align}
+      after completing the square. We recognize this distribution as being part
+      of the normal family, which gives us the result.
+    \end{description}
+  \item Suppose we wish to compare the models $M_0$: $\theta = 0$ versus $M_1$:
+    $\theta \neq 0$. Show that the Bayes factor is given by
+    \begin{equation}
+      \frac{p\left(\hat\theta \mid M_0\right)}{p\left(\hat\theta \mid M_1\right)}
+      = \frac{1}{\sqrt{1-r}}\exp\left(-\frac{Z^2}{2}r\right),
+      \label{eqn:p2_bayes_factor}
+    \end{equation}
+    where $Z = \hat{\theta}/\sqrt{V}$.
+
+    \begin{description}
+    \item[Solution:] 
+    \end{description}
+  \item Suppose we have a prior probability $\pi_1 = \mathbb{P}\left(M_1\right)$
+    of model $M_1$ being true. Write down an expression for the posterior
+    probability $\mathbb{P}\left(M_1 \mid \hat{\theta}\right)$ in terms of the
+    Bayes factor.
     \begin{description}
     \item[Solution:] 
     \end{description}
