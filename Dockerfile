@@ -41,6 +41,11 @@ RUN R -e "install.packages(\
   INLA='https://inla.r-inla-download.org/R/stable'), \
   dep=TRUE);"
 
+RUN R -e "install.packages(\
+  'data.table',\
+  repos='http://cran.us.r-project.org',\
+  dep=TRUE);"
+
 # Install class-specific Python package
 ADD stat570 /tmp/stat570_install/stat570/
 ADD setup.py /tmp/stat570_install/

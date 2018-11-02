@@ -509,7 +509,48 @@
 
     \begin{description}
     \item[Solution:] 
-    \end{description}    
+    \end{description}
+  \item For a more informative prior specification we may reparameterize the
+    model as independently distributed
+    \begin{equation}
+      Y_i \mid \theta \sim \operatorname{Poisson}\left(
+        E_i\theta_0\theta_1^{x_i - \bar{x}_i}
+      \right),
+    \end{equation}
+    where
+    $\theta = \begin{pmatrix} \theta_0 & \theta_1\end{pmatrix}^\intercal$ and
+    \begin{equation}
+      \theta_0 = \mathbb{E}\left[\frac{Y}{E} \mid x = \bar{x}\right]
+      = \exp\left(\beta_0 + \beta_1\bar{x}\right)
+    \end{equation}
+    where is the expected standardized mortality ratio in an area with average
+    radon. The parameter $\theta_1 = \exp\left(\beta_1\right)$ is the relative
+    risk associated with a one-unit increase in radon.  For $\theta_0$ we assume
+    a lognormal prior with 2.5\% and 97.5\% quantiles of 0.67 and 1.5 to give
+    $\mu = 0$ and $\sigma = 0.21$. For $\theta_1$ we again take a lognormal
+    prior and assume the relative risk associated with a one-unit increase in
+    radon is between 0.8 and 1.2 with probability 0.95, to give $\mu = -0.02$
+    and $\sigma = 0.10$. By converting these into normal priors in INLA, rerun
+    your analysis, and report the same summaries.
+
+    \begin{description}
+    \item[Solution:] For the priors, we have two independent normals
+      \begin{align*}
+        \log\theta_0
+        &\sim \mathcal{N}\left(0, 0.21^2\right) \\
+        \log\theta_1
+        &\sim \mathcal{N}\left(-0.02, 0.1^2\right).
+      \end{align*}
+
+      We can rewrite
+      \begin{equation}
+        E_i\theta_0\theta_1^{x_i - \bar{x}_i} = E_i\exp\left(
+          \log\theta_0 + \left(x_i - \bar{x}\right)\log\theta_1
+        \right),
+      \end{equation}
+      so after centering the $x_i$, we can specify priors on the intercept and
+      coefficients as usual.
+    \end{description}
   \end{enumerate}
   
 \end{enumerate}
