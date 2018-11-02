@@ -491,5 +491,26 @@
     \item 
     \end{enumerate}
   \end{enumerate}
+\item We will carry out a Bayesian analysis of the lung cancer and radon data,
+  that were examined in lectures, using INLA. These data are available on the
+  class website. The likelihood is
+  $Y_i \mid \beta \sim \operatorname{Poisson}\left (E_i\exp\left(\beta_0 +
+      \beta_1x_i\right)\right)$ independently distributed, where
+  $\beta = \begin{pmatrix}\beta_0 & \beta_1\end{pmatrix}^\intercal$, $Y_i$ and
+  $E_i$ are observed and expected counts of lung cancer incidence in Minnesota
+  in 1998--2002, and $x_i$ is a measure of residential radon in county $i$,
+  $i = 1,\ldots,n$.
+
+  \begin{enumerate}
+  \item Analyze these data using the default prior specifications in
+    INLA. Produce figures of the INLA approximations to the marginal
+    distributions of $\beta_0$ and $\beta_1$, along with the posterior means,
+    posterior standard deviations, and 2.5\%, 50\%, 97.5\% quantiles.
+
+    \begin{description}
+    \item[Solution:] 
+    \end{description}    
+  \end{enumerate}
+  
 \end{enumerate}
 \end{document}

@@ -34,6 +34,13 @@ RUN pip install --upgrade scipy
 RUN pip install seaborn
 RUN pip install statsmodels
 
+# Install INLA
+RUN R -e "install.packages(\
+  'INLA', \
+  repos=c(getOption('repos'), \
+  INLA='https://inla.r-inla-download.org/R/stable'), \
+  dep=TRUE);"
+
 # Install class-specific Python package
 ADD stat570 /tmp/stat570_install/stat570/
 ADD setup.py /tmp/stat570_install/
