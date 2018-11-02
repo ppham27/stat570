@@ -145,6 +145,7 @@
       invariant to reparameterization, we have the MLE for $\theta$:
       \begin{equation}
         \boxed{\hat{\theta} = \frac{\hat{p}_1/\left(1 - \hat{p}_1\right)}{\hat{p}_2/\left(1 - \hat{p}_2\right)} = \frac{1992}{1417} \approx 5.640.}
+        \label{eqn:p1_theta_mle}
       \end{equation}
 
       We estimate the confidence interval for $\log\hat{\theta}$ which works
@@ -361,15 +362,45 @@
       \end{figure}
 
       The samples 90\% credible interval was $(6.3137, 6.4755)$, and the sampled
-      posterior median was $5.6486$. The median is very close to the MLE. The
-      90\% credible interval is much smaller however since we make the prior
-      beta assumption for $p_1$ and $p_2$.
+      posterior median was $5.6486$. The median is very close to the MLE in
+      Equation \ref{eqn:p1_theta_mle}. The 90\% credible interval is much
+      smaller however since we make the prior beta assumption for $p_1$ and
+      $p_2$.
 
       The computations for the analysis can be found in
       \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw5/case\_control.ipynb}{\texttt{case\_control.ipynb}}.
+    \end{description}    
+  \item Suppose the rate of esophageal cancer is 18 in 100,000. Describe how
+    this information may be used to evaluate
+    $q_1 = \mathbb{P}\left(Y = 1 \mid X = 1\right)$ and
+    $q_0 = \mathbb{P}\left(Y = 1 \mid X = 0\right)$.
+    \begin{description}
+    \item[Solution:] We can apply Bayes' rule since we know
+      $\mathbb{P}\left(Y = 1\right) = 9/50,000 = 0.00018$ and
+      $\mathbb{P}\left(Y = 0\right) = 49,991/50,000 = 0.99982$.
+
+      Thus, we have that
+      \begin{align*}
+        \mathbb{P}\left(Y = 1 \mid X = 1\right)
+        &= \frac{\mathbb{P}\left(X = 1 \mid Y = 1\right)\mathbb{P}\left(Y = 1\right)}
+          {\mathbb{P}\left(X = 1 \mid Y = 0\right)\mathbb{P}\left(Y = 0\right) +
+          \mathbb{P}\left(X = 1 \mid Y = 1\right)\mathbb{P}\left(Y = 1\right)} \\
+        &= \frac{p_1\mathbb{P}\left(Y = 1\right)}
+          {p_2\mathbb{P}\left(Y = 0\right) + p_1\mathbb{P}\left(Y = 1\right)} \\
+        \mathbb{P}\left(Y = 1 \mid X = 0\right)
+        &= \frac{\mathbb{P}\left(X = 0 \mid Y = 1\right)\mathbb{P}\left(Y = 1\right)}
+          {\mathbb{P}\left(X = 0 \mid Y = 0\right)\mathbb{P}\left(Y = 0\right) +
+          \mathbb{P}\left(X = 0 \mid Y = 1\right)\mathbb{P}\left(Y = 1\right)} \\
+        &= \frac{\left(1 - p_1\right)\mathbb{P}\left(Y = 1\right)}
+          {\left(1 - p_2 \right)\mathbb{P}\left(Y = 0\right) + \left(1 - p_1\right)\mathbb{P}\left(Y = 1\right)}.
+      \end{align*}
+
+      We can either substitute the the MLE $\hat{p}_i$ for $p_i$ or integrate
+      over the posteriors $p_1 \mid x_1$ and $p_2 \mid x_2$.
+
+      For example, the MLE estimates are $\hat{q}_1 \approx 0.0006140$ and
+      $\hat{q}_2 \approx 0.0001089$.
     \end{description}
-    
-  \item 
   \end{enumerate}
 \item
   \begin{enumerate}
