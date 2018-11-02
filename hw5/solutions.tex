@@ -305,15 +305,191 @@
     where $Z = \hat{\theta}/\sqrt{V}$.
 
     \begin{description}
-    \item[Solution:] 
+    \item[Solution:] We have that
+      \begin{align*}
+        p\left(\hat{\theta} \mid M_0\right)
+        &= p\left(\hat{\theta} \mid \theta = 0\right)
+          = \frac{1}{\sqrt{2\pi V}}\exp\left(-\frac{1}{2V}\hat{\theta}^2\right) \\
+        p\left(\hat{\theta} \mid M_1\right)
+        &= \int_{-\infty}^\infty p\left(\hat{\theta} \mid \theta\right)p\left(\theta\right)\,\mathrm{d}\theta \\
+        &= \frac{1}{\sqrt{2\pi\left(V + W\right)}}\exp\left(
+          -\frac{1}{2\left(V + W\right)}\hat\theta^2
+          \right)
+      \end{align*}
+      after completing the square. Substituting into the left-hand side of
+      Equation \ref{eqn:p2_bayes_factor}, we obtain
+      \begin{equation*}
+        \frac{p\left(\hat\theta \mid M_0\right)}{p\left(\hat\theta \mid M_1\right)}
+        = \sqrt{\frac{V+W}{V}}\exp\left(-\frac{1}{2}\cdot \frac{W}{V+W} \cdot \frac{\hat\theta^2}{V}\right)
+        = \frac{1}{\sqrt{1-r}}\exp\left(-\frac{Z^2}{2}r\right)
+      \end{equation*}
+      as desired. 
     \end{description}
   \item Suppose we have a prior probability $\pi_1 = \mathbb{P}\left(M_1\right)$
     of model $M_1$ being true. Write down an expression for the posterior
     probability $\mathbb{P}\left(M_1 \mid \hat{\theta}\right)$ in terms of the
     Bayes factor.
     \begin{description}
-    \item[Solution:] 
+    \item[Solution:] Let $K$ be the Bayes factor. By applying Bayes' rule, we
+      have that
+      \begin{align*}
+        \mathbb{P}\left(
+          M_1 \mid \hat\theta
+        \right)
+        &=
+        \frac
+        {\mathbb{P}\left(\hat\theta \mid M_1\right)\mathbb{P}\left(M_1\right)}
+        {\mathbb{P}\left(\hat\theta \mid M_0\right)\mathbb{P}\left(M_0\right) +
+          \mathbb{P}\left(\hat\theta \mid M_1\right)\mathbb{P}\left(M_1\right)} \\
+        &= \frac
+          {K^{-1}\mathbb{P}\left(\hat\theta \mid M_0\right)\pi_1}
+        {\mathbb{P}\left(\hat\theta \mid M_0\right)\left(1 - \pi_1\right) +
+          K^{-1}\mathbb{P}\left(\hat\theta \mid M_0\right)\pi_1} \\
+        &= \frac
+          {K^{-1}\pi_1}
+          {\left(1 - \pi_1\right) + K^{-1}\pi_1}
+          = \frac
+          {\pi_1}{K\left(1 - \pi_1\right) + \pi_1}.
+      \end{align*}
     \end{description}
+  \item Now suppose we have summaries from two studies, $\theta_j$, $V_j$,
+    $j = 1,2$. Assuming,
+    $\theta_j \mid \theta \sim \mathcal{N}\left(\theta, V_j\right)$ and the
+    prior $\theta \sim \mathcal{N}\left(0,W\right)$, derive the posterior
+    $p\left(\theta \mid \theta_1,\theta_2\right)$.
+    \begin{description}
+    \item[Solution:] We have
+      \begin{align*}
+        p\left(\theta \mid \theta_1,\theta_2\right)
+        &\propto
+          p\left(\theta_2 \mid \theta_1, \theta \right)
+          p\left(\theta_1 \mid \theta \right)p\left(\theta\right)
+          =
+          p\left(\theta_2 \mid \theta \right)
+          p\left(\theta_1 \mid \theta \right)p\left(\theta\right) \\
+        &\propto
+          \exp\left(
+          -\frac{1}{2V_2}
+          \left(\theta_2 - \theta\right)^2
+          \right)
+          \exp\left(
+          -\frac{V_1 + W}{2\left(V_1W\right)}
+          \left(\theta - \frac{W}{V_1+W}\theta_1\right)^2
+          \right) \\
+        &\propto
+          \exp\left(
+          -\frac{V_1V_2 + V_1W + V_2W}{2\left(V_1V_2W\right)}
+          \left(
+          \theta - \frac{V_2W\theta_1 + V_1W\theta_2}{V_1V_2 + V_1W + V_2W}
+          \right)^2
+          \right),
+      \end{align*}
+      after repeatedly completing the square and dropping factors that don't
+      depend on $\theta$.
+
+      Thus, we have that
+      \begin{equation}
+        \theta \mid \theta_1,\theta_2 \sim \mathcal{N}\left(
+          \frac{V_2W\theta_1 + V_1W\theta_2}{V_1V_2 + V_1W + V_2W},
+          \frac{V_1V_2W}{V_1V_2 + V_1W + V_2W}
+        \right).
+      \end{equation}
+    \end{description}
+  \item Derive the Bayes factor
+    \begin{equation}
+      \frac{p\left(\theta_1,\theta_2\mid M_0\right)}
+      {p\left(\theta_1,\theta_2\mid M_1\right)},
+    \end{equation}
+    again comparing the models $M_0$: $\theta = 0$ versus $M_1$:
+    $\theta \neq 0$.
+
+    \begin{description}
+    \item[Solution:] $\left(\theta_1,\theta_2\right)$ have a bivariate normal
+      distribution. Under $M_0$, we have that
+      \begin{align}
+        p\left(\theta_1,\theta_2 \mid M_0\right)
+        &= p\left(\theta_1,\theta_2 \mid \theta = 0\right) \nonumber\\
+        &= \frac{1}{2\pi\sqrt{V_1V_2}}\exp\left(
+          -\frac{1}{2}
+          \begin{pmatrix}
+            \theta_1 & \theta_2
+          \end{pmatrix}
+                       \begin{pmatrix}
+                         \frac{1}{V_1} & 0 \\
+                         0 & \frac{1}{V_2}
+                       \end{pmatrix}
+                       \begin{pmatrix}
+                         \theta_1 \\ \theta_2
+                       \end{pmatrix}
+          \right).
+      \end{align}
+      
+      Under $M_1$, we have that
+      \begin{align}
+        p\left(\theta_1,\theta_2 \mid M_1\right)
+        &= \int_{-\infty}^\infty p\left(\theta_1,\theta_2 \mid \theta\right)
+          p\left(\theta\right)\,\mathrm{d}\theta.
+      \end{align}
+      We can consider $\theta$ as having the improper prior
+      $\mathcal{N}\left(\mathbf{0}, \begin{pmatrix} W & W \\ W &
+          W \end{pmatrix}\right),$ which results in
+      \begin{equation}
+        \theta_1,\theta_2 \mid M_1 \sim \mathcal{N}\left(
+          \mathbf{0}, \begin{pmatrix}
+            V_1 + W & W \\
+            W & V_2 + W
+          \end{pmatrix}          
+        \right)
+      \end{equation}
+      by conjugacy of the multivariate normal distribution.
+
+      The Bayes factor can then be computed:
+      \begin{equation}
+        \sqrt{\frac{V_1V_2 + V_1W + V_2W}{V_1V_2}}
+        \exp\left(
+          -\frac{1}{2}
+          \begin{pmatrix}
+            \theta_1 & \theta_2
+          \end{pmatrix}
+          \Lambda
+          \begin{pmatrix}
+            \theta_1 \\ \theta_2
+          \end{pmatrix}
+        \right),
+      \end{equation}
+      where \begin{equation}
+        \Lambda =
+        \begin{pmatrix}
+          \frac{1}{V_1} & 0 \\
+          0 & \frac{1}{V_2}
+        \end{pmatrix}
+        + \frac{1}{V_1V_2 + V_1W + V_2W}
+        \begin{pmatrix}
+          V_2 + W & -W \\
+          -W & V_1 + W
+        \end{pmatrix}.
+      \end{equation}
+    \end{description}
+  \item We will show these results can be used in the context of a genome-wide
+    association study on Type II diabetes, reported by Frayling et al. (2007,
+    Science). Two sets of data were independently collected, resulting in two
+    log odds ratios $\hat{\theta}_j$, $j = 1,2$, for each SNP.
+     
+    For SNP rs9939609 point estimates (95\% confidence intervals) were 1.27
+    (1.16, 1.37) and 1.15 (1.09,1.23). Suppose we have a normal prior for the
+    odds ratio that has a 95\% range (0.67, 1.50).
+
+    \begin{enumerate}
+    \item Find W from this interval, and then calculate the posterior median and
+      95\% intervals for $\theta$ based on (i) the first dataset only, (ii) both
+      of the populations.
+      \begin{description}
+      \item[Solution:] 
+      \end{description}
+      
+    \item 
+    \item 
+    \end{enumerate}
   \end{enumerate}
 \end{enumerate}
 \end{document}
