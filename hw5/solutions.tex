@@ -404,7 +404,8 @@
   \end{enumerate}
 \item
   \begin{enumerate}
-  \item Consider the likelihood,
+  \item \label{part:p2a}
+    Consider the likelihood,    
     $\hat\theta \mid \theta \sim \mathcal{N}\left(\theta,V\right)$ and the prior
     $\theta \sim \mathcal{N}\left(0,W\right)$ with $V$ and $W$ known. Show that
     $\theta \mid \hat{\theta} \sim \mathcal{N}\left(r\hat{\theta},rV\right)$, where
@@ -434,7 +435,7 @@
       after completing the square. We recognize this distribution as being part
       of the normal family, which gives us the result.
     \end{description}
-  \item Suppose we wish to compare the models $M_0$: $\theta = 0$ versus $M_1$:
+  \item \label{part:p2b} Suppose we wish to compare the models $M_0$: $\theta = 0$ versus $M_1$:
     $\theta \neq 0$. Show that the Bayes factor is given by
     \begin{equation}
       \frac{p\left(\hat\theta \mid M_0\right)}{p\left(\hat\theta \mid M_1\right)}
@@ -464,7 +465,7 @@
       \end{equation*}
       as desired. 
     \end{description}
-  \item Suppose we have a prior probability $\pi_1 = \mathbb{P}\left(M_1\right)$
+  \item \label{part:p2c} Suppose we have a prior probability $\pi_1 = \mathbb{P}\left(M_1\right)$
     of model $M_1$ being true. Write down an expression for the posterior
     probability $\mathbb{P}\left(M_1 \mid \hat{\theta}\right)$ in terms of the
     Bayes factor.
@@ -532,9 +533,10 @@
           \frac{V_2W\theta_1 + V_1W\theta_2}{V_1V_2 + V_1W + V_2W},
           \frac{V_1V_2W}{V_1V_2 + V_1W + V_2W}
         \right).
+        \label{eqn:p2_full_posterior}
       \end{equation}
     \end{description}
-  \item Derive the Bayes factor
+  \item \label{part:p2e} Derive the Bayes factor
     \begin{equation}
       \frac{p\left(\theta_1,\theta_2\mid M_0\right)}
       {p\left(\theta_1,\theta_2\mid M_1\right)},
@@ -614,21 +616,66 @@
     Science). Two sets of data were independently collected, resulting in two
     log odds ratios $\hat{\theta}_j$, $j = 1,2$, for each SNP.
      
-    For SNP rs9939609 point estimates (95\% confidence intervals) were 1.27
-    (1.16, 1.37) and 1.15 (1.09,1.23). Suppose we have a normal prior for the
-    odds ratio that has a 95\% range (0.67, 1.50).
+    For SNP rs9939609 point estimates of the odds ratios (95\% confidence
+    intervals) were 1.27 (1.16, 1.37) and 1.15 (1.09,1.23). Suppose we have a
+    normal prior for the log odds ratio that has a 95\% range
+    $\left(\log\left(2/3\right), \log\left(3/2\right)\right)$.
 
     \begin{enumerate}
     \item Find W from this interval, and then calculate the posterior median and
       95\% intervals for $\theta$ based on (i) the first dataset only, (ii) both
       of the populations.
       \begin{description}
-      \item[Solution:] The analysis can be found at
+      \item[Solution:] $\theta/\sqrt{W}$ will be a standard normal random
+        variable, and we want
+        $\mathbb{P}\left(\theta \leq \log\left(3/2\right)\right) = 0.975$, so we
+        solve
+        $\log\left(3/2\right)/\sqrt{W} = \Phi^{-1}\left(0.975\right) \implies W
+        \approx 0.04279675$.
+
+        Similarly, we estimate $V_1 \approx 0.00180178$ and
+        $V_2 \approx 0.000950254$.
+
+        Part \ref{part:p2a} gives the posterior for one dataset
+        $\mathcal{N}\left(0, \right)$, so
+        $\theta \mid \theta_1 \sim \mathcal{N}\left(0.22936, 0.001729\right)$.
+        This has median $0.22936$ and 95\% interval $(0.14786, 0.310858)$.
+        
+        Equation \ref{eqn:p2_full_posterior} gives us the posterior for both
+        datasets.
+        $\theta \mid \theta_1,\theta_2 \sim \mathcal{N}\left(0.171540
+          0.0006132\right)$.  This has median $0.171540$ and 95\% interval
+        $(0.123005, 0.2201)$.
+
+        The analysis can be found at
         \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw5/genome\_association.ipynb}{\texttt{genome\_association.ipynb}}.
       \end{description}
       
-    \item 
-    \item 
+    \item Calculate the Bayes factor based on the first dataset only, and then
+      based on both datasets.
+      \begin{description}
+      \item[Solution:] Simply using the formulas from Parts \label{part:p2b}
+        and \label{part:p2e}, for the dataset only, we get
+        $1.22993 \times 10^{-6}$. For both datasets, we obtain
+        $4.40892 \times 10^{-12}$. In both cases, the data heavily favors $M_1$.
+
+        The analysis can be found at
+        \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw5/genome\_association.ipynb}{\texttt{genome\_association.ipynb}}.
+      \end{description}
+    \item With a prior of $\pi_1 = 1/5000$, calculate the probabilities,
+      $\mathbb{P}\left(M_1 \mid\theta_1\right)$ and
+      $\mathbb{P}\left(M_1 \mid \theta_1, \theta_2\right)$.
+      \begin{description}
+      \item[Solution:] We apply the result in Part \ref{part:p2c} combined with
+        the Bayes factor in the previous part.
+
+        We obtain $\mathbb{P}\left(M_1 \mid\theta_1\right) = 0.993889$ and
+        $\mathbb{P}\left(M_1 \mid\theta_1,\theta_2\right) = 0.99999998$, so the
+        $M_1$ is heavily favored.
+
+        The analysis can be found at
+        \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw5/genome\_association.ipynb}{\texttt{genome\_association.ipynb}}.
+      \end{description}
     \end{enumerate}
   \end{enumerate}
 \item We will carry out a Bayesian analysis of the lung cancer and radon data,
@@ -648,21 +695,49 @@
     posterior standard deviations, and 2.5\%, 50\%, 97.5\% quantiles.
 
     \begin{description}
-    \item[Solution:]
+    \item[Solution:] The results are shown in Table \ref{tab:p3_beta}.
+      \begin{table}[ht]
+        \centering
+        \begin{tabular}{rrr}
+          \hline
+          & $\beta_0$ & $\beta_1$ \\ 
+          \hline
+          Posterior mean & 0.17 & -0.04 \\ 
+          Posterior standard error & 0.03 & 0.01 \\ 
+          2.5\% quantile & 0.12 & -0.05 \\ 
+          50\% quantile & 0.17 & -0.04 \\ 
+          97.5\% quantile & 0.22 & -0.03 \\ 
+          \hline
+        \end{tabular}
+        \caption{Results for default prior.}
+        \label{tab:p3_beta}
+      \end{table}
+      
       \begin{figure}
         \centering
         \includegraphics{p3_beta_0.pdf}
+        \caption{Marginal distribution for $\beta_0$ fitted with INLA.}
+        \label{fig:p3_beta_0}
       \end{figure}
 
       \begin{figure}
         \centering
         \includegraphics{p3_beta_1.pdf}
+        \caption{Marginal distribution for $\beta_1$ fitted with INLA.}
+        \label{fig:p3_beta_1}
       \end{figure}
 
       \begin{figure}
         \centering
         \includegraphics{p3_beta_joint.pdf}
+        \caption{Joint distribution for $\beta$ fitted with INLA.}
+        \label{fig:p3_beta_joint}
       \end{figure}
+
+      The marginals and joint distribution can be found in Figures
+      \ref{fig:p3_beta_0}, \ref{fig:p3_beta_1}, \ref{fig:p3_beta_joint}. They
+      are almost identical to those of Figure 3.6 in the textbook, which was fit
+      with MCMC.
       
       Details of the analysis can be found in
       \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw5/lung\_cancer\_radon.ipynb}{\texttt{lung\_cancer\_radon.ipynb}}.
@@ -707,6 +782,55 @@
       \end{equation}
       so after centering the $x_i$, we can specify priors on the intercept and
       coefficients as usual.
+
+      Results can be found in Table \ref{tab:p3_theta}.
+
+      \begin{table}[ht]
+        \centering
+        \begin{tabular}{rrr}
+          \hline
+          & $\theta_0$ & $\theta_1$ \\ 
+          \hline
+          Posterior mean & 0.98 & 0.96 \\ 
+          Posterior standard error & 0.01 & 0.01 \\ 
+          2.5\% quantile & 0.96 & 0.95 \\ 
+          50\% quantile & 0.98 & 0.96 \\ 
+          97.5\% quantile & 1.00 & 0.97 \\ 
+          \hline
+        \end{tabular}
+        \caption{The results of fitting $\theta$ with INLA.}
+        \label{tab:p3_theta}
+      \end{table}
+
+      \begin{figure}
+        \centering
+        \includegraphics{p3_theta_0.pdf}
+        \caption{Marginal distribution for $\theta_0$ fitted with INLA.}
+        \label{fig:p3_theta_0}
+      \end{figure}
+
+      \begin{figure}
+        \centering
+        \includegraphics{p3_theta_1.pdf}
+        \caption{Marginal distribution for $\theta_1$ fitted with INLA.}
+        \label{fig:p3_theta_1}
+      \end{figure}
+
+      \begin{figure}
+        \centering
+        \includegraphics{p3_theta_joint.pdf}
+        \caption{Joint distribution for $\theta$ fitted with INLA.}
+        \label{fig:p3_theta_joint}
+      \end{figure}
+
+      The marginals and joint distribution can be found in Figures
+      \ref{fig:p3_theta_0}, \ref{fig:p3_theta_1}, \ref{fig:p3_theta_joint},
+      which was fit with MCMC. They are almost identical to those of Figure 3.6
+      in the textbook.
+
+
+      Details of the analysis can be found in
+      \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw5/lung\_cancer\_radon.ipynb}{\texttt{lung\_cancer\_radon.ipynb}}.
     \end{description}
   \end{enumerate}
 \item Consider the simple linear regression model
