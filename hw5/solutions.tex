@@ -130,7 +130,7 @@
       
       Thus, the Fisher information is
       \begin{equation}
-        I\left(p_1,p_2\right) = mathbb{E}\left[
+        I\left(p_1,p_2\right) = \mathbb{E}\left[
           S\left(p_1,p_2\right)S\left(p_1,p_2\right)^\intercal
         \right]= \begin{pmatrix}
           \frac{n_1}{p_1\left(1 - p_1\right)} & 0 \\
@@ -260,8 +260,116 @@
     calculation of the previous part.
 
     \begin{description}
-    \item[Solution:] 
+    \item[Solution:] We can reparameterize the beta distribution in terms of two
+      gamma random variables. Let
+      $r_a \sim \operatorname{Gamma}\left(a, 1\right)$ and
+      $r_b \sim \operatorname{Gamma}\left(b, 1\right)$. Let
+      $x = r_a/\left(r_a + r_b\right)$ and $s = r_a + r_b$, so we can invert and
+      get $r_a = xs$ and $r_b = \left(1 - x\right)s$.
+
+      Taking the Jacobina and hanging variables, we'll have the density function
+      \begin{align*}
+        p\left(x, s\right)
+        &= \left(\frac{1}{\Gamma\left(a\right)}\left(xs\right)^{a - 1}\exp\left(-xs\right)\right)
+          \left(\frac{1}{\Gamma\left(b\right)}\left(\left(1 - x\right)s\right)^{b - 1}
+          \exp\left(-\left(1-x\right)s\right)\right)s \\
+        &= \frac{1}{\Gamma\left(a\right)\Gamma\left(b\right)}x^{a-1}\left(1-x\right)^{b-1}
+          \left(s^{a + b - 1}\exp\left(-s\right)\right).
+      \end{align*}
+
+      We recognize the gamma function and marginalize over $s$ to obtain that
+      $x \sim \operatorname{Beta}\left(a, b\right)$.
+
+      Now, sums of gamma random variables are also gamma random variables, so as
+      $a \rightarrow \infty$ and $b \rightarrow \infty$ $r_a$ and $r_b$ converge
+      in distribution to the normal distribution.
+
+      Thus, we can apply the delta method to get an asymptotic distribution for
+      the beta distribution. Let
+      $h\left(z_1,z_2\right) = z_1/\left(z_1 + z_2\right)$. Then,
+      $x = h\left(z_1,z_2\right)$, and
+      \begin{align}
+        \mathbb{E}\left[x\right] = h\left(\mathbb{E}\left[z_1\right],
+        \mathbb{E}\left[z_2\right]\right) = \frac{a}{a + b}
+        \label{eqn:p1_asymptotic_mean} \\
+        \operatorname{Var}\left(x\right)
+        &\approx
+        \begin{pmatrix}
+          \frac{b}{\left(a + b\right)^2} & -\frac{a}{\left(a + b\right)^2}
+        \end{pmatrix}^\intercal
+        \begin{pmatrix}
+          a & 0 \\
+          0 & b
+        \end{pmatrix}
+        \begin{pmatrix}
+          \frac{b}{\left(a + b\right)^2} \\ -\frac{a}{\left(a + b\right)^2}
+        \end{pmatrix} \nonumber\\
+        &= \left(\frac{1}{a + b}\right)\left(\frac{a}{a + b}\right)
+          \left(\frac{b}{a + b}\right) \label{eqn:p1_asymptotic_variance}.
+      \end{align}
+      which results in the same mean, and the variance is asymptotically
+      equivalent to the variance in the previous part.
+      
+      Applying Equations \ref{eqn:p1_asymptotic_mean} and
+      \ref{eqn:p1_asymptotic_variance}, we obtain the 90\% intervals
+      $(0.4224, 0.5380)$ for $p_1$ and $(0.1210, 0.1621)$ for $p_2$, which are
+      virtually identically to the exact calculation in the previous part, which
+      is unsurprising since $n_1$ and $n_2$ are quite large.      
     \end{description}
+  \item Simulate samples $p_1(t)$, $p_2(t)$, $t = 1, \ldots, T = 1000$ from the
+    posterior distributions $p_1 \mid x_1$ and $p_2 \mid x_2$. Form histogram
+    representations of the posterior distributions using these samples and
+    obtain sample-based 90\% credible intervals.
+
+    \begin{description}
+    \item[Solution:] The histogram of samples from $p_1 \mid x_1$ and
+      $p_2 \mid x_2$ and be found in Figures \ref{fig:p1_p1_dist} and
+      \ref{fig:p1_p2_dist}, respectively.
+
+      \begin{figure}        
+        \centering
+        \includegraphics{p1_p1.pdf}
+        \caption{1,000 samples from the posterior $p_1 \mid x_1$.}
+        \label{fig:p1_p1_dist}
+      \end{figure}
+
+      \begin{figure}        
+        \centering
+        \includegraphics{p1_p2.pdf}
+        \caption{1,000 samples from the posterior $p_2 \mid x_2$.}
+        \label{fig:p1_p2_dist}
+      \end{figure}
+
+      The sample 90\% interval for $p_1$ was $(0.4255, 0.5393)$. The sampled
+      90\% intervals for $p_2$ were $(0.1209, 0.1634)$, which agree with the
+      previous interval calculations.
+    \end{description}
+  \item Obtain samples from the posterior distribution of $\theta | x_1,x_2$ and
+    form the histogram representation of the posterior. Obtain the posterior
+    median and 90\% credible interval for $\theta \mid x_1, x_2$ and compare
+    with the likelihood analysis.
+    \begin{description}
+    \item[Solution:] To get a posterior sample for $\theta$, we draw samples
+      from $p_1 \mid x_1$ and $p_2 \mid x_2$ and calculate $\theta$. The samples
+      can be seen in Figure \ref{fig:p1_theta_dist}.
+
+      \begin{figure}        
+        \centering
+        \includegraphics{p1_theta.pdf}
+        \caption{1,000 samples from the posterior $\theta \mid x_2$.}
+        \label{fig:p1_theta_dist}
+      \end{figure}
+
+      The samples 90\% credible interval was $(6.3137, 6.4755)$, and the sampled
+      posterior median was $5.6486$. The median is very close to the MLE. The
+      90\% credible interval is much smaller however since we make the prior
+      beta assumption for $p_1$ and $p_2$.
+
+      The computations for the analysis can be found in
+      \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw5/case\_control.ipynb}{\texttt{case\_control.ipynb}}.
+    \end{description}
+    
+  \item 
   \end{enumerate}
 \item
   \begin{enumerate}
@@ -484,7 +592,8 @@
       95\% intervals for $\theta$ based on (i) the first dataset only, (ii) both
       of the populations.
       \begin{description}
-      \item[Solution:] 
+      \item[Solution:] The analysis can be found at
+        \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw5/genome\_association.ipynb}{\texttt{genome\_association.ipynb}}.
       \end{description}
       
     \item 
@@ -508,7 +617,24 @@
     posterior standard deviations, and 2.5\%, 50\%, 97.5\% quantiles.
 
     \begin{description}
-    \item[Solution:] 
+    \item[Solution:]
+      \begin{figure}
+        \centering
+        \includegraphics{p3_beta_0.pdf}
+      \end{figure}
+
+      \begin{figure}
+        \centering
+        \includegraphics{p3_beta_1.pdf}
+      \end{figure}
+
+      \begin{figure}
+        \centering
+        \includegraphics{p3_beta_joint.pdf}
+      \end{figure}
+      
+      Details of the analysis can be found in
+      \href{https://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw5/lung\_cancer\_radon.ipynb}{\texttt{lung\_cancer\_radon.ipynb}}.
     \end{description}
   \item For a more informative prior specification we may reparameterize the
     model as independently distributed
