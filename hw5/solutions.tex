@@ -552,6 +552,195 @@
       coefficients as usual.
     \end{description}
   \end{enumerate}
+\item Consider the simple linear regression model
+  $Y_i = \beta_0 + \beta_1x_i + \epsilon_i$, with
+  $\epsilon_i \mid \sigma^2 \sim_\mathrm{iid} \mathcal{N}\left(0,
+    \sigma^2\right)$, $i = 1,\ldots, n$. Suppose the prior distribution is of the
+  form
+  \begin{equation}
+    \pi\left(\beta_0,\beta_1,\sigma^2\right) = \pi\left(\beta_0,\beta_1\right)
+    \pi\left(\sigma^{-2}\right).
+  \end{equation}
+
+  The prior for $\begin{pmatrix}\beta_0 & \beta_1\end{pmatrix}^\intercal$ is
+  \begin{equation}
+    \begin{pmatrix}
+      \beta_0 \\ \beta_1
+    \end{pmatrix} \sim
+    \mathcal{N}\left(
+      \begin{pmatrix}
+        m_0 \\ m_1
+      \end{pmatrix},
+      \begin{pmatrix}
+        v_{00} & v_{01} \\ v_{01} & v_{11}
+      \end{pmatrix} 
+    \right)
+  \end{equation}
+  and the prior for $\sigma^{-2}$ is $\operatorname{Gamma}\left(a, b\right)$. In
+  this exercise the conditional distribution required for Gibbs sampling will be
+  derived.
+
+  \begin{enumerate}
+  \item Write down the form of the posterior distribution (up to
+    proportionality) and derive the conditional distributions
+    $p\left(\beta_0 \mid \beta_1, \sigma^2, \mathbf{y}\right)$,
+    $p\left(\beta_1 \mid \beta_0, \sigma^2, \mathbf{y}\right)$ and
+    $p\left(\sigma^2 \mid \beta_0, \beta_1, \mathbf{y}\right)$. Hence, give details of the
+    Gibbs sampling algorithm.
+
+    \begin{description}
+    \item[Solution:] Using the normal likelihood and prior, we have the posterior
+      \begin{align*}
+        p\left(\beta_0, \beta_1, \sigma^2\mid \mathbf{y}\right)
+        &\propto p\left(\mathbf{y} \mid \beta_0, \beta_1, \sigma^2\right)\pi\left(
+          \beta_0,\beta_1,\sigma^2
+          \right) \\
+        &\propto
+          \pi\left(\beta_0,\beta_1\right)
+          \pi\left(\sigma^{-2}\right)
+          \left(\frac{\sigma^{-2}}{2\pi}\right)^{n/2}
+          \prod_{i=1}^n
+          \exp\left(
+          -\frac{1}{2\sigma^2}\left(y_i - \beta_0 + \beta_1x_i\right)^2
+          \right),
+      \end{align*}
+      where
+      \begin{align*}
+        \pi\left(\beta_0,\beta_1\right)
+        &\propto \exp\left(-\frac{1}{2}
+        \left(\beta - m\right)^\intercal V^{-1}\left(\beta - m\right)
+        \right),~\text{where}~V=\begin{pmatrix}
+        v_{00} & v_{01} \\ v_{01} & v_{11}
+      \end{pmatrix} \\
+        \pi\left(\sigma^{-2}\right)
+        &\propto
+        \left(\sigma^{-2}\right)^{a-1}\exp\left(-b\sigma^{-2}\right).
+      \end{align*}
+
+      For $p\left(\sigma^2 \mid \beta_0, \beta_1, \mathbf{y}\right)$, we can
+      drop all the factors without $\sigma^2$, so we have
+      \begin{align*}
+        p\left(\sigma^2 \mid \beta_0, \beta_1, \mathbf{y}\right)
+        &\propto
+          \left(\sigma^{-2}\right)^{a + n/2 -1}\exp\left(-b\sigma^{-2}\right)
+          \prod_{i=1}^n
+          \exp\left(
+          -\frac{1}{2\sigma^2}\left(y_i - \beta_0 + \beta_1x_i\right)^2
+          \right) \\
+        &\propto
+          \left(\sigma^{-2}\right)^{a + n/2 -1}\exp\left(
+          -\sigma^{-2}\left(b + \frac{1}{2}\sum_{i=1}^n\left(y_i - \beta_0 - \beta_1x_i\right)^2\right)
+          \right),
+      \end{align*}
+      so $\boxed{\left(\sigma^{-2} \mid \beta_0, \beta_1, \mathbf{y} \right)\sim \operatorname{Gamma}\left(
+          a + \frac{n}{2}, b + \frac{1}{2}\sum_{i=1}^n\left(y_i - \beta_0 - \beta_1x_i\right)^2\right).}$
+
+      
+      The conditional posteriors for $\beta_0$ and $\beta_1$ can be obtained
+      from marginalizing $p\left(\beta \mid \sigma^2, \mathbf{y}\right)$ from
+      the next part. We'll get
+      \begin{align*}
+        \left(\beta_0 \mid \beta_1, \sigma^2, \mathbf{y}\right)
+        &\sim \mathcal{N}\left(m^*_1, V^*_{11}\right) \\
+        \left(\beta_1 \mid \beta_0, \sigma^2, \mathbf{y}\right)
+        &\sim \mathcal{N}\left(m^*_2, V^*_{22}\right).
+      \end{align*}
+    \end{description}
+  \item Another blocked Gibbs sampling algorithm would simulate from the
+    distributions $p\left(\beta \mid \sigma^2, \mathbf{y}\right)$ and
+    $p\left(σ^{-2} \mid \beta, \mathbf{y}\right)$. Derive the distributions
+    \begin{align}
+      \left(\beta \mid \sigma^2, \mathbf{y} \right)
+      &\sim \mathcal{N}\left(m^*, V^*\right)
+      \label{eqn:p4_beta_posterior} \\
+      \left(\sigma^2 \mid \beta, \mathbf{y} \right)
+      &\sim \operatorname{Gamma}\left(
+      a + \frac{n}{2}, b + \frac{1}{2}\left(\mathbf{y} - X\beta\right)^\intercal
+      \left(\mathbf{y} - X\beta\right)
+      \right),
+      \label{eqn:p4_sigma_posterior}
+    \end{align}
+    where
+    \begin{align*}
+      m^* &= W\hat{\beta} + \left(I_2 - W\right)m \\
+      V^* &= W\operatorname{Var}\left(\hat{\beta}\right)
+    \end{align*}
+    and $W = \left(X^\intercal X + V^{-1}\sigma^2\right)^{-1}X^\intercal X$ and
+    $\hat{\beta}$ is the MLE of $\beta$.
+
+    \begin{description}
+    \item[Solution:] Let $X$ be the a $n \times 2$ matrix with all $1$s in the
+      first column and $\begin{pmatrix} x_1 \cdots x_n\end{pmatrix}^\intercal$
+      as the second column.
+
+      Then, Equation \ref{eqn:p4_sigma_posterior} follows from the previous part
+      after rewriting the term
+      \begin{equation}
+        \frac{1}{2}\sum_{i=1}^n\left(y_i - \beta_0 - \beta_1x_i\right)^2
+        = \frac{1}{2}\left(\mathbf{y} - X\beta\right)^\intercal\left(\mathbf{y} - X\beta\right).
+      \end{equation}
+
+      As before, we complete the square to derive the posterior for $\beta$:
+      \begin{align*}
+        &\left(\mathbf{y} - X\beta\right)^\intercal \sigma^{-2}I_n\left(\mathbf{y} - X\beta\right)
+        + \left(\beta - m\right)^\intercal V^{-1}\left(\beta - m\right) \\
+        &= \beta^\intercal \sigma^{-2}X^\intercal X \beta + \beta^\intercal V^{-1} \beta
+          - 2\beta^\intercal\left(\sigma^{-2}X^\intercal y + V^{-1}m\right) +
+          \sigma^{-2}y^\intercal y - m^\intercal V^{-1}m \\
+        &= \beta^\intercal\left(
+          \sigma^{-2}X^\intercal X + V^{-1}
+          \right)\beta \\
+        &~~~
+          -2 \beta^\intercal          
+          \left(
+          \sigma^{-2}X^\intercal X + V^{-1}
+          \right)
+          \left(
+          \sigma^{-2}X^\intercal X + V^{-1}
+          \right)^{-1}
+          \left(\sigma^{-2}X^\intercal y + V^{-1}m\right) + C,
+      \end{align*}
+      where we have collapsed the terms that don't depend on $\beta$ into $C$.
+
+      Recall that
+      $\operatorname{Var}\left(\hat{\beta}\right) = \sigma^2\left(X^\intercal
+        X\right)^{-1}$, so we have that
+      \begin{equation*}
+        \left(\sigma^{-2}X^\intercal X + V^{-1}\right)^{-1}
+        = \left(X^\intercal X + \sigma^{2}V^{-1}\right)^{-1}\left(X^\intercal X\right)
+        \sigma^2\left(X^\intercal X\right)^{-1} = V^*,
+      \end{equation*}
+      so continuing the process of completing the square:
+      \begin{align*}
+        &\beta^\intercal\left(V^*\right)^{-1}\beta -
+          2\beta^\intercal\left(V^*\right)^{-1}
+          W\left(X^\intercal X\right)^{-1}\left(X^\intercal y + \sigma^2 V^{-1}m\right) + C \\
+        &= \beta^\intercal\left(V^*\right)^{-1}\beta -
+          2\beta^\intercal\left(V^*\right)^{-1}\left(
+          W\hat\beta + W\sigma^2\left(X^\intercal X\right)^{-1}V^{-1}m
+          \right) + C \\
+        &= \beta^\intercal\left(V^*\right)^{-1}\beta
+          - 2\beta^\intercal\left(V^*\right)^{-1}\left(
+          W\hat\beta + \sigma^2\left(V\left(X^\intercal X + \sigma^2V^{-1}\right)\right)^{-1}m
+          \right) + C \\
+        &= \beta^\intercal\left(V^*\right)^{-1}\beta
+          - 2\beta^\intercal\left(V^*\right)^{-1}\left(
+          W\hat\beta + \sigma^2\left(VX^\intercal X + \sigma^2I\right)^{-1}m
+          \right) + C \\
+        &= \beta^\intercal\left(V^*\right)^{-1}\beta
+          - 2\beta^\intercal\left(V^*\right)^{-1}\left(
+          W\hat\beta + \left(I_2 - W\right)m\right) + C \\
+        &= \left(\beta - m^*\right)^\intercal \left(V^*\right)^{-1}\left(\beta - m^*\right)
+           + C^\prime,
+      \end{align*}
+      where we have applied the
+      \href{https://en.wikipedia.org/wiki/Woodbury\_matrix\_identity}{Woodbury
+        matrix identity}.
+
+      Thus, all the factors that contain $\beta$ can be written as a quadratic
+      form which gives us the result in Equation \ref{eqn:p4_beta_posterior}.
+    \end{description}
+  \end{enumerate}
   
 \end{enumerate}
 \end{document}
