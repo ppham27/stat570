@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='stat570',
-      version='0.0.1',
+      version='0.0.2',
       description='Code to solve exercises for UW\'s STAT 570',
       url='https://gitlab.cs.washington.edu/pmp10/stat570',
       author='Philip Pham',
@@ -10,6 +10,7 @@ setup(name='stat570',
       packages=[
           'stat570',
           'stat570.linear_model',
+          'stat570.mcmc',
       ],
       package_data = {
           'stat570': ['LICENSE', 'README.md'],

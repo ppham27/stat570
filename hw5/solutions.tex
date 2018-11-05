@@ -929,12 +929,12 @@
     \end{description}
   \item Another blocked Gibbs sampling algorithm would simulate from the
     distributions $p\left(\beta \mid \sigma^2, \mathbf{y}\right)$ and
-    $p\left(σ^{-2} \mid \beta, \mathbf{y}\right)$. Derive the distributions
+    $p\left(\sigma^{-2} \mid \beta, \mathbf{y}\right)$. Derive the distributions
     \begin{align}
       \left(\beta \mid \sigma^2, \mathbf{y} \right)
       &\sim \mathcal{N}\left(m^*, V^*\right)
       \label{eqn:p4_beta_posterior} \\
-      \left(\sigma^2 \mid \beta, \mathbf{y} \right)
+      \left(\sigma^{-2} \mid \beta, \mathbf{y} \right)
       &\sim \operatorname{Gamma}\left(
       a + \frac{n}{2}, b + \frac{1}{2}\left(\mathbf{y} - X\beta\right)^\intercal
       \left(\mathbf{y} - X\beta\right)

@@ -1,0 +1,38 @@
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[hmargin=1.25in,vmargin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{pdflscape}
+\usepackage{subcaption}
+
+\title{Coursework 6: STAT 570}
+\author{Philip Pham}
+\date{\today}
+
+\begin{document}
+\maketitle
+\begin{enumerate}
+\item In this question, you will implement the algorithm you described in
+  Question 4 of Exercises 5. The algorithm derived in 4(b) will now be
+  implemented for the prostate cancer data. These data are available in the R
+  package \texttt{lasso2} and are named \texttt{Prostate}. Take $Y$ as $\log$
+  prostate specific antigen and $x$ as log cancer volume. Implement the blocked
+  Gibbs sampling algorithm using the prior given in the first equation of the
+  aforementioned question, with $m_0 = m_1 =0$, $v_{00} = v_{11} = 2$,
+  $v_{01} = 0$, and $a=b=0$. Run two chains, one with starting values
+  corresponding to the unbiased estimates of the parameters and one starting
+  from a point randomly generated from the prior
+  $\pi\left(\beta_0, \beta_1\right)$. Report:
+  \begin{enumerate}
+  \item 
+  \item 
+  \item 
+  \end{enumerate}
+\end{enumerate}
+\end{document}

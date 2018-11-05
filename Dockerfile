@@ -33,6 +33,8 @@ RUN pip install --upgrade numpy
 RUN pip install --upgrade scipy
 RUN pip install seaborn
 RUN pip install statsmodels
+RUN pip install --upgrade tensorboard
+RUN pip install tensorflow_probability
 
 # Install INLA
 RUN R -e "install.packages(\
@@ -41,8 +43,9 @@ RUN R -e "install.packages(\
   INLA='https://inla.r-inla-download.org/R/stable'), \
   dep=TRUE);"
 
-RUN R -e "install.packages(\
-  'data.table',\
+RUN R -e "install.packages(c(\
+    'data.table',\
+    'lasso2'),\
   repos='http://cran.us.r-project.org',\
   dep=TRUE);"
 
