@@ -31,7 +31,8 @@ class LinearRegression(BaseEstimator):
 
         # Estimate the coefficients by solving the least squares problem.
         gram_matrix = np.matmul(X.T, X)
-        beta = linalg.solve(gram_matrix, np.matmul(X.T, y))
+        gram_cho_factor = linalg.cho_factor(gram_matrix)
+        beta = linalg.cho_solve(gram_cho_factor, np.matmul(X.T, y))
 
         # Calculate residual variance using our estimate for the coefficients.
         residuals = y - np.matmul(X, beta)
@@ -39,7 +40,7 @@ class LinearRegression(BaseEstimator):
 
         # Do a hypothesis test for each beta_j, where the null hypothesis is beta_j = 0.
         beta_std_error = np.sqrt(np.diag(linalg.cho_solve(
-            linalg.cho_factor(gram_matrix), np.eye(len(beta))))*self.residual_variance_)
+            gram_cho_factor, np.eye(len(beta))))*self.residual_variance_)
         beta_t_statistic = beta/beta_std_error
         beta_p_value = 2*(stats.t.sf(np.abs(beta_t_statistic), df=len(y) - len(beta)))
 
@@ -57,8 +58,8 @@ class LinearRegression(BaseEstimator):
             data_frame: pd.DataFrame,
             covariates: List[str], response: str) -> 'LinearRegression':
         # Extract covariates.
-        X = data_frame[covariates].as_matrix()
-        y = data_frame[response].as_matrix()
+        X = data_frame[covariates].values
+        y = data_frame[response].values
         # Fit model.
         linear_regression = LinearRegression().fit(X, y)
         linear_regression.coefficients_.index = ['(intercept)'] + covariates
