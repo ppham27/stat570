@@ -36,12 +36,120 @@
     distributions $p\left(\beta_0, \beta_1 \mid y\right)$,
     $p\left(\beta_0,\sigma \mid y\right)$, and
     $p\left(\beta_1,\sigma \mid y\right)$.
+
+    \begin{figure}
+      \centering
+      \includegraphics{p1_univariate_marginals.pdf}
+      \caption{Emprical univariate distributions from Gibbs sampling.}
+      \label{fig:p1_univariate}
+    \end{figure}
+
+    \begin{figure}      
+      \centering
+      \caption{Emprical joint distribution for
+        $\left(\beta_0,\beta_1\right) \mid y$ from Gibbs sampling.}
+      \label{fig:p1_beta0_beta1}
+      \includegraphics{p1_beta0_beta1.pdf}
+    \end{figure}
+
+    \begin{figure}      
+      \centering
+      \caption{Emprical joint distribution for
+        $\left(\beta_0, \sigma\right) \mid y$ from Gibbs sampling.}
+      \label{fig:p1_beta0_sigma}
+      \includegraphics{p1_beta0_sigma.pdf}
+    \end{figure}
+
+    \begin{figure}      
+      \centering
+      \caption{Emprical joint distribution for
+        $\left(\beta_1, \sigma\right) \mid y$ from Gibbs sampling.}
+      \label{fig:p1_beta1_sigma}
+      \includegraphics{p1_beta1_sigma.pdf}
+    \end{figure}
+
+    
+    \begin{description}
+    \item[Solution:] The empirical univariate distributions from Gibbs sampling
+      can be found in Figure \ref{fig:p1_univariate}. The joint distributions
+      are found in Figures \ref{fig:p1_beta0_beta1}, \ref{fig:p1_beta0_sigma},
+      and \ref{fig:p1_beta1_sigma}.
+
+      From the univariate distributions in Figure \ref{fig:p1_univariate}, we
+      get samples close to the MLE estimates (see Table 5.3 of Wakefield's
+      \emph{Bayesian and Frequentist Regression Methods}). The dataset is rather
+      large, so this is not surprising. The distributions for $\beta_j$ are
+      symmetrical. The distribution for $\sigma$ seems to skew slightly to the
+      right.
+
+      From the bivariate distributions in Figures \ref{fig:p1_beta0_sigma} and
+      \ref{fig:p1_beta1_sigma}, we see that there is not much correlation
+      between the $\beta_j$ and $\sigma$, which is expected since $\sigma$ is an
+      ancillary statistic in the frequentist setting.
+
+      From Figure \ref{fig:p1_beta0_beta1}, we see a negative correlation
+      between $\beta_0$ and $\beta_1$, which is also expected since if we
+      discount the effect of $x$ on $y$, the estimate for $\beta_0$ must
+      compensate.
+      
+      Code for the Gibbs sampler and plots can be found at
+      \href{http://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw6/prostate.ipynb}{\texttt{prostate.ipynb}}.
+    \end{description}
   \item The posterior means, standard deviations and 10\%, 50\%, 90\% quantiles
     of $\beta_0$, $\beta_1$, and $\sigma$.
+    
+    \begin{table}
+      \small
+      \centering
+      \input{p1_summary.tex}
+      \caption{Summary statistics calculated from samples drawn with Gibbs
+        sampling.}
+      \label{tab:p1_summary}
+    \end{table}
+    
+    \begin{description}
+    \item[Solution:] The summary statistics for the empirical posterior
+      distributions can be found in Table \ref{tab:p1_summary}. Samples from
+      both chains were used for a total 4,096 samples.
+
+      Both the posterior mean and standard deviation agree closely with the MLE
+      estimates in Table 5.3 of Wakefield's \emph{Bayesian and Frequentist
+        Regression Methods}. From the quantiles, we get an empirical estimate of
+      the 80\% credible interval, which appear to be symmetrical with respect to
+      the median.
+    \end{description}
   \item $\mathbb{P}\left(\beta_1 > 0.5 \mid y\right)$
+    \begin{description}
+    \item[Solution:] One way to interpret the significance of $x$'s effect on
+      $y$ is to look at the distribution of $\beta_1$. The emprical estimate for
+      $\mathbb{P}\left(\beta_1 > 0.5 \mid y\right)$ is $\boxed{0.9990}$, so the
+      effect is likely significant, both statistically and in size.
+
+      This was calculated simply by taking the proportion of samples of
+      $\beta_1$ that exceeded $0.5$. See
+      \href{http://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw6/prostate.ipynb}{\texttt{prostate.ipynb}}
+      for the calculation.
+    \end{description}
   \item Justify your choice of \emph{burn-in} period. For example, you may
     present the trace plots $\beta_0^{(t)}$, $\beta_1^{(t)}$,
     $\left(\log\sigma^{2}\right)^{(t)}$ versus $t$.
+
+    \begin{figure}
+      \includegraphics{p1_trace.pdf}
+      \caption{The trace plots show the sampled posterior parameters at each
+        step in the MCMC chain.}
+      \label{fig:p1_trace}
+    \end{figure}
+    
+    \begin{description}
+    \item[Solution:] The trace plots for $\log\sigma^2$, $\beta_0$, and
+      $\beta_1$ are shown in Figure \ref{fig:p1_trace}. The first 128 results
+      are plotted. The MLE chain immediately is stationary. The prior chain
+      quickly becomes stationary in about 10 steps.
+
+      I specified a burn-in period of 128 steps for good measure. Then, I took
+      2,048 samples from each chain with no thinning.
+    \end{description}
   \end{enumerate}
 \item Consider the data in Table \ref{tab:p2_data} contain data on a typical
   reliability experiment and give the failure stresses (in GPa) of four samples
