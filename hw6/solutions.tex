@@ -30,9 +30,137 @@
   from a point randomly generated from the prior
   $\pi\left(\beta_0, \beta_1\right)$. Report:
   \begin{enumerate}
-  \item 
-  \item 
-  \item 
+  \item Histogram representations of the univariate marginal distributions
+    $p\left(\beta_0 \mid y\right)$, $p\left(\beta_1 \mid y\right)$ and
+    $p\left(\sigma \mid y\right)$, and scatterplots of the bivariate marginal
+    distributions $p\left(\beta_0, \beta_1 \mid y\right)$,
+    $p\left(\beta_0,\sigma \mid y\right)$, and
+    $p\left(\beta_1,\sigma \mid y\right)$.
+  \item The posterior means, standard deviations and 10\%, 50\%, 90\% quantiles
+    of $\beta_0$, $\beta_1$, and $\sigma$.
+  \item $\mathbb{P}\left(\beta_1 > 0.5 \mid y\right)$
+  \item Justify your choice of \emph{burn-in} period. For example, you may
+    present the trace plots $\beta_0^{(t)}$, $\beta_1^{(t)}$,
+    $\left(\log\sigma^{2}\right)^{(t)}$ versus $t$.
+  \end{enumerate}
+\item Consider the data in Table \ref{tab:p2_data} contain data on a typical
+  reliability experiment and give the failure stresses (in GPa) of four samples
+  of carbon fibers of lengths 1, 10, 20 and 50mm.
+
+  \begin{table}
+    \tiny
+    \centering
+    \input{../hw3/p2_data.tex}
+    \caption{Failure stress data for four groups of fibers.}
+    \label{tab:p2_data}
+  \end{table}
+
+  \begin{enumerate}
+  \item Consider a Bayesian analysis with a Weibull likelihood and independent
+    lognormal priors,
+    $\eta \sim \operatorname{LogNormal}\left(\mu_\eta, \sigma_\eta\right)$,
+    $\alpha \sim \operatorname{LogNormal}\left(\mu_\alpha,
+      \sigma_\alpha\right)$. Choose $\mu_\eta$, $\sigma_\eta$ so that the prior
+    probability that $\eta$ lies between 0.5 and 30 is 0.9, and $\mu_\alpha$,
+    $\sigma_\alpha$ so that the prior probability that α lies between 1 and 4 is
+    0.9.
+
+    \begin{description}
+    \item[Solution:]
+      $\log\eta \sim \mathcal{N}\left(\mu_\eta, \sigma_\eta\right)$ by
+      definition of the lognormal distribution. Since $\log$ is a monotonic
+      transformation,
+      \begin{align}
+        0.9 = \mathbb{P}\left(1/2 \leq \eta \leq 30\right)
+        &= \mathbb{P}\left(\log\frac{1}{2} \leq \log\eta \leq \log 30\right) \nonumber\\
+        &=
+          \mathbb{P}\left(
+          \Phi^{-1}\left(0.05\right) \leq
+          \frac{\log\eta - \mu_\eta}{\sigma_\eta} \leq
+          \Phi^{-1}\left(0.95\right)
+          \right),
+          \label{eqn:p2_prior_prob}
+      \end{align}
+      where $\Phi$ is the cumulative distribution function of a standard normal.
+
+      Equation \ref{eqn:p2_prior_prob} implies that
+      \begin{align*}
+        \frac{\log\left(1/2\right) - \mu_\eta}{\sigma_\eta}
+        &= \Phi^{-1}\left(0.05\right) \\
+        \frac{\log 30 - \mu_\eta}{\sigma_\eta}
+        &= \Phi^{-1}\left(0.95\right).
+      \end{align*}
+
+      Solving, we have that
+      \begin{align*}
+        \sigma_\eta
+        &=
+          \frac{\log 30 - \log\frac{1}{2}}{\Phi^{-1}\left(0.95\right) - \Phi^{-1}\left(0.05\right)} 
+          \approx 1.2446 \\
+        \mu_\eta
+        &= \log 30 - \sigma_\eta \Phi^{-1}\left(0.95\right) =
+          \log \frac{1}{2} - \sigma_\eta\Phi^{-1}\left(0.05\right)
+          \approx 1.3540
+      \end{align*}
+
+      Repeating the calculating for $\alpha$, we have
+      $\mu_\alpha \approx 0.6931$ and $\sigma_\alpha \approx 0.4214$.
+
+      Calculations can be found in
+      \href{http://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw6/failure\_stresses.ipynb}{\texttt{failure\_stresses.ipynb}}.
+    \end{description}
+  \item Run MCMC for summarizing the posterior
+    $p\left(\eta, \alpha \mid y\right)$, and implement this algorithm for each
+    of the groups in Table \ref{tab:p2_data}. Report the posterior medians and
+    90\% credible intervals for $\eta$ and $\alpha$ and give histograms
+    representations of the posterior margins for $\eta$ and $\alpha$, and a
+    scatterplot representation of $p\left(\eta, \alpha \mid y\right)$.
+
+    \begin{description}
+    \item[Solution:] 
+    \end{description}
+  \end{enumerate}
+\item The data in Table \ref{tab:p3_data}, taken from Wakefield et al. (1994),
+  were collected following the administration of a single 30mg dose of the drug
+  Cadralazine to a cardiac failure patient. The response $y_i$ represents the
+  drug concentration at time $x_i$, $i = 1,\ldots,8$. The most straightforward
+  model for these data is to assume
+  \begin{table}
+    \centering
+    \input{p3_data.tex}
+    \caption{Concentrations of the drug Cadralazine (in mg/liter, $y_i$) as a
+      function of time (in hours, $x_i$), for $i = 1,\ldots,8$.}
+    \label{tab:p3_data}
+  \end{table}
+
+  \begin{equation}
+    \log y_i = \mu\left(\beta\right) + \epsilon_i =
+    \log\left[
+      \frac{D}{V}\exp\left(-k_e x_i\right)
+    \right]
+    + \epsilon_i
+    \label{eqn:p3_model}
+  \end{equation}
+  where
+  $\epsilon_i \mid \sigma^2 \sim_\mathrm{iid}
+  \mathcal{N}\left(0,\sigma^2\right)$, $\beta = \left[V,k_e\right]$ and the dose
+  is $D = 30$. The parameters are the volume of distribution $V > 0$ and the
+  elimination rate $k_e$.
+  \begin{enumerate}
+  \item For this model obtain expressions for:
+    \begin{enumerate}
+    \item The log-likelihood function $L\left(\beta, \sigma^2\right)$.
+    \item The score function $S\left(\beta, \sigma^2\right)$.
+    \item The expected information matrix $I\left(\beta, \sigma^2\right)$.
+    \end{enumerate}
+  \item Obtain the MLE, and give an asymptotic 95\% confidence interval for each
+    element of $\beta$.
+  \item Plot the data, along with the fitted curve.
+  \item Using residuals, examine the appropriateness of the assumptions of the
+    above model. Does the model seem reasonable for these data?
+  \item The clearance $Cl = V \times k_e$ and elimination half-life
+    $x_{1/2} = \log 2/k_e$ are parameters of interest in this experiment. Find
+    the MLEs of these parameters along with asymptotic 95\% confidence intervals.
   \end{enumerate}
 \end{enumerate}
 \end{document}
