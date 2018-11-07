@@ -151,6 +151,8 @@
       2,048 samples from each chain with no thinning.
     \end{description}
   \end{enumerate}
+
+  \pagebreak
 \item Consider the data in Table \ref{tab:p2_data} contain data on a typical
   reliability experiment and give the failure stresses (in GPa) of four samples
   of carbon fibers of lengths 1, 10, 20 and 50mm.
@@ -224,10 +226,67 @@
     representations of the posterior margins for $\eta$ and $\alpha$, and a
     scatterplot representation of $p\left(\eta, \alpha \mid y\right)$.
 
+    \begin{figure}
+      \centering
+      \includegraphics{p2_trace.pdf}
+      \caption{Trace plots for the MCMC samples of the Weibull parameters.}
+      \label{fig:p2_trace}
+    \end{figure}
+
+    \begin{figure}
+      \centering
+      \includegraphics{p2_univariate.pdf}
+      \caption{Samples from MCMC were used to approximate the posterior
+        distribution of the parameters.}
+      \label{fig:p2_univariate}
+    \end{figure}
+
+    \begin{figure}
+      \centering
+      \includegraphics{p2_bivariate.pdf}
+      \caption{Correlation between the parameters can be estimated with
+        empirical joint distribution.}
+      \label{fig:p2_bivariate}
+    \end{figure}
+
+    \begin{table}
+      \scriptsize
+      \centering
+      \input{p2_summary.tex}
+      \caption{Posterior estimates of summary statistics calculated from the
+        MCMC samples.}
+      \label{tab:p2_summary}
+    \end{table}
+    
     \begin{description}
-    \item[Solution:] 
+    \item[Solution:] For each length, 32,768 MCMC samples were generated with
+      Hamiltonian Monte Carlo. Some thinning was used: 2 steps were skipped
+      between each sample.
+
+      The trace plots can be seen in Figure \ref{fig:p2_trace}. A significant
+      number of burn-in steps (65,536) were needed before the distribution
+      became stationary.
+
+      The empirical univariate distributions can be found in Figure
+      \ref{fig:p2_univariate}. The lognormal assumption seems appropriate.
+
+      The empirical joint distributions can be found in Figure
+      \ref{fig:p2_bivariate}. There is a triangle shape: as the shape parameter
+      $\eta$ increases there is less variance in the estimate of $\alpha$.
+
+      Posterior summary statistics can be found in Table
+      \ref{tab:p2_summary}. The 90\% credible interval can be taken from the
+      last two columns. These numbers are similar to the MLEs calculated in
+      Homework 3, but pulled towards the prior means and and standard
+      deviation. Since the number of samples is small the prior has a
+      significant effect.
+
+      Code to run the MCMC chain and recreate the plots can be found in
+      \href{http://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw6/failure\_stresses.ipynb}{\texttt{failure\_stresses.ipynb}}.
     \end{description}
   \end{enumerate}
+  
+  \pagebreak
 \item The data in Table \ref{tab:p3_data}, taken from Wakefield et al. (1994),
   were collected following the administration of a single 30mg dose of the drug
   Cadralazine to a cardiac failure patient. The response $y_i$ represents the
