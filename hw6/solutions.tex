@@ -394,40 +394,55 @@
   \item Obtain the MLE, and give an asymptotic 95\% confidence interval for each
     element of $\beta$.
 
+    \begin{table}
+      \centering
+      \input{p3_summary.tex}
+      \caption{Parameter estimates are computed using the MLE, and confidence
+        intervals use Fisher information.}
+      \label{tab:p3_summary}
+    \end{table}
+    
     \begin{description}
     \item[Solution:] Let $\bar{x}$ and $\bar{y}$ be the empirical means of the
       $x_i$ and $y_i$ respectively. The MLE can be obtained from Equation
       \ref{eqn:p3_score_function}: we solve
       $S\left(\hat{\beta}, \hat{\sigma}^2\right) = \mathbf{0}$ to obtain
-      \begin{align*}
+      \begin{align}
         \hat{V}
         &= \exp\left(
           -\left(\bar{y} - \log D - \hat{k}_e\bar{x}\right)
-          \right) \\
+          \right) \nonumber\\
         \hat{k}_e
-        &= -\frac{n^{-1}\sum_{i=1}^nx_iy_i - \bar{x}\bar{y}}{n^{-1}\sum_{i=1}^nx_i - \bar{x}^2}\\
+        &= -\frac{n^{-1}\sum_{i=1}^nx_iy_i - \bar{x}\bar{y}}{n^{-1}\sum_{i=1}^nx_i - \bar{x}^2}
+        \nonumber\\
         \hat{\sigma}^2
         &= \frac{1}{n}RSS\left(\hat{\beta}\right).
-      \end{align*}
+          \label{eqn:p3_mles}
+      \end{align}
 
       The approximate covariance matrix can be obtained by inverting Equation
       \ref{eqn:p3_fisher_information}:
       \begin{align}
-        \operatorname{Var}\left(\hat{\beta}, \hat{\sigma}^2\right) &\approx
-        \left[I_n\left(\hat{\beta}, \hat{\sigma}^2\right)\right]^{-1} \\
+        \operatorname{Var}\left(\hat{\beta}, \hat{\sigma}^2\right)
+        &\approx
+          \left[I_n\left(\hat{\beta}, \hat{\sigma}^2\right)\right]^{-1}
+          \label{eqn:p3_variances}\\
         &= \begin{pmatrix}
           \frac{\hat{\sigma}^2\hat{V}^2}{n^2\hat{\operatorname{Var}}\left(X\right)}\sum_{i=1}^nx_i^2 &
           -\frac{\hat{\sigma}^2\hat{V}}{n\hat{\operatorname{Var}}\left(X\right)}\bar{x} & 0 \\
           -\frac{\hat{\sigma}^2\hat{V}}{n\hat{\operatorname{Var}}\left(X\right)}\bar{x} &
             \frac{\hat{\sigma}^2}{n\hat{\operatorname{Var}}\left(X\right)} & 0 \\
           0 & 0 & 2\frac{\left(\hat{\sigma}^2\right)^2}{n}
-        \end{pmatrix}, \nonumber
+        \end{pmatrix}, \nonumber                  
       \end{align}
       where
       $\hat{\operatorname{Var}}\left(X\right) = n^{-1}\sum_{i=1}^nx_i^2 -
       \bar{x}^2$ is the empirical variance estimate of the $\left\{x_i\right\}$.
-    \end{description}
-    
+
+      Applying the formulas in Equations \ref{eqn:p3_mles} and
+      \ref{eqn:p3_variances}, we can compute parameter estimates and 95\%
+      confidence intervals, which can be found in Table \ref{tab:p3_summary}.
+    \end{description}    
   \item Plot the data, along with the fitted curve.
   \item Using residuals, examine the appropriateness of the assumptions of the
     above model. Does the model seem reasonable for these data?
