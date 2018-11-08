@@ -310,18 +310,124 @@
   \end{equation}
   where
   $\epsilon_i \mid \sigma^2 \sim_\mathrm{iid}
-  \mathcal{N}\left(0,\sigma^2\right)$, $\beta = \left[V,k_e\right]$ and the dose
-  is $D = 30$. The parameters are the volume of distribution $V > 0$ and the
+  \mathcal{N}\left(0,\sigma^2\right)$,
+  $\beta = \begin{pmatrix}V & k_e \end{pmatrix}^\intercal$ and the dose is
+  $D = 30$. The parameters are the volume of distribution $V > 0$ and the
   elimination rate $k_e$.
   \begin{enumerate}
   \item For this model obtain expressions for:
     \begin{enumerate}
-    \item The log-likelihood function $L\left(\beta, \sigma^2\right)$.
+    \item The log-likelihood function $l\left(\beta, \sigma^2\right)$.
     \item The score function $S\left(\beta, \sigma^2\right)$.
     \item The expected information matrix $I\left(\beta, \sigma^2\right)$.
     \end{enumerate}
+
+    \begin{description}
+    \item[Solution:] We have that
+      \[
+        \frac{\log y_i - \log D + \log V + k_ex_i}{\sigma} = \epsilon_i \sim
+        \mathcal{N}\left(0, 1\right),
+      \]
+      so $Y_i \sim \operatorname{LogNormal}\left(
+        \log D - \log V -  k_e x_i, \sqrt{\sigma^2}\right)$      
+      so the log-likelihood function is
+      \begin{align}
+        &l \left(\beta, \sigma^2\right)
+        =\log L\left(\beta, \sigma^2\right)
+          = \sum_{i=1}^n \log p\left(y_i \mid x_i, \beta, \sigma^2\right)
+          \label{p3:log_likelihood} \\
+        &= -\frac{n}{2}\log\left(2\pi\right)
+          - \sum_{i=1}^n \log y_i
+          - \frac{n}{2}\log\sigma^2
+          - \frac{1}{2\sigma^2}\sum_{i=1}^n \left(\log y_i - \log D +
+          \log V + k_e x_i\right)^2, \nonumber
+      \end{align}
+      where $n = 8$.
+
+      Taking the gradient of Equation \ref{p3:log_likelihood}, we find the score
+      function
+      \begin{align}
+        S\left(\beta\right)
+        &= \nabla^\intercal l\left(\beta, \sigma^2\right) \nonumber\\
+        &= \begin{pmatrix}
+          -\frac{1}{V\sigma^2}\sum_{i=1}^n \left(y_i - \log D +
+            \log V + k_e x_i\right) \\
+          -\frac{1}{\sigma^2}\sum_{i=1}^n x_i\left(y_i - \log D +
+            \log V + k_e x_i\right) \\
+          -\frac{n}{2\sigma^2} + \frac{1}{2\left(\sigma^2\right)^2}
+          \sum_{i=1}^n \left(y_i - \log D + \log V + k_e x_i\right)^2
+        \end{pmatrix}.
+        \label{eqn:p3_score_function}
+      \end{align}
+
+      Let $\delta_i\left(\beta\right) = y_i - \log D + \log V + k_e x_i$ and
+      $RSS\left(\beta\right) = \sum_{i=1}^n
+      \left[\delta_i\left(\beta\right)\right]^2.$ The expected information
+      matrix can also be calculated from Equation \ref{p3:log_likelihood}
+      \begin{align}
+        &I_n\left(\beta, \sigma^2\right)
+          = -\mathbb{E}\left[\nabla\nabla^\intercal l\left(\beta, \sigma^2\right)\right]
+        \label{eqn:p3_fisher_information} \\
+        &= \mathbb{E}\left[\begin{pmatrix}
+          \frac{n}{V^2\sigma^2} - \frac{1}{V^2\sigma^2}\sum_{i=1}^n \delta_i\left(\beta\right) &
+         \frac{1}{V\sigma^2}\sum_{i=1}^n x_i &
+         -\frac{1}{V\left(\sigma^2\right)^2}\sum_{i=1}^n\delta_i\left(\beta\right) \\
+          \frac{1}{V\sigma^2}\sum_{i=1}^n x_i &
+          \frac{1}{\sigma^2}\sum_{i=1}^n x_i^2 &
+          -\frac{1}{\left(\sigma^2\right)^2}\sum_{i=1}^n x_i\delta_i\left(\beta\right) \\
+          -\frac{1}{V\left(\sigma^2\right)^2}\sum_{i=1}^n\delta_i\left(\beta\right) &
+          -\frac{1}{\left(\sigma^2\right)^2}\sum_{i=1}^n x_i\delta_i\left(\beta\right) &
+          -\frac{n}{2\left(\sigma^2\right)^2} +
+          \frac{1}{\left(\sigma^2\right)^3}RSS\left(\beta\right)
+          \nonumber
+        \end{pmatrix}\right]. \\
+        &= \sum_{i=1}^n\begin{pmatrix}
+          \frac{1}{V^2\sigma^2} & \frac{1}{V\sigma^2}x_i & 0 \\
+          \frac{1}{V\sigma^2}x_i & \frac{1}{\sigma^2}x_i^2 & 0 \\
+          0 & 0 & \frac{1}{2\left(\sigma^2\right)^2}
+        \end{pmatrix}. \nonumber
+      \end{align}
+      since $\mathbb{E}\left[RSS\left(\beta\right)\right] = n\sigma^2$ and
+      $\mathbb{E}\left[S\left(\beta, \sigma\right)\right] = \mathbf{0} \implies
+      \mathbb{E}\left[\delta_i\right] = 0$.
+    \end{description}
   \item Obtain the MLE, and give an asymptotic 95\% confidence interval for each
     element of $\beta$.
+
+    \begin{description}
+    \item[Solution:] Let $\bar{x}$ and $\bar{y}$ be the empirical means of the
+      $x_i$ and $y_i$ respectively. The MLE can be obtained from Equation
+      \ref{eqn:p3_score_function}: we solve
+      $S\left(\hat{\beta}, \hat{\sigma}^2\right) = \mathbf{0}$ to obtain
+      \begin{align*}
+        \hat{V}
+        &= \exp\left(
+          -\left(\bar{y} - \log D - \hat{k}_e\bar{x}\right)
+          \right) \\
+        \hat{k}_e
+        &= -\frac{n^{-1}\sum_{i=1}^nx_iy_i - \bar{x}\bar{y}}{n^{-1}\sum_{i=1}^nx_i - \bar{x}^2}\\
+        \hat{\sigma}^2
+        &= \frac{1}{n}RSS\left(\hat{\beta}\right).
+      \end{align*}
+
+      The approximate covariance matrix can be obtained by inverting Equation
+      \ref{eqn:p3_fisher_information}:
+      \begin{align}
+        \operatorname{Var}\left(\hat{\beta}, \hat{\sigma}^2\right) &\approx
+        \left[I_n\left(\hat{\beta}, \hat{\sigma}^2\right)\right]^{-1} \\
+        &= \begin{pmatrix}
+          \frac{\hat{\sigma}^2\hat{V}^2}{n^2\hat{\operatorname{Var}}\left(X\right)}\sum_{i=1}^nx_i^2 &
+          -\frac{\hat{\sigma}^2\hat{V}}{n\hat{\operatorname{Var}}\left(X\right)}\bar{x} & 0 \\
+          -\frac{\hat{\sigma}^2\hat{V}}{n\hat{\operatorname{Var}}\left(X\right)}\bar{x} &
+            \frac{\hat{\sigma}^2}{n\hat{\operatorname{Var}}\left(X\right)} & 0 \\
+          0 & 0 & 2\frac{\left(\hat{\sigma}^2\right)^2}{n}
+        \end{pmatrix}, \nonumber
+      \end{align}
+      where
+      $\hat{\operatorname{Var}}\left(X\right) = n^{-1}\sum_{i=1}^nx_i^2 -
+      \bar{x}^2$ is the empirical variance estimate of the $\left\{x_i\right\}$.
+    \end{description}
+    
   \item Plot the data, along with the fitted curve.
   \item Using residuals, examine the appropriateness of the assumptions of the
     above model. Does the model seem reasonable for these data?
