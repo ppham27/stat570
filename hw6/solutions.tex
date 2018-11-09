@@ -444,11 +444,81 @@
       confidence intervals, which can be found in Table \ref{tab:p3_summary}.
     \end{description}    
   \item Plot the data, along with the fitted curve.
+    \begin{figure}
+      \centering
+      \includegraphics{p3_fitted_curve.pdf}
+      \caption{Parameters of Equation \ref{eqn:p3_model} were estimated with the
+        MLE. The model is plotted with the data. The shaded region is the 95\%
+        confidence interval.}
+      \label{fig:p3_fitted}
+    \end{figure}
+
+    \begin{figure}
+      \centering
+      \includegraphics{p3_fitted_curve_log.pdf}
+      \caption{The same plot as Figure \ref{fig:p3_fitted}, but the with the
+        $y$-axis scaled logarithmically.}
+      \label{fig:p3_fitted_log}
+    \end{figure}
+    \begin{description}
+    \item[Solution:] Plots of the data along with the fitted curve and 95\%
+      confidence interval regions can be seen in Figures \ref{fig:p3_fitted} and
+      \ref{fig:p3_fitted_log}. In the first plot, the untransformed data is
+      plotted. In the second, a $\log$-scaling is applied to the drug
+      concentration. Errors appear to increase with time.
+    \end{description}
   \item Using residuals, examine the appropriateness of the assumptions of the
     above model. Does the model seem reasonable for these data?
+    \begin{figure}
+      \centering
+      \includegraphics{p3_residuals.pdf}
+      \caption{On the left, residuals are plotted against time. On the right,
+        residuals are plotted in a Q-Q plot.}
+      \label{fig:p3_residuals}
+    \end{figure}
+    \begin{description}
+    \item[Solution:] Residuals $\hat{\epsilon}_i,\ldots,\hat{\epsilon}_n$ are
+      estimated with the MLE and plotted in Figure \ref{fig:p3_residuals}. The
+      normal model for the residauls does not appear to be appropriate. In the
+      Q-Q plot the lower-tailed residuals are far from the $y=x$ line, so the
+      errors are not normal. From the plot against time, the residuals appear
+      dependent on the time which violates the independence assumption.
+    \end{description}
   \item The clearance $Cl = V \times k_e$ and elimination half-life
-    $x_{1/2} = \log 2/k_e$ are parameters of interest in this experiment. Find
+    $x_{1/2} = \frac{\log 2}{k_e}$ are parameters of interest in this experiment. Find
     the MLEs of these parameters along with asymptotic 95\% confidence intervals.
+    \begin{description}
+    \item[Solution:] The MLE is invariant to reparameterization, so compute the
+      MLEs is easy:
+      \begin{align}
+        \hat{Cl}
+        &= \hat{V} \times \hat{k}_e \nonumber\\
+        \hat{x}_{1/2}
+        &= \frac{\log 2}{\hat{k}_e}.
+          \label{eqn:p3_mle_reparameterization}
+      \end{align}
+
+      Approximate variance can be computed with the delta method and previous
+      estimated variances:
+      \begin{align}
+        \hat{\operatorname{Var}}\left(\hat{Cl}\right)
+        &=\frac{\hat{\sigma}^2}{n\hat{\operatorname{Var}}\left(X\right)}
+          \begin{pmatrix}
+            \hat{k}_e & \hat{V}
+          \end{pmatrix} \begin{pmatrix}
+            \frac{\hat{V}^2}{n}\sum_{i=1}^nx_i^2 & -\hat{V}\bar{x} \\
+            -\hat{V}\bar{x} & 1
+          \end{pmatrix}
+        \begin{pmatrix}
+          \hat{k}_e \\ \hat{V}
+        \end{pmatrix}.
+        \nonumber\\
+        \hat{\operatorname{Var}}\left(\hat{x}_{1/2}\right)
+        &= \frac{\hat{\sigma}^2}{n\hat{\operatorname{Var}}\left(X\right)}
+          \left(\frac{\log 2}{\hat{k}_e^2}\right)^2.
+          \label{eqn:p3_variance_reparameterization}
+      \end{align}      
+    \end{description}
   \end{enumerate}
 \end{enumerate}
 \end{document}
