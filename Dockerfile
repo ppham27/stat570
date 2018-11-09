@@ -1,8 +1,8 @@
-FROM tensorflow/tensorflow:1.11.0-py3
+FROM tensorflow/tensorflow:1.12.0-py3
 
 # Install R
 RUN apt update
-RUN apt install apt-transport-https ed libgit2-dev libssl-dev -y
+RUN apt install apt-transport-https ed git libgit2-dev libssl-dev -y
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
 RUN add-apt-repository 'deb https://cloud.r-project.org/bin/linux/ubuntu xenial-cran35/'
 RUN apt update
