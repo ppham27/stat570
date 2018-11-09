@@ -229,7 +229,8 @@
     \begin{figure}
       \centering
       \includegraphics{p2_trace.pdf}
-      \caption{Trace plots for the MCMC samples of the Weibull parameters.}
+      \caption{Trace plots for the MCMC samples of the Weibull parameters
+        following burn-in.}
       \label{fig:p2_trace}
     \end{figure}
 
@@ -245,7 +246,7 @@
       \centering
       \includegraphics{p2_bivariate.pdf}
       \caption{Correlation between the parameters can be estimated with
-        empirical joint distribution.}
+        the empirical joint distributions.}
       \label{fig:p2_bivariate}
     \end{figure}
 
@@ -487,9 +488,17 @@
   \item The clearance $Cl = V \times k_e$ and elimination half-life
     $x_{1/2} = \frac{\log 2}{k_e}$ are parameters of interest in this experiment. Find
     the MLEs of these parameters along with asymptotic 95\% confidence intervals.
+
+    \begin{table}
+      \scriptsize
+      \centering
+      \input{p3_parameters_of_interest.tex}
+      \caption{Estimates and confidence intervals for parameters of interest.}
+      \label{tab:p3_parameters_of_interest}
+    \end{table}
     \begin{description}
-    \item[Solution:] The MLE is invariant to reparameterization, so compute the
-      MLEs is easy:
+    \item[Solution:] The MLE is invariant to reparameterization, so computing
+      the MLEs is easy:
       \begin{align}
         \hat{Cl}
         &= \hat{V} \times \hat{k}_e \nonumber\\
@@ -517,7 +526,15 @@
         &= \frac{\hat{\sigma}^2}{n\hat{\operatorname{Var}}\left(X\right)}
           \left(\frac{\log 2}{\hat{k}_e^2}\right)^2.
           \label{eqn:p3_variance_reparameterization}
-      \end{align}      
+      \end{align}
+
+      The resulting MLE estimates and confidence intervals by applying Equations
+      \ref{eqn:p3_mle_reparameterization} and
+      \ref{eqn:p3_variance_reparameterization} can be found in Table
+      \ref{tab:p3_parameters_of_interest}.
+
+      Code to reproduce this analysis can be found in
+      \href{nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw6/cadralazine.ipynb}{\texttt{hw6/cadralazine.ipynb}}.
     \end{description}
   \end{enumerate}
 \end{enumerate}
