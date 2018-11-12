@@ -194,6 +194,7 @@
     $\operatorname{var}\left(\hat{\beta}_1^\star\right)$, and
     $\operatorname{var}\left(\hat{\beta}_1^\ddagger\right)$. Comment on the
     efficiency of the estimators arising from each of the three models.
+    \label{part:p1_variance}
     \begin{description}
     \item[Solution:] While Equation \ref{eqn:p1_expectation} tells us that the
       expectation of our estimators is the same, the variances are different.
@@ -355,16 +356,17 @@
       From Equations \ref{eqn:p1_determinant},
       \ref{eqn:p1_determinant_second_term}, \ref{eqn:p1_determinant_third_term},
       we have that
-      \begin{align*}
+      \begin{align}
         \frac{1}{n}\det\left(\left(X^\ddagger\right)^\intercal X^\ddagger\right)
         &= n\sum_{i=1}^{2n}Y_{i0}^2 - \left(\sum_{i=1}^{n}Y_{i0}\right)^2 - \left(
-          \sum_{i=1}^{n}Y_{i0}\right)\left(\sum_{i=n+1}^{2n}Y_{i0}\right) \\
+          \sum_{i=1}^{n}Y_{i0}\right)\left(\sum_{i=n+1}^{2n}Y_{i0}\right) \nonumber\\
         &~~~- \left(\sum_{i=n+1}^{2n}Y_{i0}\right)\left(
           2\sum_{i=n + 1}^{2n} Y_{i0} - \sum_{i=1}^{2n}Y_{i0}
-          \right) \\
+          \right) \nonumber\\
         &= n\sum_{i=1}^{2n}Y_{i0}^2 - \left(\sum_{i=1}^{n}Y_{i0}\right)^2 -
           \left(\sum_{i=n+1}^{2n}Y_{i0}\right)^2.
-      \end{align*}
+          \label{eqn:p1_determinant_expanded}
+      \end{align}
       Using this result and substituting, we'll have that Equation
       \ref{eqn:p1_determinant_inequality} is true if and only if
       \begin{align*}
@@ -390,6 +392,58 @@
       \operatorname{var}\left(\hat{\beta}_1^\star\right)$, so the ANCOVA model
       is less efficient than the change model in general.
     \end{description}
+  \item Obtain an expression for $\hat{\gamma}$, in as simple a form as you can
+    find.
+    \begin{description}
+    \item[Solution:] From Equation \ref{eqn:p1_ancova_estimator_dist}, we have that
+      \begin{align}
+        \hat{\gamma}
+        &= \left(\left(\left(X^\ddagger\right)^\intercal X^\ddagger\right)^{-1}\left(X^\ddagger\right)^\intercal Y_{:,1}\right)_3 \label{eqn:p1_gamma_hat}\\
+        &= \sum_{k=1}^3 \left(\left(X^\ddagger\right)^\intercal X^\ddagger\right)^{-1}_{3k}
+          \left(\left(X^\ddagger\right)^\intercal Y_{:,1}\right)_{k} \nonumber\\
+        &= 
+          -n\frac{\sum_{i=1}^n Y_{i0}}{\det\left(\left(X^\ddagger\right)^\intercal X^\ddagger\right)}
+          \sum_{i=1}^{2n}Y_{i1} +
+          n\frac{\sum_{i=1}^n Y_{i0} - \sum_{i=n+1}^{2n}Y_{i0}}{\det\left(\left(X^\ddagger\right)^\intercal X^\ddagger\right)}
+          \sum_{i=n+1}^{2n}Y_{i1}
+          \nonumber\\
+        &~~~+ \frac{n^2}{\det\left(\left(X^\ddagger\right)^\intercal X^\ddagger\right)}
+          \sum_{i=1}^{2n}Y_{i0}Y_{i1} \nonumber\\
+        &= \frac{n}{\det\left(\left(X^\ddagger\right)^\intercal X^\ddagger\right)}
+          \left(n\sum_{i=1}^{2n}Y_{i0}Y_{i1}
+          -
+          \sum_{i=1}^n Y_{i0}\sum_{i=1}^n Y_{i1}
+          -
+          \sum_{i=n+1}^{2n} Y_{i0}\sum_{i=n+1}^{2n} Y_{i1}
+          \right),
+          \nonumber
+      \end{align}
+      where
+      $\left. n\middle/\det\left(\left(X^\ddagger\right)^\intercal X^\ddagger\right)\right.$
+      can be obtained from Equation \ref{eqn:p1_determinant_expanded}.
+    \end{description}
+  \item On the basis of the previous question, or otherwise, give intuitive
+    explanations for the efficiency results in Part \ref{part:p1_variance}.
+    \begin{description}
+    \item[Solution:] Denote the MLE estimates of the covariance between $Y_{i0}$
+      and $Y_{i1}$ without and with the intervention by
+      \begin{align}
+        \hat{\operatorname{cov}}\left(
+        Y_{i0}, Y_{i1} \mid x_{i1} = 0
+        \right)
+        &= \frac{1}{n}\sum_{i=1}^{n} Y_{i0}Y_{i1}
+        - \left(\frac{1}{n}\sum_{i=1}^{n} Y_{i0}\right)
+          \left(\frac{1}{n}\sum_{i=1}^{n} Y_{i1}\right) \label{eqn:p1_covariance}\\
+        \hat{\operatorname{cov}}\left(
+        Y_{i0}, Y_{i1} \mid x_{i1} = 1
+        \right)
+        &= \frac{1}{n}\sum_{i=n+1}^{2n} Y_{i0}Y_{i1}
+        - \left(\frac{1}{n}\sum_{i=n+1}^{2n} Y_{i0}\right)
+          \left(\frac{1}{n}\sum_{i=n+1}^{2n} Y_{i1}\right),
+          \nonumber
+      \end{align}
+      respectively.
+    \end{description}      
   \end{enumerate}
 \end{enumerate}
 \end{document}
