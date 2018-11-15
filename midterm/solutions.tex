@@ -130,15 +130,15 @@
         Thus, $\beta_1^\star$ is again the expected change in the logit of
         the U5MR after applying the treatment.
       \item[$\beta_1^\ddagger$:] Consider the different ways of writing $Y_{i1}$,
-        \begin{align*}
+        \begin{align}
           Y_{i1}
-          &= \beta_0 + \alpha_i + \beta_1x_{i1} + \epsilon_{i1} \\
-          &= \left(\beta_0 + \alpha_i + \beta_1x_{i0} + \epsilon_{i0}\right) +
-            \beta_1x_{i1} + \epsilon_{i1} - \epsilon_{i0} \\
-          &= Y_{i0} + \beta_1x_{i1} + \left(\epsilon_{i1} - \epsilon_{i0}\right) \\
-          &= \beta_0^\ddagger + \gamma Y_{i0} + \beta_1^\ddagger x_{i1} + \epsilon_i^\ddagger.
-        \end{align*}
-
+          &= \beta_0 + \alpha_i + \beta_1x_{i1} + \epsilon_{i1} \nonumber\\
+          &= \beta_0^\ddagger + \gamma Y_{i0} + \beta_1^\ddagger x_{i1} + \epsilon_i^\ddagger \nonumber\\
+          &= \beta_0^\ddagger + \beta_1^\ddagger x_{i1} +
+            \gamma \left(\beta_0 + \alpha_i + \epsilon_{i0}\right) + 
+            \epsilon_i^\ddagger \label{eqn:p1_ancova_model_algebra}
+        \end{align}
+        
         Define $X^\ddagger$ to be the $2n \times 3$ matrix with the first two
         columns being $X$ and third column being $Y_{:,0}$.
 
@@ -150,33 +150,63 @@
             \hat{\gamma}            
           \end{pmatrix}
           &= \left(\left(X^\ddagger\right)^\intercal X^\ddagger\right)^{-1}
-            \left(X^\ddagger\right)^\intercal Y_{:,1} \nonumber\\
-          &= \left(\left(X^\ddagger\right)^\intercal X^\ddagger\right)^{-1}
-            \left(X^\ddagger\right)^\intercal\left(
-            X^\ddagger \begin{pmatrix}
-              0 \\
-              \beta_1 \\
-              1
-            \end{pmatrix} + \epsilon_{:,1} - \epsilon_{:,0}
-          \right) \nonumber\\
-          &= \begin{pmatrix}
-              0 \\
-              \beta_1 \\
-              1
-            \end{pmatrix} + \left(\left(X^\ddagger\right)^\intercal X^\ddagger\right)^{-1}
-          \left(X^\ddagger\right)^\intercal\left(\epsilon_{:,1} - \epsilon_{:,0}\right) \nonumber\\
-          &\sim \mathcal{N}\left(
-            \begin{pmatrix}
-              0 \\
-              \beta_1 \\
-              1
-            \end{pmatrix},
-          2\sigma^2_\epsilon\left(\left(X^\ddagger\right)^\intercal X^\ddagger\right)^{-1}          
-          \right).
-          \label{eqn:p1_ancova_estimator_dist}
+            \left(X^\ddagger\right)^\intercal Y_{:,1}.
+          \label{eqn:p1_ancova_estimator}
         \end{align}
 
-        Again, $\hat{\beta}^\ddagger_1$ is an unbiased estimate of $\beta_1$.
+        From Equation \ref{eqn:p1_ancova_model_algebra}, note that
+        \begin{align*}
+          Y_{i1} - \gamma Y_{i0}          
+          &=  \left(1 - \gamma\right)\beta_0 + \beta_1 x_{i1} +
+            \left(1 - \gamma\right)\alpha_i - \gamma\epsilon_{i0} + \epsilon_{i1} \\
+          &= \beta_0^\ddagger + \beta_1^\ddagger X_{i1} + \epsilon_{i}^\ddagger.
+        \end{align*}
+
+        We can estimate $\gamma$ with Equation \ref{eqn:p1_gamma_hat}. Given
+        $\hat{\gamma}$, the least squares estimate for $\beta^\ddagger$ is
+        \begin{align}
+          \begin{pmatrix}
+            \hat{\beta}_0^\ddagger \\
+            \hat{\beta}_1^\ddagger \\
+          \end{pmatrix}
+          \mid \hat{\gamma}
+          &= \left(X^\intercal X\right)^{-1}X^\intercal\left(
+            Y_{:,1} - \hat{\gamma}Y_{:,0}
+            \right) \label{eqn:p1_ancova_estimator_dist}\\
+          &= \begin{pmatrix}
+            \left(1 - \hat{\gamma}\right)\beta_0 \\
+            \beta_1
+          \end{pmatrix} +
+          \left(X^\intercal X\right)^{-1}X^\intercal
+          \left(
+          \left(1 -\hat{\gamma}\right)\alpha_i +
+          \hat{\gamma}\epsilon_{i0} +
+          \epsilon_{i1}
+          \right)
+          \nonumber\\
+          &\sim \mathcal{N}\left(
+            \begin{pmatrix}
+              \left(1 - \hat{\gamma}\right)\beta_0 \\
+              \beta_1
+            \end{pmatrix},
+          \left(
+          \left(1 - \hat{\gamma}\right)^2\sigma_\alpha^2
+          + \hat{\gamma}^2\sigma_\epsilon^2 + \sigma_\epsilon^2
+          \right)
+          \left(X^\intercal X\right)^{-1}
+            \right).\nonumber
+        \end{align}
+        
+        Regardless of $\hat{\gamma}$, $\hat{\beta}^\ddagger_1$ is an unbiased
+        estimate of $\beta_1$, for
+        \[
+          \mathbb{E}\left[\hat{\beta}_1^\ddagger\right] =
+          \mathbb{E}_{\hat{\gamma}}\left[
+            \mathbb{E}\left[\hat{\beta}_1^\ddagger \mid \hat{\gamma}\right]
+          \right]
+          \mathbb{E}_{\hat{\gamma}}\left[\beta_1\right] = \beta_1
+        \]
+      by law of total expectation.
       \end{description}
 
       All in all, we have that the expected value of the estimates
@@ -236,161 +266,72 @@
           \label{eqn:p1_change_estimator_variance}
         \end{equation}
       \item[$\hat{\beta}_1^\ddagger$:] We use Equation
-        \ref{eqn:p1_ancova_estimator_dist} to compute the variance. First, we
-        note that
+        \ref{eqn:p1_ancova_estimator_dist} to compute the variance conditional
+        in terms of $\hat{\gamma}$. First, we note that
         \begin{align}
           &\operatorname{var}\left(\hat{\beta}_1^\ddagger\right)
-          = 2\sigma_\epsilon^2\left(\left(X^\ddagger\right)^\intercal X^\ddagger\right)^{-1}_{2,2}
-            \nonumber\\
-          &= 2\sigma_\epsilon^2\left(
-            \frac{2n\sum_{i=1}^{2n} Y_{i0}^2 - \left(\sum_{i=1}^{2n}Y_{i0}\right)^2}
-            {\det\left(\left(X^\ddagger\right)^\intercal X^\ddagger\right)}
-            \right),
+            = \left(
+            \left(1 - \hat{\gamma}\right)^2\sigma_\alpha^2 +
+            \hat{\gamma}^2\sigma_\epsilon^2 + \sigma_\epsilon^2
+            \right)\left(X^\intercal X\right)^{-1}_{22} \nonumber\\
+          &= \frac{2}{n}\left(
+            \left(1 - \hat{\gamma}\right)^2\sigma_\alpha^2 +
+            \hat{\gamma}^2\sigma_\epsilon^2 + \sigma_\epsilon^2
+            \right) \nonumber\\
+          &= \frac{2}{n}\left(
+            \hat{\gamma}^2\left(
+            \sigma_\alpha^2 + \sigma_\epsilon^2
+            \right)
+            - 2\hat{\gamma}\sigma_\alpha^2
+            + \sigma_\alpha^2 + \sigma_\epsilon^2
+            \right).
             \label{eqn:p1_ancova_estimator_variance}
-        \end{align}
-        where
-        \begin{align}
-          \det\left(\left(X^\ddagger\right)^\intercal X^\ddagger\right) =
-          ~&n\left(
-            2n\sum_{i=1}^{2n} Y_{i0}^2 - \left(\sum_{i=1}^{2n}Y_{i0}\right)^2
-            \right) \label{eqn:p1_determinant}\\
-          &- n \det\left(\sum_{i=1}^{2n}\begin{pmatrix}
-                x_{i1} & x_{i1}Y_{i0} \\
-                Y_{i0} & Y_{i0}^2
-              \end{pmatrix}\right) \nonumber\\
-          &- \left(\sum_{i=1}^{2n}x_{i1}Y_{i0}\right)\det\left(
-            \sum_{i=1}^{2n}
-            \begin{pmatrix}
-              1 & Y_{i0} \\
-              x_{i1} & x_{i1}Y_{i0}
-            \end{pmatrix}
-                  \right).
-            \nonumber
-        \end{align}
-        Note that
-        $\det\left(\left(X^\ddagger\right)^\intercal X^\ddagger\right) \gneq 0$
-        since $\left(X^\ddagger\right)^\intercal X^\ddagger$ is positive
-        definite. The first term is positive since it is $4n^3$ times the MLE
-        estimate for the variance of $Y_{:,0}$.
-
-        For the second term, note that
-        \begin{align}
-          \det\left(\sum_{i=1}^{2n}
-          \begin{pmatrix}
-            x_{i1} & x_{i1}Y_{i0} \\
-            Y_{i0} & Y_{i0}^2 \end{pmatrix}
-                     \right)
-                   &= n\sum_{i=1}^{2n}Y_{i0}^2 -
-                     \left(\sum_{i=n+1}^{2n}Y_{i0}\right)\left(\sum_{i=1}^{2n}Y_{i0}\right)
-          \label{eqn:p1_determinant_second_term}\\
-                   &= \left(n\sum_{i=1}^{n}Y_{i0}^2 - \left(\sum_{i=n+1}^{2n}Y_{i0}\right)
-                     \left(\sum_{i=1}^{n}Y_{i0}\right)\right)
-          \nonumber\\
-                   &~~~+ 
-                     \left(n\sum_{i=n+1}^{2n}Y_{i0}^2 - \left(\sum_{i=n+1}^{2n}Y_{i0}\right)^2\right),
-                     \nonumber
-        \end{align}
-        so the second term is $2n^3$ times an estimator for the variance of
-        $Y_{:,0}$.
-
-        For the third term, note that
-        \begin{align}
-          \det\left(
-          \sum_{i=1}^{2n}
-          \begin{pmatrix}
-            1 & Y_{i0} \\
-            x_{i1} & x_{i1}Y_{i0}
-          \end{pmatrix}\right)
-                   & = 2n\sum_{i=1}^{2n}x_{i1}Y_{i0} - \left(\sum_{i=1}^{2n}x_{i1}\right)
-                     \left(\sum_{i=1}^{2n}Y_{i0}\right), \nonumber\\
-              &= 2n\sum_{i=n+1}^{2n}Y_{i0} - n\sum_{i=1}^{2n}Y_{i0}.
-                \label{eqn:p1_determinant_third_term}
-        \end{align}
-        so the third term is $4n^2\sum_{i=1}^{2n}x_{i1}Y_{i0}$ times the MLE
-        estimate for the covariance of $x_{:,1}$ and $Y_{:,0}$, which should be
-        $0$ if the treatment is randomized.
-
-        Therefore, the numerator of Equation
-        \ref{eqn:p1_ancova_estimator_variance} is
-        \begin{equation}
-          \lim_{n\rightarrow\infty}\frac{
-            2n\sum_{i=1}^{2n} Y_{i0}^2 - \left(\sum_{i=1}^{2n}Y_{i0}\right)^2}{\left(2n\right)^2}
-          = \operatorname{var}\left(Y_{:,0}\right),
-        \end{equation}
-        and for the denominator, we use Equations
-        \ref{eqn:p1_determinant}, \ref{eqn:p1_determinant_second_term},
-        \ref{eqn:p1_determinant_third_term} to obtain
-        \begin{equation}
-          \lim_{n\rightarrow\infty}\frac{
-            \det\left(\left(X^\ddagger\right)^\intercal X^\ddagger\right)}{\left(2n\right)^2}
-          = \frac{n}{2}\operatorname{var}\left(Y_{:,0}\right),
-        \end{equation}
-        so
-        $\lim_{n\rightarrow\infty}
-        \operatorname{var}\left(\hat{\beta}_1^\ddagger\right) =
-        \frac{4}{n}\sigma_\epsilon^2$, which is the same as Equation
-        \ref{eqn:p1_change_estimator_variance}.
+        \end{align}      
       \end{description}
+      From Equations \ref{eqn:p1_follow_estimator_variance} and
+      \ref{eqn:p1_change_estimator_variance}, whether the follow-up model or
+      change model estimates $\beta_1$ more efficiently depends on whether the
+      variance of the random effect is larger than the random effect of the
+      measurement error. When the variance of the random effect is larger
+      ($\sigma^2_\alpha > \sigma^2_\epsilon$),
+      $\operatorname{var}\left(\hat{\beta}_1^\star\right) <
+      \operatorname{var}\left(\hat{\beta}_1^\dagger\right)$, so the change model
+      is more efficient. Otherwise if $\sigma^2_\alpha < \sigma^2_\epsilon$, the
+      follow-up model is more efficient.
 
-      Thus, we have that the follow-up model estimates $\beta_1$ most
-      efficiently if $\sigma_\alpha^2 < \sigma_\epsilon^2$. In most cases, we'd
-      expect that the measurement error is smaller than the random effect, that
-      is, $\sigma_\epsilon^2 < \sigma_\alpha^2$, so the change model would
-      estimate $\beta_1$ most efficiently in that case. Asymptotically, the
-      ANCOVA model is just as efficient as the change model.
-
-      In practice, since we don't have an infinite number of samples of
-      $\operatorname{var}\left(\hat{\beta}_1^\ddagger\right) \gneq
-      \operatorname{var}\left(\hat{\beta}_1^\star\right)$. To see this, we show
-      that
+      The ANCOVA model is more interesting. From Equation
+      \ref{eqn:p1_ancova_estimator_variance}, when $\hat{\gamma} = 0$,
+      efficiency is the same as the follow-up model, and when
+      $\hat{\gamma} = 1$, efficiency is the same as the change model.
+      $\operatorname{var}\left(\hat{\beta}_1^\ddagger\right)$ is a strictly
+      convex function of $\hat{\gamma}$ which is minimized at
       \begin{equation}
-        \frac{1}{n}\det\left(\left(X^\ddagger\right)^\intercal X^\ddagger\right) \lneq
-        \frac{1}{2}\left(2n\sum_{i=1}^{2n} Y_{i0}^2 - \left(\sum_{i=1}^{2n}Y_{i0}\right)^2\right),
-        \label{eqn:p1_determinant_inequality}
+        \hat{\gamma}^* = \frac{\sigma_\alpha^2}{\sigma_\alpha^2 + \sigma_\epsilon^2}.
+        \label{eqn:p1_gamma_hat_optimal}
       \end{equation}
-      which would imply that
-      $\operatorname{var}\left(\hat{\beta}^\ddagger\right) \gneq
-      \frac{4}{n}\sigma_\epsilon^2$ in Equation
-      \ref{eqn:p1_ancova_estimator_variance}.
-
-      From Equations \ref{eqn:p1_determinant},
-      \ref{eqn:p1_determinant_second_term}, \ref{eqn:p1_determinant_third_term},
-      we have that
+      By the Gauss-Markov theorem that states that the ordinary least squares
+      estimate gives the lowest variance estimate for unbiased estimators, we
+      must have that $\hat{\gamma} = \hat{\gamma}^*$, so
       \begin{align}
-        \frac{1}{n}\det\left(\left(X^\ddagger\right)^\intercal X^\ddagger\right)
-        &= n\sum_{i=1}^{2n}Y_{i0}^2 - \left(\sum_{i=1}^{n}Y_{i0}\right)^2 - \left(
-          \sum_{i=1}^{n}Y_{i0}\right)\left(\sum_{i=n+1}^{2n}Y_{i0}\right) \nonumber\\
-        &~~~- \left(\sum_{i=n+1}^{2n}Y_{i0}\right)\left(
-          2\sum_{i=n + 1}^{2n} Y_{i0} - \sum_{i=1}^{2n}Y_{i0}
-          \right) \nonumber\\
-        &= n\sum_{i=1}^{2n}Y_{i0}^2 - \left(\sum_{i=1}^{n}Y_{i0}\right)^2 -
-          \left(\sum_{i=n+1}^{2n}Y_{i0}\right)^2.
-          \label{eqn:p1_determinant_expanded}
-      \end{align}
-      Using this result and substituting, we'll have that Equation
-      \ref{eqn:p1_determinant_inequality} is true if and only if
-      \begin{align*}
-        n\sum_{i=1}^{2n}Y_{i0}^2
-        - \left(\sum_{i=1}^{n}Y_{i0}\right)^2 -
-        \left(\sum_{i=n+1}^{2n}Y_{i0}\right)^2
-        \lneq
-          n\sum_{i=1}^{2n} Y_{i0}^2 - \frac{1}{2}\left(\sum_{i=1}^{n}Y_{i0}
-           + \sum_{i=n+1}^{2n}Y_{i0}
-          \right)^2.
-      \end{align*}
-      With some algebra, this becomes
-      \begin{align*}
-        0 &\lneq \left(\sum_{i=1}^{n}Y_{i0}\right)^2
-        + \left(\sum_{i=n+1}^{2n}Y_{i0}\right)^2
-        -2\left(\sum_{i=1}^{n}Y_{i0}\right)\left(\sum_{i=n+1}^{2n}Y_{i0}\right) \\
-          &= \left(\sum_{i=1}^{n}Y_{i0} - \sum_{i=n+1}^{2n}Y_{i0}\right)^2,
-      \end{align*}
-      which is almost surely true, so we have proved Equation
-      \ref{eqn:p1_determinant_inequality}, which shows that
-      $\operatorname{var}\left(\hat{\beta}_1^\ddagger\right) \gneq
-      \frac{4}{n}\sigma_\epsilon^2 =
-      \operatorname{var}\left(\hat{\beta}_1^\star\right)$, so the ANCOVA model
-      is less efficient than the change model in general.
+        \operatorname{var}\left(\hat{\beta}_1^\ddagger\right)
+        &=
+        \frac{2}{n}\left(
+          \left(1 - \hat{\gamma}^*\right)^2\sigma_\alpha^2 +
+          \left(\hat{\gamma}^*\right)^2\sigma_\epsilon^2 + \sigma_\epsilon^2
+          \right) \nonumber \\
+        &= \frac{2}{n}\left(
+          \frac{\sigma_\alpha^2\sigma_\epsilon^2}{\sigma_\alpha^2 + \sigma_\epsilon^2}
+          +
+          \sigma_\epsilon^2
+          \right) 
+        \lneq \frac{2}{n}\left(
+          \max\left(\sigma_\alpha^2, \sigma_\epsilon^2\right) + \sigma_\epsilon^2
+          \right),
+          \label{eqn:p1_ancova_estimaor_variance_final}
+      \end{align}            
+      which results in $\hat{\beta}_1^\ddagger$ being a more efficient estimator
+      than both $\hat{\beta}_1^\dagger$ and $\hat{\beta}_1^\star$. The behavior
+      of $\hat{\gamma}$ will be investigated more fully in the next two parts.
     \end{description}
   \item Obtain an expression for $\hat{\gamma}$, in as simple a form as you can
     find.
@@ -419,8 +360,24 @@
           \nonumber
       \end{align}
       where
-      $\left. n\middle/\det\left(\left(X^\ddagger\right)^\intercal X^\ddagger\right)\right.$
-      can be obtained from Equation \ref{eqn:p1_determinant_expanded}.
+      $\left. n\middle/\det\left(\left(X^\ddagger\right)^\intercal
+          X^\ddagger\right)\right.$ can be obtained from Equation
+      \ref{eqn:p1_determinant_expanded}. One can also write Equation
+      \ref{eqn:p1_gamma_hat} in terms of empirical variance estimates as in
+      Equation \ref{eqn:p1_gamma_hat_variance}.
+
+      \begin{align}
+        \frac{1}{n}\det\left(\left(X^\ddagger\right)^\intercal X^\ddagger\right)
+        &= n\sum_{i=1}^{2n}Y_{i0}^2 - \left(\sum_{i=1}^{n}Y_{i0}\right)^2 - \left(
+          \sum_{i=1}^{n}Y_{i0}\right)\left(\sum_{i=n+1}^{2n}Y_{i0}\right) \nonumber\\
+        &~~~- \left(\sum_{i=n+1}^{2n}Y_{i0}\right)\left(
+          2\sum_{i=n + 1}^{2n} Y_{i0} - \sum_{i=1}^{2n}Y_{i0}
+          \right) \nonumber\\
+        &= n\sum_{i=1}^{2n}Y_{i0}^2 - \left(\sum_{i=1}^{n}Y_{i0}\right)^2 -
+          \left(\sum_{i=n+1}^{2n}Y_{i0}\right)^2.
+          \label{eqn:p1_determinant_expanded}
+      \end{align}
+
     \end{description}
   \item On the basis of the previous question, or otherwise, give intuitive
     explanations for the efficiency results in Part \ref{part:p1_variance}.
@@ -433,7 +390,7 @@
         \right)
         &= \frac{1}{n}\sum_{i=1}^{n} Y_{i0}Y_{i1}
         - \left(\frac{1}{n}\sum_{i=1}^{n} Y_{i0}\right)
-          \left(\frac{1}{n}\sum_{i=1}^{n} Y_{i1}\right) \label{eqn:p1_covariance}\\
+          \left(\frac{1}{n}\sum_{i=1}^{n} Y_{i1}\right) \label{eqn:p1_conditional_covariance}\\
         \hat{\operatorname{cov}}\left(
         Y_{i0}, Y_{i1} \mid x_{i1} = 1
         \right)
@@ -442,7 +399,54 @@
           \left(\frac{1}{n}\sum_{i=n+1}^{2n} Y_{i1}\right),
           \nonumber
       \end{align}
-      respectively.
+      respectively. Similarly, we can denote the MLE of the variances of
+      $Y_{i0}$ without and with the intervention by
+      \begin{align}
+        \hat{\operatorname{var}}\left(Y_{i0} \mid x_{i1} = 0\right)
+        &= \frac{1}{n}\sum_{i=1}^n Y_{i0}^2 - \left(\frac{1}{n}\sum_{i=1}^n Y_{i0}\right)^2
+        \label{eqn:p1_conditional_variance}\\
+        \hat{\operatorname{var}}\left(Y_{i0} \mid x_{i1} = 1\right)
+        &= \frac{1}{n}\sum_{i=n+1}^{2n} Y_{i0}^2 -
+          \left(\frac{1}{n}\sum_{i=n+1}^{2n} Y_{i0}\right)^2,
+          \nonumber
+      \end{align}
+      respectively. Substituting Equations \ref{eqn:p1_conditional_covariance}
+      and \ref{eqn:p1_conditional_variance} into the numerator and denominator
+      of Equation \ref{eqn:p1_gamma_hat}, respectively, we can write
+      \begin{equation}
+        \hat{\gamma} = 
+        \frac{\hat{\operatorname{cov}}\left(Y_{i0}, Y_{i1} \mid x_{i1} = 0\right) +
+          \hat{\operatorname{cov}}\left(Y_{i0}, Y_{i1} \mid x_{i1} = 1\right)}
+        {\hat{\operatorname{var}}\left(Y_{i0} \mid x_{i1} = 0\right) +
+          \hat{\operatorname{var}}\left(Y_{i0} \mid x_{i1} = 1\right)},
+        \label{eqn:p1_gamma_hat_variance}
+      \end{equation}
+      so we can interpret $\gamma$ as the overall autocorrelation between
+      $Y_{i0}$ and $Y_{i1}$. Based on the true model, we can compute
+      \begin{align*}
+        \operatorname{var}\left(Y_{i0}\right)
+        &= \operatorname{var}\left(\epsilon_{i0}\right) + \operatorname{var}\left(\alpha_i\right)
+        = \sigma_\epsilon^2 + \sigma_\alpha^2 \\
+        \operatorname{cov}\left(Y_{i0}, Y_{i1} \mid x_{i1} = 0\right) &=
+        \operatorname{cov}\left(Y_{i0}, Y_{i1} \mid x_{i1} = 1\right) \\
+        &= \mathbb{E}\left[\left(\alpha_i + \epsilon_{i0}\right)\left(
+          \alpha_i + \epsilon_{i1}
+          \right)\right] \\
+        &= \operatorname{var}\left(\alpha_i\right) = \sigma^2_\alpha,
+      \end{align*}
+      so the expected value of $\hat{\gamma}$ is
+      \begin{equation}
+        \mathbb{E}\left[\hat{\gamma}\right] \approx \frac{\sigma^2_\alpha}{\sigma^2_\alpha + \sigma^2_\epsilon}
+        \label{eqn:p1_gamma_hat_expected}     
+      \end{equation}
+      for large $n$ by Stutsky's theorem, which is the value in Equation
+      \ref{eqn:p1_gamma_hat_optimal} that minimizes the variance, so Equation
+      \ref{eqn:p1_gamma_hat_variance} agrees with our result in Equation
+      \ref{eqn:p1_ancova_estimator_variance_final}.
+
+      Morever, if we don't know $\sigma_\alpha^2$ and $\sigma_\epsilon^2$ a
+      priori and use MLE estimates in place, $\hat{\gamma}$ is the minimizer of
+      the estimated
     \end{description}      
   \end{enumerate}
 \end{enumerate}
