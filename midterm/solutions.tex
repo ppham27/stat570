@@ -327,7 +327,7 @@
         \lneq \frac{2}{n}\left(
           \max\left(\sigma_\alpha^2, \sigma_\epsilon^2\right) + \sigma_\epsilon^2
           \right),
-          \label{eqn:p1_ancova_estimaor_variance_final}
+          \label{eqn:p1_ancova_estimator_variance_final}
       \end{align}            
       which results in $\hat{\beta}_1^\ddagger$ being a more efficient estimator
       than both $\hat{\beta}_1^\dagger$ and $\hat{\beta}_1^\star$. The behavior
@@ -427,8 +427,8 @@
         \operatorname{var}\left(Y_{i0}\right)
         &= \operatorname{var}\left(\epsilon_{i0}\right) + \operatorname{var}\left(\alpha_i\right)
         = \sigma_\epsilon^2 + \sigma_\alpha^2 \\
-        \operatorname{cov}\left(Y_{i0}, Y_{i1} \mid x_{i1} = 0\right) &=
-        \operatorname{cov}\left(Y_{i0}, Y_{i1} \mid x_{i1} = 1\right) \\
+        \operatorname{cov}\left(Y_{i0}, Y_{i1} \mid x_{i1} = 0\right)
+        &= \operatorname{cov}\left(Y_{i0}, Y_{i1} \mid x_{i1} = 1\right) \\
         &= \mathbb{E}\left[\left(\alpha_i + \epsilon_{i0}\right)\left(
           \alpha_i + \epsilon_{i1}
           \right)\right] \\
@@ -444,10 +444,74 @@
       \ref{eqn:p1_gamma_hat_variance} agrees with our result in Equation
       \ref{eqn:p1_ancova_estimator_variance_final}.
 
-      Morever, if we don't know $\sigma_\alpha^2$ and $\sigma_\epsilon^2$ a
-      priori and use MLE estimates in place, $\hat{\gamma}$ is the minimizer of
-      the estimated
-    \end{description}      
+      Indeed, results from Section 3 of
+      \href{https://projecteuclid.org/euclid.aoms/1177706717}{Unbiased
+        Estimation of Certain Correlation Coefficients} tell us that
+      $\mathbb{E}\left[\hat{\gamma}\right] =
+      \frac{\sigma_\alpha^2}{\sigma_\alpha^2 + \sigma_\epsilon^2}$.
+    \end{description}
+  \item Briefly discuss the implications on inference under each of the three
+    models in the situation in which the intervention is non-randomized.
+    \begin{description}
+    \item[Solution:] Suppose the intervention is non-randomized, that is,
+      $\operatorname{cov}\left(Y_{i0}, x_{i1}\right) \neq 0$. This implies that
+      at least one of $\operatorname{cov}\left(\alpha_i, x_{i1}\right) \neq 0$
+      or $\operatorname{cov}\left(\epsilon_{i0}, x_{i1}\right) \neq 0$ is true.
+
+      The various error terms may no longer be centered
+      \begin{align*}
+        \epsilon_{i1}^\dagger
+        &= \alpha_i + \epsilon_{i1}  \\
+        \epsilon_{i1}^\star
+        &= -\epsilon_{i0} + \epsilon_{i1} \\
+        \epsilon_{i1}^\ddagger
+        &= \left(1-\gamma\right)\alpha_i - \gamma\epsilon_{i0} + \epsilon_{i1}
+      \end{align*}
+      at $0$ depending on the nature of the covariance which violates an
+      assumption of the Gauss-Markov theorem, so we may no longer obtain an
+      unbiased estimate of $\beta_1$.
+
+      Specifically, we would find
+      \begin{align*}
+        \mathbb{E}\left[\hat{\beta}_1^\dagger\right]
+        &= \beta_1 +
+          \left(
+          \mathbb{E}\left[\epsilon_{i1}^\dagger \mid x_{i1} = 1\right]
+          -
+          \mathbb{E}\left[\epsilon_{i1}^\dagger \mid x_{i1} = 0\right]
+          \right)
+        \\
+        \mathbb{E}\left[\hat{\beta}_1^\star \right]
+        &= \beta_1 +
+          \left(
+          \mathbb{E}\left[\epsilon_{i1}^\star \mid x_{i1} = 1\right]
+          -
+          \mathbb{E}\left[\epsilon_{i1}^\star \mid x_{i1} = 0\right]
+          \right) \\
+        \mathbb{E}\left[\hat{\beta}_1^\ddagger \right]
+        &= \beta_1 +
+          \left(
+          \mathbb{E}\left[\epsilon_{i1}^\ddagger \mid x_{i1} = 1\right]
+          -
+          \mathbb{E}\left[\epsilon_{i1}^\ddagger \mid x_{i1} = 0\right]
+          \right).
+      \end{align*}
+      So, if $x_{i1}$ is only correlated with $\epsilon_{i0}$,
+      $\hat{\beta}_1^\dagger$ will still be an unbiased estimator. If $x_{i1}$
+      is only correlated with $\alpha_{i}$, $\hat{\beta}_1^\star$ will still be
+      unbiased. Since $\epsilon_{i1}^\ddagger$ is function of both
+      $\epsilon_{i0}$ and $\alpha_i$, $\hat{\beta}_1^\ddagger$ will no longer be
+      an unbiased estimator.
+    \end{description}
   \end{enumerate}
+\item Again in the context of child mortality, let
+  \begin{align}
+    s_1 &= \mathbb{P}\left(\text{survived first year}\right)
+          \nonumber\\
+    s_2 &= \mathbb{P}\left(\text{survived years 1-5} \mid \text{survived first year}\right)
+          \nonumber\\
+    s_3 &= \mathbb{P}\left(\text{survived first 5 years}\right) = s_1 \times s_2.
+          \label{eqn:p2_survival_rates}
+  \end{align}
 \end{enumerate}
 \end{document}
