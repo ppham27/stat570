@@ -508,10 +508,261 @@
   \begin{align}
     s_1 &= \mathbb{P}\left(\text{survived first year}\right)
           \nonumber\\
-    s_2 &= \mathbb{P}\left(\text{survived years 1-5} \mid \text{survived first year}\right)
+    s_2 &= \mathbb{P}\left(\text{survived years 1--5} \mid \text{survived first year}\right)
           \nonumber\\
     s_3 &= \mathbb{P}\left(\text{survived first 5 years}\right) = s_1 \times s_2.
           \label{eqn:p2_survival_rates}
   \end{align}
+
+  Let $\hat{s}_{1i}$, $\hat{s}_{2i}$, and $\hat{s}_{3i}$ be estimates of
+  $s_{1i}$, $s_{2i}$, and $s_{3i}$ for $i = 1,\ldots,n$ areas in a country. Let
+  $Y_i = \log \hat{s}_{1i}$, $Z_i = \log \hat{s}_{2i}$, and
+  $X_i= \log\hat{s}_{3i}$.
+
+  Let
+  \begin{align}
+    \mathbb{E}\left[Y_i\right]
+    &= \mu_1 \nonumber\\
+    \operatorname{var}\left(Y_i\right)
+    &= \Sigma_{11} \nonumber\\
+    \mathbb{E}\left[Z_i\right]
+    &= \mu_2 \nonumber\\
+    \operatorname{var}\left(Z_i\right)
+    &= \Sigma_{22} \nonumber\\
+    \operatorname{cov}\left(Y_i,Z_i\right)
+    &= \Sigma_{12}. \label{eqn:p2_parameters}
+  \end{align}
+
+  \begin{enumerate}
+  \item Suppose $Y_i$ and $X_i$ have a bivariate normal distribution. Write down
+    the mean vector and variance-covariance matrix for $Y_i$ and $X_i$.
+    \begin{description}
+    \item[Solution:] Let $U_i$ and $V_i$ be independent and identically
+      distributed standard normal random variables. Then, we must have that
+      \begin{equation}
+        \begin{pmatrix}
+          X_i \\
+          Y_i
+        \end{pmatrix} = \mu + A\begin{pmatrix}
+          U_i \\
+          V_i
+        \end{pmatrix},
+        \label{eqn:p2_bivariate_normal_definition}
+      \end{equation}
+      where $AA^\intercal = \Sigma$ if $\begin{pmatrix}
+        X_i & Y_i
+      \end{pmatrix}^\intercal$ is drawn from a bivariate normal. From Equation
+      \ref{eqn:p2_parameters}, we can choose
+      \begin{equation}
+        A = \begin{pmatrix}
+          \sqrt{\Sigma_{11}} & 0 \\
+          \frac{\Sigma_{12}}{\sqrt{\Sigma_{11}}} &
+          \sqrt{\frac{\Sigma_{11}\Sigma_{22} - \Sigma_{12}^2}{\Sigma_{11}} }
+        \end{pmatrix}.
+        \label{eqn:p2_bivariate_normal_A}
+      \end{equation}
+      
+      The parameterization must be
+      \begin{equation}
+        \begin{pmatrix}
+          X_i \\
+          Y_i
+        \end{pmatrix} \sim
+        \operatorname{Normal}\left(
+          \begin{pmatrix}
+            \mu_1 \\ \mu_2
+          \end{pmatrix},
+          \begin{pmatrix}
+            \Sigma_{11} & \Sigma_{12} \\
+            \Sigma_{12} & \Sigma_{22}
+          \end{pmatrix}
+        \right).
+        \label{eqn:p2_xy_dist}
+      \end{equation}
+    \end{description}
+  \item Show that $\mathbb{E}\left[Y_i \mid X_i = x\right]$ takes the form of a
+    simple linear regression model and identify $\beta_0$ and
+    $\beta_1$. Carefully interpret $\beta_1$.
+
+    \begin{description}
+    \item[Solution:] From Equation \ref{eqn:p2_bivariate_normal_definition}, we
+      have that
+      \begin{align*}
+        X_i &= \mu_{1} + A_{11}U_i + A_{12}V_i \\
+        Y_i &= \mu_{2} + A_{21}U_i + A_{22}V_i.
+      \end{align*}
+      If we fix $X_i = x$ and use the defintion of $A$ in Equation
+      \ref{eqn:p2_bivariate_normal_A}, we have that
+      \begin{align}
+        Y_i
+        &= \mu_2 + A_{21}U + \frac{A_{22}}{A_{12}}\left(
+          x - A_{11}U - \mu_1
+          \right) \nonumber\\
+        &= \mu_2 + \frac{A_{21}}{A_{11}}U + A_{22}V \nonumber\\
+        &= \mu_2 + \frac{\Sigma_{12}}{\Sigma_{22}}\left(x - \mu_1\right)
+          + \sqrt{\frac{\Sigma_{11}\Sigma_{22} - \Sigma_{12}^2}{\Sigma_{11}}}V \nonumber\\
+        &\sim \mathcal{N}\left(
+          \mu_2 + \frac{\Sigma_{12}}{\Sigma_{11}}\left(x - \mu_1\right)
+          ,
+          \frac{\Sigma_{11}\Sigma_{22} - \Sigma_{12}^2}{\Sigma_{11}}
+          \right). \label{eqn:p2_conditional_y_dist}
+      \end{align}
+
+      Equation \ref{eqn:p2_conditional_y_dist} gives us
+      \begin{equation}
+        \mathbb{E}\left[Y_i \mid X_i = x\right] =
+        \mu_2 + \frac{\Sigma_{12}}{\Sigma_{11}}\left(x - \mu_1\right)
+        = \mu_2 - \frac{\Sigma_{12}}{\Sigma_{11}}\mu_1 + \frac{\Sigma_{12}}{\Sigma_{11}}x.
+        \label{eqn:p2_conditional_y_expectation}
+      \end{equation}
+
+      Imagine fitting the model
+      \begin{equation}
+        Y_{i} = \beta_0 + \beta_1X_i + \epsilon_i.
+        \label{eqn:p2_y_model}
+      \end{equation}
+
+      Equations \ref{eqn:p2_conditional_y_dist} and
+      \ref{eqn:p2_conditional_y_expectation} show that the ordinary least
+      squares estimator for Equation \ref{eqn:p2_y_model} is
+      \begin{equation}
+        \begin{pmatrix}
+          \hat{\beta}_0 \\
+          \hat{\beta}_1
+        \end{pmatrix}
+        \mid X
+        \sim \mathcal{N}\left(
+        \begin{pmatrix}
+          \mu_2 - \frac{\Sigma_{12}}{\Sigma_{11}}\mu_1 \\
+          \frac{\Sigma_{12}}{\Sigma_{11}}
+        \end{pmatrix},
+        \frac{\Sigma_{11}\Sigma_{22} - \Sigma_{12}^2}{\Sigma_{11}}
+        \left(X^\intercal X\right)^{-1}
+      \right),
+      \label{eqn:p2_estimator_dist}
+    \end{equation}
+    where $X$ is a $n \times 2$ matrix with $1$s in the first column and
+    $X_{i2} = X_i$ in the second column.
+
+    From Equations \ref{eqn:p2_y_model} and \ref{eqn:p2_estimator_dist}, we see
+    that $\beta_1$ quantifies the correlation between $X_i$ and $Y_i$: given an
+    observation $X_i$ that is $1$ unit greater, we would expect to observe a
+    difference of $\beta_1$ units in $Y_i$. Note that
+    \begin{equation}
+      \mathbb{E}\left[\hat{\beta}_1\right] = \frac{\Sigma_{12}}{\Sigma_{11}}
+      = \rho\sqrt{\frac{\Sigma_{22}}{\Sigma_{11}}},      
+    \end{equation}
+    where $\rho = \frac{\Sigma_{12}}{\sqrt{\Sigma_{11}\Sigma_{22}}}$ is the
+    Pearson correlation coefficient, so $\beta_1$ is the correlation between
+    $X_i$ and $Y_i$ scaled by the standard errors.
+
+    Rewriting the model in Equation \ref{eqn:p2_y_model} in terms of $s_{1i}$
+    and $s_{2i}$, we have that
+    \begin{align*}
+      \log s_{1i}
+      &= \beta_0 + \beta_1\log s_{3i} + \epsilon_i \\
+      s_{1i}
+      &= \exp\left(\beta_0\right) \times s_{3i}^{\beta_1} \times \exp\left(\epsilon_i\right) \\
+      s_{1i}^{1/\beta_1} =
+      \left(\frac{1}{s_{1i}}\right)^{-1/\beta_1}
+      &= \exp\left(\frac{\beta_0}{\beta_1}\right) \times s_{3i} \times
+        \exp\left(\frac{\epsilon_i}{\beta_1}\right).
+    \end{align*}
+    $\beta_1$ indicates how much to weight the probability of having survived
+    the first 5 years in computing the expected probability of having survived
+    the first year. If one interprets the probability of dying as exponential
+    process, $1/\beta_1$ can be seen as how fast the probability of survival
+    decays over a 5 year period. Specifically, with each year the probability of
+    suriviving decays $\frac{1}{5\beta_1}\log s_{1i}$ on average.
+
+    Another way to interpret this is by writing Equation \ref{eqn:p2_y_model} as
+    \begin{equation*}
+      s_{1i}
+      = \exp\left(\beta_0\right) \times s_{3i}^{\beta_1 - 1} \times s_{3i}
+      \times \exp\left(\epsilon_i\right).
+    \end{equation*}
+    Then, $\exp\left(\beta_0\right) \times s_{3i}^{\beta_1 - 1}$ becomes an
+    estimate of $s_{2i}^{-1}$ since $s_{3i} = s_{1i} \times s_{2i}$.
+    
+    Note that $s_{3i} \leq 1$, so $X_i \leq 0$. So large values of $\beta_1$
+    drive $s_{i1}$ to $0$. $0$ would mean that $X_i$ has no association with
+    $Y_i$.
+  \end{description}
+\item The data on the website contain estimates of the log first year survival
+  ($Y_i$) and log five year survival ($X_i$) for $n = 47$ areas in Kenya in the
+  period 2000--2004. Fit a linear model and hence summarize the association
+  between first year and first five year survival, in these data.
+
+  \begin{table}
+    \centering
+    \input{p2_estimates.tex}
+    \caption{Least squares estimates for the model in Equation \ref{eqn:p2_y_model}.}
+    \label{tab:p2_y_model_estimates}
+  \end{table}
+  
+  \begin{description}
+  \item[Solution:] The result of fitting a linear model can be found in Table
+    \ref{tab:p2_y_model_estimates}. The association of $Y_{i}$ with $X_{i}$ is
+    statistically significant.
+
+    Over $5$ years, the probability of survival decayed at a rate of
+    $\frac{1}{5\beta_1}\log s_{1i} \approx 0.291\log s_{1i}$ each year on
+    average.
+  \end{description}
+\item Now suppose we are presented with a new area, for which only five year
+  survival is available and known to be 0.95. Obtain point estimates and a
+  95\% confidence interval for:
+  \begin{enumerate}
+  \item Surviving the first year.
+  \item Death within the first year.
+  \item Death between ages 1 and 5, given survival until age 1.
+  \item Death between ages 1 and 5.
+  \end{enumerate}
+
+  \begin{description}
+  \item[Solution:] Note that $\hat{\beta}_0 = \bar{Y} - \hat{\beta}_1\bar{X}$,
+    so a prediction at a given point $x_0$ is
+    \begin{equation}
+      \hat{y}_0
+      = \left(\bar{Y} - \hat{\beta}_1\bar{X}\right) + \hat{\beta}_1x_0 + \epsilon_0
+      = \bar{Y} + \hat{\beta}_1\left(x_0 - \bar{X}\right)  + \epsilon_0.
+    \end{equation}    
+  \end{description}
+\item Can you see any problems with this model?
+  \begin{description}
+  \item[Solution:] Yes. Recall from the problem description that
+    $\exp\left(X_i\right) = s_{3i} = s_{1i} \times s_{2i} =
+    \exp\left(Y_i\right)\exp\left(Z_i\right) = \exp\left(Y_i + Z_i\right)$.
+
+    Let $\sigma^2 = \frac{\Sigma_{11}\Sigma_{22} - \Sigma_{12}^2}{\Sigma_{11}}.$
+    We can estimate it with the MLE:
+    \begin{equation}
+      \hat{\sigma}^2 = \frac{\hat{\Sigma}_{11}\hat{\Sigma}_{22} - \hat{\Sigma}_{12}^2}
+      {\hat{\Sigma}_{11}},
+    \end{equation}
+    where $\hat{\Sigma}$ is the sample covariance matrix for the $X_i$ and $Y_i$.
+
+    For the variance, we have that
+    \begin{align*}
+      \operatorname{var}\left(
+      \hat{y}_0
+      \mid x_0, X
+      \right)
+      &= \sigma^2 + \frac{\sigma^2}{n} + \sigma^2\left(X^\intercal X\right)^{-1}_{22}
+        \left(x - \bar{X}\right)^2.
+    \end{align*}
+    
+    Since the sample size is fairly large, using the plug-in estimators, we have
+    an approximate normal distribution,
+    \begin{equation}
+      \hat{y} \mid x_0, X \sim \mathcal{N}\left(
+        \hat{\beta}_0 + \hat{\beta}_1x_0,
+        \hat{\sigma}^2\left(
+          1 + \frac{1}{n} + \left(X^\intercal X\right)^{-1}_{22}\left(x - \bar{X}\right)^2
+        \right)
+      \right).
+    \end{equation}    
+  \end{description}
+\end{enumerate}
 \end{enumerate}
 \end{document}
