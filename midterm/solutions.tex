@@ -676,11 +676,12 @@
     suriviving decays $\frac{1}{5\beta_1}\log s_{1i}$ on average.
 
     Another way to interpret this is by writing Equation \ref{eqn:p2_y_model} as
-    \begin{equation*}
+    \begin{equation}
       s_{1i}
       = \exp\left(\beta_0\right) \times s_{3i}^{\beta_1 - 1} \times s_{3i}
       \times \exp\left(\epsilon_i\right).
-    \end{equation*}
+      \label{eqn:p2_s2_parameterization}
+    \end{equation}
     Then, $\exp\left(\beta_0\right) \times s_{3i}^{\beta_1 - 1}$ becomes an
     estimate of $s_{2i}^{-1}$ since $s_{3i} = s_{1i} \times s_{2i}$.
     
@@ -719,6 +720,15 @@
   \item Death between ages 1 and 5.
   \end{enumerate}
 
+  \begin{table}
+    \scriptsize
+    \centering    
+    \input{p2_parameters_of_interest.tex}
+    \caption{Predicted parameters of interest for a new area with
+      $s_{3,0} = 0.95$.}
+    \label{tab:p2_parameters_of_interest}
+  \end{table}
+  
   \begin{description}
   \item[Solution:] Note that $\hat{\beta}_0 = \bar{Y} - \hat{\beta}_1\bar{X}$,
     so a prediction at a given point $x_0$ is
@@ -726,15 +736,10 @@
       \hat{y}_0
       = \left(\bar{Y} - \hat{\beta}_1\bar{X}\right) + \hat{\beta}_1x_0 + \epsilon_0
       = \bar{Y} + \hat{\beta}_1\left(x_0 - \bar{X}\right)  + \epsilon_0.
-    \end{equation}    
-  \end{description}
-\item Can you see any problems with this model?
-  \begin{description}
-  \item[Solution:] Yes. Recall from the problem description that
-    $\exp\left(X_i\right) = s_{3i} = s_{1i} \times s_{2i} =
-    \exp\left(Y_i\right)\exp\left(Z_i\right) = \exp\left(Y_i + Z_i\right)$.
+      \label{eqn:p2_prediction}
+    \end{equation}
 
-    Let $\sigma^2 = \frac{\Sigma_{11}\Sigma_{22} - \Sigma_{12}^2}{\Sigma_{11}}.$
+        Let $\sigma^2 = \frac{\Sigma_{11}\Sigma_{22} - \Sigma_{12}^2}{\Sigma_{11}}.$
     We can estimate it with the MLE:
     \begin{equation}
       \hat{\sigma}^2 = \frac{\hat{\Sigma}_{11}\hat{\Sigma}_{22} - \hat{\Sigma}_{12}^2}
@@ -742,7 +747,7 @@
     \end{equation}
     where $\hat{\Sigma}$ is the sample covariance matrix for the $X_i$ and $Y_i$.
 
-    For the variance, we have that
+    For the variance of Equation \ref{eqn:p2_prediction}, we have that
     \begin{align*}
       \operatorname{var}\left(
       \hat{y}_0
@@ -755,14 +760,73 @@
     Since the sample size is fairly large, using the plug-in estimators, we have
     an approximate normal distribution,
     \begin{equation}
-      \hat{y} \mid x_0, X \sim \mathcal{N}\left(
+      \hat{y}_0 \mid x_0, X \sim \mathcal{N}\left(
         \hat{\beta}_0 + \hat{\beta}_1x_0,
         \hat{\sigma}^2\left(
           1 + \frac{1}{n} + \left(X^\intercal X\right)^{-1}_{22}\left(x - \bar{X}\right)^2
         \right)
       \right).
-    \end{equation}    
+      \label{eqn:p2_prediction_dist}
+    \end{equation}
+
+    Let $\Phi$ be the cumulative distribution function of the normal
+    distribution. The 95\% confidence interval is
+    \[
+      \left[
+        \hat{y}_0 + \Phi^{-1}\left(0.025\right)
+        \sqrt{\hat{\operatorname{var}}\left(\hat{y}_0 \mid x_0, X\right)},
+        \hat{y}_0 + \Phi^{-1}\left(0.975\right)
+        \sqrt{\hat{\operatorname{var}}\left(\hat{y}_0 \mid x_0, X\right)}
+      \right],
+    \]
+    which we can compute with Equation \ref{eqn:p2_prediction_dist}.
+    $\hat{y}_0 = \hat{\beta}_0 + \hat{\beta}_1x_0$ The true $\log$ probability
+    of surviving 1 year in the new area with should fall in this compute
+    confidence interval 95\% of the time this study is done.
+
+    To estimate the quantities of interest, we can reparameterize. The
+    probability of surviving the first year is $\exp\left(\hat{y}_0\right)$. The
+    probability of death is $1 - \exp\left(\hat{y}_0\right)$.
+
+    Since $s_{2i} = s_{3i}/s_{1i}$, we have that the estimated probability of
+    survival having survived the first year is
+    $\exp\left(x_0\right)/\exp\left(\hat{y}_0\right)$. Death between the ages of
+    1 and 5 is $s_{1i} \times \left(1 - s_{2i}\right)$, which can be estimated
+    as \[     
+      \exp\left(\hat{y}_0\right) \times \left(1 -
+        \frac{\exp\left(x_0\right)}{\exp\left(\hat{y}_0\right)}\right)
+      = \exp\left(\hat{y}_0\right) - \exp\left(x_0\right).
+    \]
+    
+    Since these are all monotonic transformations of $\hat{y}_0$ confidence
+    intervals can be computed by reparameterizing the end points. These
+    estimates can be seen in Table \ref{tab:p2_parameters_of_interest} for
+    $x_0 = \log\left(0.95\right)$.
+
+    Computations can be found in
+    \href{http://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/midterm/mortality.ipynb}{\texttt{mortality.ipynb}}.
   \end{description}
+\item Can you see any problems with this model?
+  \begin{description}
+  \item[Solution:] Yes. Recall from the problem description that
+    $\exp\left(X_i\right) = s_{3i} = s_{1i} \times s_{2i} =
+    \exp\left(Y_i\right)\exp\left(Z_i\right) = \exp\left(Y_i + Z_i\right)$. The
+    probability of surviving 1 year must be greater than or equal to the
+    probability of surviving 5 years, but the model doesn't enforce this
+    constraint, so inference can produce strange results.
+
+    In particular, the probabilities $s_{1i}$, $s_{2i}$, and $s_{3i}$ are always
+    between 0 and 1, so $Y_i$ and $X_i$ cannot possibly be normally
+    distributed. We see how this is problematic in Table
+    \ref{tab:p2_parameters_of_interest} where we obtain probabilites that are
+    less than 0 or greater than 1. Negative values of $\beta_1$ could produce
+    estimates of $s_{1i}$ greater than 1, too.
+
+    More subjectively, the model is hard to interpret. It's more natural to
+    think about the probability of surviving 5 years given the probability of
+    having survived 1 year given the real-world generative model that one must
+    have had to survived 1 year in order to have survived 5 years.
+  \end{description}  
 \end{enumerate}
 \end{enumerate}
 \end{document}
