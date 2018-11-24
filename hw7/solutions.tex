@@ -215,6 +215,42 @@
       \label{eqn:p3_prediction_variance}
     \end{equation}
     using Equation \ref{eqn:p3_gamma_hat_dist}.
+
+    From Equation \ref{eqn:p3_prediction_variance}, we can compute confidence
+    intervals for the log odds ratio and exponentiate to get confidence
+    intervals for the odds ratio since $\log$ is a monotonic
+    transformation. Doing so results in the estimates in Table
+    \ref{tab:p3_odds_ratios}.
+
+    The odds ratio is how much more likely one is to have \texttt{Moderate} or
+    \texttt{Impaired} mental impairment. Exponentiating Equation
+    \ref{eqn:p3_prediction}, we have
+    \begin{equation}
+      \exp\left(\theta_i\right) =
+      \exp\left(\gamma_0\right)
+      \exp\left(\gamma_1x_{1i}\right)
+      \exp\left(\gamma_2x_{2i}\right).
+    \end{equation}
+    
+    $\exp\left(\gamma_0\right)$ is the expected odds ratio for a subject with
+    $0$ SES and no life events. $\exp\left(\gamma_1\right)$ is the expected odds
+    ratio between a subject with SES 1 and SES 0. $\exp\left(\gamma_2\right)$ is
+    the expected odds ratio for a subject with an additional life event.
   \end{description}
+  \begin{table}
+    \small
+    \centering
+    \input{p3_odds_ratios.tex}
+    \caption{Estimates for the odds ratios given $\mathbf{x}_i$ with
+      $\hat{\bm\gamma}$.}
+    \label{tab:p3_odds_ratios}
+  \end{table}
+\item We will now consider analyses that do not coarsen the data. We begin by
+  defining notation in a generic situation. Suppose the random variable, Yi, for
+  individual i, i = 1,...,n, can take values 0,1,2,...,J − 1 (so that that there
+  are J levels). Assume that for individual i, the data follow a multinomial
+  distribution, Yi|pi ∼ind Multinomial(1,pi) where pi = [pi0, . . . , pi,J−1]T
+  and pij represents the probability
+
 \end{enumerate}
 \end{document}
