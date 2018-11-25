@@ -406,16 +406,16 @@
     \centering
     \includegraphics{p6_descriptive.pdf}
     \caption{Boxplots showing the relationship between mental impairment, SES
-      and Life Events.}
+      and life events.}
     \label{fig:p6_descriptive}
   \end{figure}
   
   \begin{description}
   \item[Solution:] See Figure \ref{fig:p6_descriptive}. Conditioned on SES, the
-    expected probability of having a more severe form of Mental Impairment
-    increases with Life Events.
+    expected probability of having a more severe form of mental impairment
+    increases with life events.
 
-    The effect of SES on observed Mental Impairment is more ambiguous. When
+    The effect of SES on observed mental impairment is more ambiguous. When
     looking at the \texttt{Well} and \texttt{Moderate} levels, it seems that SES
     may have a slight protective effect against mental impairment, for we
     observe many subjects with a high number of life events but no mental
@@ -423,7 +423,7 @@
     of this phenomenon in the \texttt{Mild} level. Ultimately, there's probably
     not enough data to come to any conclusion about SES.
   \end{description}
-\item Fit the proportional odds models:
+\item \label{part:p7} Fit the proportional odds models:
   \begin{align}
     \log\frac{\pi_{ij}}{1 - \pi_{ij}}
     &= \alpha_j^{(0)}
@@ -439,7 +439,7 @@
       \label{eqn:p7_model_4}
   \end{align}
   Compare models using likelihood ratio statistics, and summarize the
-  association between mental impairment, SES and Life Events, using your favored
+  association between mental impairment, SES and life events, using your favored
   model.
 
   \input{p7_model_summary.tex}
@@ -449,8 +449,8 @@
     \ref{tab:p7_model_summary}. The coefficient estimates agree with what we saw
     in Figure \ref{fig:p6_descriptive} and the discussion in the solution of
     Part \ref{part:p6}: positive $\beta_2$ indicate that observed severity of
-    Mental Impairment increases with Life Events, and negative $\beta_1$
-    indicate that SES lessens the observed severity of Mental Impairment.
+    mental impairment increases with life events, and negative $\beta_1$
+    indicate that SES lessens the observed severity of mental impairment.
 
     Wilks' theorem tells us how to compute a test statistic for a log-likelihood
     ratio test:
@@ -469,30 +469,42 @@
     various pairs of models with the last column of Table
     \ref{tab:p7_model_summary} when one of the models in the pair contains a
     superset of the parameters in the null model.
-    
   \end{description}
 \item Provide a plot of fitted probabilities under the model in Equation
   \ref{eqn:p7_model_4}, as a function of $x_1$ and $x_2$.
+
+  \begin{figure}
+    \centering
+    \caption{Fitted probabilities of mental impairment levels using the model
+      described in Equation \ref{eqn:p7_model_4}}
+    \includegraphics{p8_fitted_probabilities.pdf}
+    \label{fig:p8_fitted_probabilities}
+  \end{figure}
   
   \begin{description}
-  \item[Solution:] 
+  \item[Solution:] See Figure \ref{fig:p8_fitted_probabilities}. As described in
+    the solution of Part \ref{part:p7},
   \end{description}
 \end{enumerate}
+
+\clearpage
+
 \section*{Appendix}
 
 \subsection*{Code}
 
 Code for the logistic regression model and boxplots can be found in
 \href{http://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw7/mental_impairment.ipynb}{\texttt{mental\_impairment.ipynb}}. Code
-for the proportional odds models can be found in
+for the proportional odds models and Figure \ref{fig:p8_fitted_probabilities}
+can be found in
 \href{http://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw7/proportional\_odds.ipynb}{\texttt{proportional\_odds.ipynb}}.
 
 \subsection*{Data}
 
-The raw data used is in Table \ref{tab:p1_data}.
+The raw mental impairment data is in Table \ref{tab:p1_data}.
 
-\begin{table}
-  \small
+\begin{table}[h]
+  \scriptsize
   \centering
   \input{p1_data.tex}
   \caption{Data on mental impairment, socioeconomic status (SES) and life
