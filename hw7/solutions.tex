@@ -456,10 +456,19 @@
     ratio test:
     \begin{equation}
       D = 2\left(
-        l\left(\bm\alpha, \bm\beta^{(p)}\right) -
-        l\left(\bm\alpha, \bm\beta^{(q)}\right)        
-      \right) \xrightarrow{\mathcal{D}} \chi^2_{p - q}
+        l\left(\bm\alpha^{(p)}, \bm\beta^{(p)}\right) -
+        l\left(\bm\alpha^{(q)}, \bm\beta^{(q)}\right)        
+      \right) \xrightarrow{\mathcal{D}} \chi^2_{p - q},
+      \label{eqn:p7_deviance}
     \end{equation}
+    where $p > q$ and $\bm\beta^{(p)}$ and $\bm\beta^{(q)}$ each have
+    dimensionality $p$ and $q$, respectively. That is, the deviance converges
+    asymptotically to a chi-squared distribution with degrees of $p-q$.
+
+    The test statistic in Equation \ref{eqn:p7_deviance} can be computed for
+    various pairs of models with the last column of Table
+    \ref{tab:p7_model_summary} when one of the models in the pair contains a
+    superset of the parameters in the null model.
     
   \end{description}
 \item Provide a plot of fitted probabilities under the model in Equation
