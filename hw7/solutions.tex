@@ -469,21 +469,36 @@
     various pairs of models with the last column of Table
     \ref{tab:p7_model_summary} when one of the models in the pair contains a
     superset of the parameters in the null model.
+
+    Results of these pairwise tests can be seen in Table
+    \ref{tab:p7_likelihood_ratio_test}. Since we are testing multiple
+    hypotheses, we might consider apply the Bonferroni correction and rejecting
+    at significance level $\alpha/m$, where $m$ is the number of tests and
+    $\alpha$ is the desired familywise error rate (FWER). In this case, for
+    $\alpha = 0.05$, we would reject the null hypothesis in tests with a
+    $p$-value of less than $0.01$.
+
+    SES and 
   \end{description}
+
+  \input{p7_likelihood_ratio_test.tex}
+  
 \item Provide a plot of fitted probabilities under the model in Equation
   \ref{eqn:p7_model_4}, as a function of $x_1$ and $x_2$.
 
   \begin{figure}
     \centering
     \caption{Fitted probabilities of mental impairment levels using the model
-      described in Equation \ref{eqn:p7_model_4}}
+      described in Equation \ref{eqn:p7_model_4}.}
     \includegraphics{p8_fitted_probabilities.pdf}
     \label{fig:p8_fitted_probabilities}
   \end{figure}
   
   \begin{description}
   \item[Solution:] See Figure \ref{fig:p8_fitted_probabilities}. As described in
-    the solution of Part \ref{part:p7},
+    the solution of Part \ref{part:p7}, life events increases the expected
+    observed level of mental impairment. SES lessens the severity so curves of
+    the same color are shifted downward.
   \end{description}
 \end{enumerate}
 
