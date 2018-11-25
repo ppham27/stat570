@@ -396,12 +396,22 @@
       l\left(\bm\alpha,\bm\beta\right)
       = \sum_{i=1}^n\sum_{j=0}^{J-1}\mathbf{1}_{\{j\}}\left(y_i\right) \log p_{ij}.
     \end{equation}    
-  \end{description}
+  \end{description}  
 \item For the data in Table \ref{tab:p1_data}, provide a single plot that shows
   the association between $\mathbf{p}\left(\mathbf{x}_i\right)$ and $x_{1i}$ and
   $x_{2i}$, on a scale you feel is appropriate.
+
+  \begin{figure}
+    \includegraphics{p6_descriptive.pdf}
+    \caption{Boxplots showing the relationship between mental impairment, SES
+      and Life Events.}
+    \label{fig:p6_descriptive}
+  \end{figure}
+  
   \begin{description}
-  \item[Solution:] 
+  \item[Solution:] See Figure \ref{fig:p6_descriptive}. Conditioned on SES, the
+    expected probability of having a more severe form of Mental Impairment
+    increases with Life Events.
   \end{description}
 \item Fit the proportional odds models:
   \begin{align}
