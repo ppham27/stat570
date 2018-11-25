@@ -400,6 +400,7 @@
 \item For the data in Table \ref{tab:p1_data}, provide a single plot that shows
   the association between $\mathbf{p}\left(\mathbf{x}_i\right)$ and $x_{1i}$ and
   $x_{2i}$, on a scale you feel is appropriate.
+  \label{part:p6}
 
   \begin{figure}
     \centering
@@ -413,6 +414,14 @@
   \item[Solution:] See Figure \ref{fig:p6_descriptive}. Conditioned on SES, the
     expected probability of having a more severe form of Mental Impairment
     increases with Life Events.
+
+    The effect of SES on observed Mental Impairment is more ambiguous. When
+    looking at the \texttt{Well} and \texttt{Moderate} levels, it seems that SES
+    may have a slight protective effect against mental impairment, for we
+    observe many subjects with a high number of life events but no mental
+    impairment or less severe impairment. There doesn't seem to be much evidence
+    of this phenomenon in the \texttt{Mild} level. Ultimately, there's probably
+    not enough data to come to any conclusion about SES.
   \end{description}
 \item Fit the proportional odds models:
   \begin{align}
@@ -432,17 +441,47 @@
   Compare models using likelihood ratio statistics, and summarize the
   association between mental impairment, SES and Life Events, using your favored
   model.
+
+  \input{p7_model_summary.tex}
+  
+  \begin{description}
+  \item[Solution:] The results of fitting the models can be seen in Table
+    \ref{tab:p7_model_summary}. The coefficient estimates agree with what we saw
+    in Figure \ref{fig:p6_descriptive} and the discussion in the solution of
+    Part \ref{part:p6}: positive $\beta_2$ indicate that observed severity of
+    Mental Impairment increases with Life Events, and negative $\beta_1$
+    indicate that SES lessens the observed severity of Mental Impairment.
+
+    Wilks' theorem tells us how to compute a test statistic for a log-likelihood
+    ratio test:
+    \begin{equation}
+      D = 2\left(
+        l\left(\bm\alpha, \bm\beta^{(p)}\right) -
+        l\left(\bm\alpha, \bm\beta^{(q)}\right)        
+      \right) \xrightarrow{\mathcal{D}} \chi^2_{p - q}
+    \end{equation}
+    
+  \end{description}
+\item Provide a plot of fitted probabilities under the model in Equation
+  \ref{eqn:p7_model_4}, as a function of $x_1$ and $x_2$.
   
   \begin{description}
   \item[Solution:] 
   \end{description}
-\item Provide a plot of fitted probabilities under the model in Equation
-  \ref{eqn:p7_model_4}, as a function of $x_1$ and $x_2$.
-
-  \begin{description}
-  \item[Solution:] 
-  \end{description}
 \end{enumerate}
+\section*{Appendix}
+
+\subsection*{Code}
+
+Code for the logistic regression model and boxplots can be found in
+\href{http://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw7/mental_impairment.ipynb}{\texttt{mental\_impairment.ipynb}}. Code
+for the proportional odds models can be found in
+\href{http://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw7/proportional\_odds.ipynb}{\texttt{proportional\_odds.ipynb}}.
+
+\subsection*{Data}
+
+The raw data used is in Table \ref{tab:p1_data}.
+
 \begin{table}
   \small
   \centering
@@ -451,4 +490,5 @@
     events, for 40 subjects.}
   \label{tab:p1_data}
 \end{table}
+
 \end{document}
