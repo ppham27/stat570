@@ -352,7 +352,50 @@
     \alpha_0 & \alpha_1 & \cdots & \alpha_{J - 2}
   \end{pmatrix}^\intercal$, for the sample $y_i$, $i = 1,\ldots,n$.
   \begin{description}
-  \item[Solution:] 
+  \item[Solution:] Let $\alpha_{J-1} = \infty$ and
+    $\alpha_{-1} = -\infty$. In this case, we have that
+    \begin{align}
+      p_{ij}
+      &= \pi_{i,j} - \pi_{i,j-1} 
+        =  \frac{1}{1 + \exp\left(\mathbf{x}_i^\intercal\bm\beta - \alpha_j\right)} -
+        \frac{1}{1 + \exp\left(\mathbf{x}_i^\intercal\bm\beta - \alpha_{j-1}\right)}
+      \label{eqn:p5_pij}\\
+      &= \begin{cases}
+        \frac{
+          \exp\left(\alpha_{j}\right) - \exp\left(\alpha_{j - 1}\right)
+        }{
+          \exp\left(-\mathbf{x}_i^\intercal\bm\beta + \alpha_{j-1} + \alpha_j\right) +
+          \exp\left(\alpha_{j-1}\right) + \exp\left(\alpha_{j}\right) +
+          \exp\left(\mathbf{x}_i^\intercal\bm\beta\right)
+        }, &j=0,1,\ldots,J-2; \\
+        \frac{1}{1 + \exp\left(\alpha_{J-2} - \mathbf{x}_i^\intercal\bm\beta\right)}, &j=J-1.
+    \end{cases}\nonumber
+    \end{align}
+    Note that we must have
+    $\alpha_0 \leq \alpha_1 \leq \cdots \leq \alpha_{J-2}$ for each class to
+    have nonnegative probability.
+
+    Then, likelihood function is
+    \begin{equation}
+      L\left(\bm\alpha, \bm\beta\right)
+      = \prod_{i=1}^n \prod_{j=0}^{J-1} p_{ij}^{\mathbf{1}_{\{j\}}\left(y_i\right)},
+      \label{eqn:p5_likelihood}
+    \end{equation}
+    where
+    \begin{equation}
+      \mathbf{1}_A\left(x\right) = \begin{cases}
+        1,&x \in A; \\
+        0,&\text{otherwise}.
+      \end{cases}
+      \label{eqn:p5_indicator}
+    \end{equation}
+
+    Taking the $\log$ of Equation \ref{eqn:p5_likelihood}, we have the
+    log-likelihood function
+    \begin{equation}
+      l\left(\bm\alpha,\bm\beta\right)
+      = \sum_{i=1}^n\sum_{j=0}^{J-1}\mathbf{1}_{\{j\}}\left(y_i\right) \log p_{ij}.
+    \end{equation}    
   \end{description}
 \item For the data in Table \ref{tab:p1_data}, provide a single plot that shows
   the association between $\mathbf{p}\left(\mathbf{x}_i\right)$ and $x_{1i}$ and
@@ -363,16 +406,31 @@
 \item Fit the proportional odds models:
   \begin{align}
     \log\frac{\pi_{ij}}{1 - \pi_{ij}}
-    &=
+    &= \alpha_j^{(0)}
       \label{eqn:p7_model_1} \\
-    &=
+    \log\frac{\pi_{ij}}{1 - \pi_{ij}}
+    &= \alpha_j^{(1)} - x_{1i}\beta_1^{(1)}
       \label{eqn:p7_model_2} \\
-    &=
+    \log\frac{\pi_{ij}}{1 - \pi_{ij}}
+    &=  \alpha_j^{(2)} - x_{2i}\beta_2^{(2)}
       \label{eqn:p7_model_3} \\
-    &= .
+    \log\frac{\pi_{ij}}{1 - \pi_{ij}}
+    &= \alpha_j^{(12)} - x_{1i}\beta_1^{(12)} - x_{2i}\beta_2^{(12)}.
       \label{eqn:p7_model_4}
   \end{align}
-  Compare
+  Compare models using likelihood ratio statistics, and summarize the
+  association between mental impairment, SES and Life Events, using your favored
+  model.
+  
+  \begin{description}
+  \item[Solution:] 
+  \end{description}
+\item Provide a plot of fitted probabilities under the model in Equation
+  \ref{eqn:p7_model_4}, as a function of $x_1$ and $x_2$.
+
+  \begin{description}
+  \item[Solution:] 
+  \end{description}
 \end{enumerate}
 \begin{table}
   \small
