@@ -127,8 +127,8 @@
         \nonumber\\
       &= \sum_{i=1}^n \frac{2z_i - 1}{1 + \exp\left(
         \left(2z_i - 1\right)\mathbf{x}_i^\intercal\bm{\gamma}
-        \right)}\mathbf{x}_i \nonumber\\
-      &= X^\intercal\left(
+        \right)}\mathbf{x}_i 
+      = X^\intercal\left(
         \mathbf{z} - \mathbf{q}\left(X\right)
         \right),
     \label{eqn:p3_score_function}
@@ -223,8 +223,8 @@
     transformation. Doing so results in the estimates in Table
     \ref{tab:p3_odds_ratios}.
 
-    The odds ratio is how much more likely one is to have \texttt{Moderate} or
-    \texttt{Impaired} mental impairment. Exponentiating Equation
+    The odds ratio is how much more likely one is to have \emph{Moderate} or
+    \emph{Impaired} mental impairment. Exponentiating Equation
     \ref{eqn:p3_prediction}, we have
     \begin{equation}
       \exp\left(\theta_i\right) =
@@ -235,8 +235,12 @@
     
     $\exp\left(\gamma_0\right)$ is the expected odds ratio for a subject with
     $0$ SES and no life events. $\exp\left(\gamma_1\right)$ is the expected odds
-    ratio between a subject with SES 1 and SES 0. $\exp\left(\gamma_2\right)$ is
-    the expected odds ratio for a subject with an additional life event.
+    ratio between a subject with SES 1 and SES 0.
+    $\exp\left(\hat{\gamma}_1\right) < 1$, so SES is associated with less mental
+    impairment. $\exp\left(\gamma_2\right)$ is the expected odds ratio for a
+    subject with an additional life event.
+    $\exp\left(\hat{\gamma}_2\right) > 1$, so life events are associated with
+    more severe mental impairment.
   \end{description}
   \begin{table}
     \scriptsize
@@ -253,7 +257,7 @@
   that that there are $J$ levels). Assume that for individual $i$, the data
   follow a multinomial distribution,
   $Y_i \mid p_i \sim \operatorname{Multinomial}\left(1,\mathbf{p}_i\right)$
-  independently, where $p_i = \begin{pmatrix}p_{i0} & \cdots & p_{i,J−1}
+  independently, where $p_i = \begin{pmatrix}p_{i0} & \cdots & p_{i,J-1}
   \end{pmatrix}^\intercal$, and $p_{ij}$ represents the probability
   \begin{equation}
     p_{ij} = \mathbb{P}\left(Y_i = j \mid \mathbf{x}_i\right),
@@ -285,8 +289,8 @@
   levels and a single binary covariate $x$ so that that
   $\mathbf{x}_i = \begin{pmatrix} 1 & x_i \end{pmatrix}^\intercal$. Give a
   $3 \times 2$ table containing the probabilities of
-  $\mathbb{P}\left(Y = j \mid x\right)$ in terms the $\beta_{jx}$s for rows
-  $j = 0,1,2$ and columns $x=0,1$. Hence, give interpretations of
+  $\mathbb{P}\left(Y = j \mid x\right)$ in terms the $\beta_{jx}$ coefficients
+  for rows $j = 0,1,2$ and columns $x=0,1$. Hence, give interpretations of
   $\exp\left(\beta_{jx}\right)$ for $j = 0,1,2$ and $x = 0,1$.
 
   Is the generalized logit model suitable for ordinal data?
@@ -322,9 +326,9 @@
     Thus, the coefficients $\beta_{j0}$ are the expected log odds ratio for
     level $j$ relative to level $J - 1 = 2$ when the $x = 0$. $\beta_{j1}$ is
     the expected increase in this log odds ratio when $x = 1$. In this sense, we
-    can consider the level $J - 1$ the default case, and
-    $\exp\left(\beta_{jx}\right)$ express how much more likely we are to observe
-    level $j$.
+    can consider the level $J - 1$ the default case, and the
+    $\exp\left(\beta_{jx}\right)$ express how much more likely we are to
+    observe level $j$.
 
     This model isn't suitable for ordinal data, for it is agnostic to the order
     of the data. From the above interpretation, it's more similar to fitting
@@ -416,11 +420,11 @@
     increases with life events.
 
     The effect of SES on observed mental impairment is more ambiguous. When
-    looking at the \texttt{Well} and \texttt{Moderate} levels, it seems that SES
+    looking at the \emph{Well} and \emph{Moderate} levels, it seems that SES
     may have a slight protective effect against mental impairment, for we
     observe many subjects with a high number of life events but no mental
     impairment or less severe impairment. There doesn't seem to be much evidence
-    of this phenomenon in the \texttt{Mild} level. Ultimately, there's probably
+    of this phenomenon in the \emph{Mild} level. Ultimately, there's probably
     not enough data to come to any conclusion about SES.
   \end{description}
 \item \label{part:p7} Fit the proportional odds models:
@@ -463,14 +467,13 @@
     \end{equation}
     where $p > q$ and $\bm\beta^{(p)}$ and $\bm\beta^{(q)}$ each have
     dimensionality $p$ and $q$, respectively. That is, the deviance converges
-    asymptotically to a chi-squared distribution with degrees of $p-q$.
+    asymptotically to a chi-squared distribution with $p-q$ degrees of freedom.
 
     The test statistic in Equation \ref{eqn:p7_deviance} can be computed for
     various pairs of models with the last column of Table
-    \ref{tab:p7_model_summary} when one of the models in the pair contains a
-    superset of the parameters in the null model.
+    \ref{tab:p7_model_summary} when the two models are nested.
 
-    Results of these pairwise tests can be seen in Table
+    Results of the tests on pairs of nested models can be seen in Table
     \ref{tab:p7_likelihood_ratio_test}. Since we are testing multiple
     hypotheses, we might consider apply the Bonferroni correction and rejecting
     at significance level $\alpha/m$, where $m$ is the number of tests and
@@ -478,15 +481,32 @@
     $\alpha = 0.05$, we would reject the null hypothesis in tests with a
     $p$-value of less than $0.01$.
 
-    SES and 
-  \end{description}
+    \input{p7_likelihood_ratio_test.tex}
 
-  \input{p7_likelihood_ratio_test.tex}
+    From the first test that compares the model in Equation \ref{eqn:p7_model_2}
+    against the null model in Equation \ref{eqn:p7_model_1}, SES alone does not
+    improve the fit very much. From the second test that tests the model in
+    Equation \ref{eqn:p7_model_3} against the null model, we see that life
+    events improves fit more: the $p$-value of 0.01070 is the on the border of
+    statistical significance. The improved fit from the model in Equation
+    \ref{eqn:p7_model_4} that incorporates both SES and life events is found to
+    be statistically significant when compared against the null model and the
+    model only containing SES. However, when tested against the model containing
+    only life events, it doesn't quite meet statistical significance.
+
+    Despite the last test not rejecting the model in Equation
+    \ref{eqn:p7_model_3}, I'd still favor the model in Equation
+    \ref{eqn:p7_model_4} that includes both SES and life events with the caveat
+    that an additional experiment should be done. If possible, an additional
+    experiment should be done with higher power (more subjects) that tests the
+    null model in Equation \ref{eqn:p7_model_3} against the alternate model in
+    Equation \ref{eqn:p7_model_4}.
+  \end{description}
   
 \item Provide a plot of fitted probabilities under the model in Equation
   \ref{eqn:p7_model_4}, as a function of $x_1$ and $x_2$.
 
-  \begin{figure}
+  \begin{figure}[h]
     \centering
     \caption{Fitted probabilities of mental impairment levels using the model
       described in Equation \ref{eqn:p7_model_4}.}
