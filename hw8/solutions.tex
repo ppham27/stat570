@@ -164,12 +164,12 @@
         &= \frac{N_i}{N_i - 1 + a_i + b_i}
           \left(
           \frac{\left(N_i - 1\right)a_i}{a_i + b_i} + a_i
-          \right) = N_i\frac{a_i}{a_i + b_i}
+          \right) = N_i\frac{a_i}{a_i + b_i} 
           \label{eqn:p1_expectation_derivation}
         \end{align}
       % }
-      \normalsize
-      as expected. Substituting, we have that
+        \normalsize as expected. Substituting $a_i = dp_i$ and
+        $b_i = d\left(1-p_i\right)$, we have that
       \begin{equation}
         \mathbb{E}\left[
           Y_i \right]
@@ -177,15 +177,66 @@
         \label{eqn:p1_expectation_substitution}
       \end{equation}
       
-      Using a similar strategy as in Equation
-      \ref{eqn:p1_expectation_derivation}, we have that
-      \begin{equation}
-        \mathbb{E}\left[Y_i\left(Y_i - 1\right)\right]
-        = 
-        = \mathbb{E}\left[Y_i^2\right] - \mathbb{E}\left[Y_i\right].
-      \end{equation}
-          
+      For the variance, we can use the law of total variance to obtain
+      \begin{align}
+        \operatorname{var}\left(
+        Y_i
+        \right)
+        &= \mathbb{E}\left[
+          \operatorname{var}\left(Y_i \mid q_i\right)
+          \right] +
+          \operatorname{var}\left(\mathbb{E}\left[Y_i \mid q_i\right]\right)
+          \nonumber\\
+        &= \mathbb{E}\left[N_i q_i\left(1 - q_i\right)\right]
+          + \operatorname{var}\left(N_iq_i\right) \nonumber\\
+        &= N_i\left(
+          \frac{a_i}{a_i + b_i}
+          - \left(
+          \frac{a_ib_i}{\left(a_i + b_i\right)^2\left(a_i + b_i + 1\right)}
+          +  \left(\frac{a_i}{a_i + b_i}\right)^2
+          \right)
+          \right) \nonumber\\
+        &~~~+ N_i^2\frac{a_ib_i}{\left(a_i + b_i\right)^2\left(a_i + b_i + 1\right)}
+          \nonumber\\
+        &= N_i\frac{a_ib_i\left(a_i+b_i+ N_i\right)}{
+          \left(a_i + b_i\right)^2\left(a_i + b_i + 1\right)}.
+          \label{eqn:p1_total_variance}
+      \end{align}
+
+      From Equations \ref{eqn:p1_expectation_derivation} and
+      \ref{eqn:p1_total_variance}, we obtain the second moment
+      \begin{align*}
+        \mathbb{E}\left[Y_i^2\right]
+        &= \operatorname{var}\left(Y_i\right) +
+          \left(\mathbb{E}\left[Y_i\right]\right)^2 \\
+        &= N_i\frac{a_ib_i\left(a_i+b_i+ N_i\right)}{
+          \left(a_i + b_i\right)^2\left(a_i + b_i + 1\right)}
+          + \left(N_i\frac{a_i}{a_i + b_i}\right)^2 \\
+        &= N_i\frac{a_i\left(N_i\left(a_i + 1\right) + b_i\right)}{
+          \left(a_i + b_i\right)\left(a_i + b_i + 1\right)}.
+      \end{align*}
+
+      Substituting $a_i = dp_i$ and $b_i = d\left(1-p_i\right)$ into Equation
+      \ref{eqn:p1_total_variance}, we have
+      \begin{align}
+        \operatorname{var}\left(Y_i\right)
+        &= N_ip_i\left(1 - p_i\right)\frac{a_i + b_i + N_i}{a_i + b_i + 1}
+          \nonumber\\
+        &= N_ip_i\left(1 - p_i\right)\frac{a_i + b_i + 1 + \left(N_i - 1\right)}
+          {a_i + b_i + 1} \nonumber\\
+        &= N_ip_i\left(1 - p_i\right) \times \left[
+          1 + \left(N_i - 1\right)\frac{1}{d + 1}\right].
+          \label{eqn:p1_variance_substitution}
+      \end{align}
+
+      Thus, we have that $\tau^2 = 1/\left(d + 1\right)$, so small values of $d$
+      mean that the $Z_{ij}$ are highly correlated. This is consistent with the
+      behavior of the beta distribution since for small $d$, $q_i$ is likely to
+      be close to $0$ and $1$.
     \end{description}
 \end{enumerate}
+\item In this question a simulation study to investigate the impact on inference
+  of omitting covariates in logistic regression will be performed, in the
+  situation in which the covariates are independent of the exposure of interest.
 \end{enumerate}
 \end{document}
