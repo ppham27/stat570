@@ -1,0 +1,191 @@
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage[hmargin=1.25in,vmargin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{pdflscape}
+\usepackage{subcaption}
+
+\title{Coursework 8: STAT 570}
+\author{Philip Pham}
+\date{\today}
+
+\begin{document}
+\maketitle
+\begin{enumerate}
+\item Consider n experiments with $Z_{ij}$ , $j = 1,2,\ldots, N_i$, the binary
+  outcomes within cluster (experiment) $i$ with $Y_i = \sum^N_{j=1} Z_{ij}$,
+  $i = 1,\ldots,n$.
+  \begin{enumerate}
+  \item By writing
+    \begin{equation}
+      \operatorname{var}\left(Y_i\right)
+      = \sum_{j=1}^{N_i} \operatorname{var}\left(Z_{ij}\right)
+      + \sum_{j=1}^{N_i}\sum_{j \neq k} \operatorname{cov}\left(Z_{ij}, Z_{ik}\right),
+      \label{eqn:p1_var_yi}
+    \end{equation}
+    show that
+    \begin{equation}
+      \operatorname{var}\left(Y_i\right)
+      = N_ip_i\left(1 - p_i\right) \times
+      \left[1 + \left(N_i - 1\right)\tau_i^2\right],
+      \label{eqn:p1_var_yi_result}
+    \end{equation}
+    where $p_i = \mathbb{E}\left[Z_{ij}\right]$ and $\tau_i^2$ is the
+    correlation of outcomes within cluster $i$.
+
+    \begin{description}
+    \item[Solution:] Using the variance for a Bernoulli random variable and the
+      definition of the correlation coefficient, we have that
+      \begin{align}
+        \operatorname{var}\left(Z_{ij}\right)
+        &= p_i\left(1 - p_i\right) \label{eqn:p1_var_cov}\\
+        \operatorname{cov}\left(Z_{ij}, Z_{ik}\right)
+        &= \tau_i^2p_i\left(1 - p_i\right)~\text{for}~j \neq k.
+          \nonumber
+      \end{align}
+      
+      Since $Z_{ij}$ are identically distributed for different $j$, we can
+      rewrite Equation \ref{eqn:p1_var_yi} as
+      \begin{equation}
+        \operatorname{var}\left(Y_i\right)
+        = N_i\operatorname{var}\left(Z_{i1}\right) +
+        N_i\left(N_i - 1\right)\operatorname{cov}\left(Z_{i1},Z_{i2}\right).
+        \label{eqn:p1_var_yi_simplified} 
+      \end{equation}
+
+      Applying Equation \ref{eqn:p1_var_cov} to Equation
+      \ref{eqn:p1_var_yi_simplified}, we have the result
+      \begin{align*}
+        \operatorname{var}\left(Y_i\right)
+        &= N_ip_i\left(1-p_i\right)
+          + N_i\left(N_i - 1\right) \tau_i^2p_i\left(1-p_i\right) \\
+        &= N_ip_i\left(1-p_i\right) \times \left[
+          1 + \left(N_i - 1\right) \tau_i^2
+          \right]
+      \end{align*}
+      as desired.
+    \end{description}
+  \item Consider the model
+    \begin{align}
+      Y_i \mid q_i &\sim \operatorname{Binomial}\left(N_i,q_i\right) \\
+      q_i &\sim \operatorname{Beta}\left(a_i,b_i\right),
+            \label{eqn:p1_model}
+    \end{align}
+    where we can parameterize as $a_i = dp_i$, $b_i = d\left(1-p_i\right)$, so
+    that
+    \begin{align}
+      \mathbb{E}\left[q_i\right]
+      &= p_i = \frac{a_i}{d} \\
+      \operatorname{var}\left(q_i\right)
+      &= \frac{p_1\left(1 - p_i\right)}{d+1}.
+    \end{align}
+    Obtain the marginal moments and show that the variance is of the form in
+    Equation \ref{eqn:p1_var_yi_result}, and identify $\tau_i^2$.
+
+    \begin{description}
+    \item[Solution:] We have that
+      \begin{align}
+        \mathbb{P}\left(Y_i = y\right)
+        &= \int_0^1 \mathbb{P}\left(Y_i \mid q_i\right)p\left(q_i\right)
+          \,\mathrm{d}q_i \nonumber\\
+        &= \int_0^1 \left(
+          {N_i \choose y }q_i^y \left(1 - q_i\right)^{N_i - y}
+          \right)
+          \left(
+          \frac{\Gamma\left(a_i + b_i\right)}
+          {\Gamma\left(a_i\right)\Gamma\left(b_i\right)}
+          q_i^{a_i - 1}\left(1 - q_i\right)^{b_i - 1}
+          \right)
+          \,\mathrm{d}q_i \nonumber\\
+        &= {N_i \choose y}
+          \frac{\Gamma\left(a_i + b_i\right)}
+          {\Gamma\left(a_i\right)\Gamma\left(b_i\right)}
+          \int_0^1 
+          q_i^{a_i + y - 1} \left(1 - q_i\right)^{b_i + N_i - y - 1}
+          \,\mathrm{d}q_i \nonumber\\
+        &= {N_i \choose y}
+          \left(
+          \frac{\Gamma\left(a_i + b_i\right)}
+          {\Gamma\left(a_i\right)\Gamma\left(b_i\right)}
+          \right)
+          \left(
+          \frac{\Gamma\left(y + a_i\right)\Gamma\left(
+          N_i - y + b_i
+          \right)}
+          {\Gamma\left(N_i + a_i + b_i\right)}
+          \right),
+          \label{eqn:p1_beta_binomial}
+      \end{align}
+      so $Y_i \sim \operatorname{BetaBinomial}\left(
+        N_i, a_i, b_i\right)$.
+
+      Using Equation \ref{eqn:p1_beta_binomial}, the expectation of $Y_i$ is
+      \begin{equation}
+        \mathbb{E}\left[Y_i\right]
+        = \sum_{y=0}^{N_i}y\mathbb{P}\left(
+        Y_i = y
+          \right)
+          = \sum_{y=1}^{N_i}y\mathbb{P}\left(
+          Y_i = y
+        \right).
+        \label{eqn:p1_expectation_definition}
+      \end{equation}
+
+      Note that when $N_i = 1$, Equation \ref{eqn:p1_expectation_definition}
+      trivially becomes $a_i/\left(a_i + b_i\right)$. In general, we can show
+      that $\displaystyle\mathbb{E}\left[Y_i\right] = N_i\frac{a_i}{a_i +
+        b_i}$. With the $N_i = 1$ base case established, we now have
+      % \tiny{
+        \begin{align}
+          \mathbb{E}\left[Y_i\right]
+        &= \sum_{y=1}^{N_i}y\mathbb{P}\left(Y_i = y\right) \nonumber\\
+        &= \sum_{y=1}^{N_i} y {N_i \choose y}
+          \left(
+          \frac{\Gamma\left(a_i + b_i\right)}
+          {\Gamma\left(a_i\right)\Gamma\left(b_i\right)}
+          \right)
+          \left(
+          \frac{\Gamma\left(y + a_i\right)\Gamma\left(
+          N_i - y + b_i
+          \right)}
+          {\Gamma\left(N_i + a_i + b_i\right)}
+          \right) \nonumber\\
+          &= \frac{N_i}{N_i - 1 + a_i + b_i} \sum_{y=1}^{N_i}
+            \left(y - 1 + a_i\right)
+            \operatorname{BetaBinomial}_{N_i - 1,a_i,b_i}
+            \left(y - 1\right) \nonumber\\
+        &= \frac{N_i}{N_i - 1 + a_i + b_i}
+          \left(
+          \frac{\left(N_i - 1\right)a_i}{a_i + b_i} + a_i
+          \right) = N_i\frac{a_i}{a_i + b_i}
+          \label{eqn:p1_expectation_derivation}
+        \end{align}
+      % }
+      \normalsize
+      as expected. Substituting, we have that
+      \begin{equation}
+        \mathbb{E}\left[
+          Y_i \right]
+        = N_i\frac{dp_i}{dp_i + d\left(1 - p_i\right)}  = N_ip_i.
+        \label{eqn:p1_expectation_substitution}
+      \end{equation}
+      
+      Using a similar strategy as in Equation
+      \ref{eqn:p1_expectation_derivation}, we have that
+      \begin{equation}
+        \mathbb{E}\left[Y_i\left(Y_i - 1\right)\right]
+        = 
+        = \mathbb{E}\left[Y_i^2\right] - \mathbb{E}\left[Y_i\right].
+      \end{equation}
+          
+    \end{description}
+\end{enumerate}
+\end{enumerate}
+\end{document}
