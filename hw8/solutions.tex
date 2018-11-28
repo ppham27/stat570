@@ -237,6 +237,48 @@
 \end{enumerate}
 \item In this question a simulation study to investigate the impact on inference
   of omitting covariates in logistic regression will be performed, in the
-  situation in which the covariates are independent of the exposure of interest.
+  situation in which the covariates are independent of the exposure of
+  interest. Let $x$ be the covariate of interest and $z$ another
+  covariate. Suppose the true (adjusted) model is independently distributed
+  $Y_i \mid x_i,z_i \sim \operatorname{Bernoulli}\left(p_i\right)$, where
+  \begin{equation}
+    \log\frac{p_i}{1 - p_i} = \beta_0 + \beta_1x_i + \beta_2z_i.
+    \label{eqn:p2_pi}.
+  \end{equation}
+  A comparison with the unadjusted model
+  $Y_i \mid x_i \sim \operatorname{Bernoulli}\left(p_i^\star\right)$
+  independently distributed, where
+  \begin{equation}
+    \log\frac{p_i^\star}{1 - p_i^\star} = \beta_0^\star + \beta_1^\star x_i,
+    \label{eqn:p2_pi_star}
+  \end{equation}
+
+  for $i = 1,\ldots,n=1000$ will be made. Suppose $x$ is binary with
+  $\mathbb{P}\left(X = 1\right) = 0.5$ and $Z \sim \mathcal{N}\left(0, 1\right)$
+  independent and identically distributed with $x$ and $z$
+  independent. Combinations of the parameters
+  $\beta_1 \in \left\{ 0.5, 1 \right\}$ and
+  $\beta_2 \in \left\{0.5,1.0,2.0,3.0\right\}$, with $\beta_0 = -2$ in all cases
+  will be considered.
+
+  For each combination of parameters compare the results from the two models,
+  Equation \ref{eqn:p2_pi} and Equation \ref{eqn:p2_pi_star}, with respect to:
+  \begin{enumerate}
+  \item $\mathbb{E}\left[\hat{\beta}_1\right]$ and
+    $\mathbb{E}\left[\hat{\beta}_1^\star\right]$, as compared to $\beta_1$.
+  \item The standard errors of $\hat{\beta}_1$ and $\hat{\beta}_1^\star$.
+  \item The coverage of 95\% confidence intervals for $\beta_1$ and
+    $\beta_1^\star$.
+  \item The probability of rejecting $H_0 : \beta_1 = 0$ (the power) under both
+    models using a Wald test.
+  \end{enumerate}
+
+  Based on the results, summarize the effect of omitting a covariate that is
+  independent of the exposure of interest, in particular in comparison with the
+  linear model.
+
+  \begin{description}
+  \item[Solution:] 
+  \end{description}
 \end{enumerate}
 \end{document}
