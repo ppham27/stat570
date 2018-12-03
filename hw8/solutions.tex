@@ -19,7 +19,7 @@
 \begin{document}
 \maketitle
 \begin{enumerate}
-\item Consider n experiments with $Z_{ij}$ , $j = 1,2,\ldots, N_i$, the binary
+\item Consider $n$ experiments with $Z_{ij}$ , $j = 1,2,\ldots, N_i$, the binary
   outcomes within cluster (experiment) $i$ with $Y_i = \sum^N_{j=1} Z_{ij}$,
   $i = 1,\ldots,n$.
   \begin{enumerate}
@@ -229,10 +229,10 @@
           \label{eqn:p1_variance_substitution}
       \end{align}
 
-      Thus, we have that $\tau^2 = 1/\left(d + 1\right)$, so small values of $d$
-      mean that the $Z_{ij}$ are highly correlated. This is consistent with the
-      behavior of the beta distribution since for small $d$, $q_i$ is likely to
-      be close to $0$ and $1$.
+      Thus, we have that $\boxed{\tau^2 = 1/\left(d + 1\right)}$, so small
+      values of $d$ mean that the $Z_{ij}$ are highly correlated. This is
+      consistent with the behavior of the beta distribution since for small $d$,
+      $q_i$ is likely to be close to $0$ and $1$.
     \end{description}
 \end{enumerate}
 \item In this question a simulation study to investigate the impact on inference
@@ -277,8 +277,95 @@
   independent of the exposure of interest, in particular in comparison with the
   linear model.
 
+  \begin{table}
+    \scriptsize
+    \centering
+    \input{p2_summary.tex}
+    \caption{Result of doing $2^{20}$ simulations for each set of parameters.}
+    \label{tab:p2_summary}
+  \end{table}
+  
   \begin{description}
-  \item[Solution:] 
+  \item[Solution:] See Table \ref{tab:p2_summary}. For each set of parameters
+    $2^{20}$ simulations were done. The expectation was estimated with Monte
+    Carlo integration. The standard error was estimated by taking the square root
+    of the unbiased variance estimate.
+    
+    Using the standard error estimate, 95\% confidence intervals were calculated
+    for each simulation to see if they contained the true parameter value.
+
+    The estimated standard error was also used to compute the Wald test
+    statistic. To estimate the probability of rejecting the null hypothesis
+    ($\beta_1 = 0$), a 95\% test was performed for each simulation.
+
+    Estimates for $\beta_1$ are biased in both the adjusted and unadjusted
+    model. In the adjusted model, the bias is very small and does not vary much
+    with $\beta_2$. In the unadjusted model, $\hat\beta_1^\star$ has bias
+    depedent on $\beta_2$.
+
+    When $\beta_2$ is small, say $0.5$, the bias is not too bad, and the 95\%
+    confidence interval contains the true parameter value close to 95\% of the
+    time as we would expect. As $\beta_2$ grows larger, the estimate becomes
+    more and more biased, coverage of the confidence interval worsens, and the
+    power of the Wald test declines. When $\beta_1 = 1.0$, the power is still
+    high because the effect size is large.
+
+    In the adjusted model, regardless of $\beta_2$, we obtain the expected 95\%
+    coverage of the confidence interval, and the power stays consistently high.
+
+    One way to understand this behavior is by looking at the score function:
+    \begin{equation}
+      S\left(\beta\right) = X^\intercal\left(
+        Y - \frac{1}{1 + \exp\left(-X\beta\right)}
+      \right).
+      \label{eqn:p2_score}
+    \end{equation}
+
+    Note that \[
+      0 = \mathbb{E}\left[S\left(\beta\right) \mid \beta \right]
+      = X^\intercal\left(\mathbf{p} - \frac{1}{1 + \exp\left(-X\beta\right)}\right),
+    \]
+    where
+    $\mathbf{p} = \begin{pmatrix} p_1 & p_2 & \cdots &
+      p_n \end{pmatrix}^\intercal$. Thus, we are choosing $\beta$ to fit
+    $\operatorname{expit}\left(X\beta\right)$ to $\mathbf{p}$.  In the adjusted
+    model, this amounts to choosing
+    \begin{align}
+      \hat{\beta}_0^\star
+      &= \operatorname{logit}\left(
+      \frac{\sum_{i=1}^n \left(1 - x_i\right)y_i}{\sum_{i=1}^n\left(1 - x_i\right)}
+        \right) =
+        \operatorname{logit}\hat{\mathbb{P}}\left(Y_i = 1\mid X_i = 0\right)
+        \label{eqn:p2_beta_0_star}\\
+      \hat{\beta}_0^\star + \hat{\beta}_1^\star
+      &=
+      \operatorname{logit}\left(
+      \frac{\sum_{i=1}^n x_iy_i}{\sum_{i=1}^n 1 - x_i}
+      \right) =
+        \operatorname{logit}\hat{\mathbb{P}}\left(Y_i = 1\mid X_i = 1\right).
+        \label{eqn:p2_beta_1_star}
+    \end{align}
+
+    Let $\phi$ be the probability density function for the standard normal
+    distribution. Due to nonlinearity, we have that
+    \begin{align*}
+      \mathbb{P}\left(Y_i = 1\mid X_i = 0\right)
+      &= \int_{-\infty}^\infty \operatorname{expit}\left(
+        \beta_0 + \beta_2z
+        \right)\phi\left(z\right)\,\mathrm{d}z 
+        \neq \operatorname{expit}\left(\beta_0\right)\\
+      \mathbb{P}\left(Y_i = 1\mid X_i = 1\right)
+      &= \int_{-\infty}^\infty \operatorname{expit}\left(
+        \beta_0 + \beta_1 + \beta_2z
+        \right)\phi\left(z\right)\,\mathrm{d}z 
+        \neq \operatorname{expit}\left(\beta_0 + \beta_1\right).
+    \end{align*}    
+    Substituting the true values for the observed values in Equations
+    \ref{eqn:p2_beta_0_star} and \ref{eqn:p2_beta_1_star}, it's clear that we're
+    fitting to the incorrect log odds ratio.
+
+    Code for the simulations can be found in
+    \href{http://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/hw8/logistic\_regression.ipynb}{\texttt{logistic\_regression.ipynb}}.
   \end{description}
 \end{enumerate}
 \end{document}
