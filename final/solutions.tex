@@ -17,6 +17,9 @@
 
 \begin{document}
 \maketitle
+
+Consider the failure time data in Table \ref{tab:failure_time_data}.
+
 \begin{enumerate}
 \item We describe a simple model for these data. Let $p$ ($0 < p < 1$) denote
   the weekly failure probability, i.e., the probability of failure during any
@@ -74,6 +77,96 @@
         \left[\left(1-p\right)^N\right]^{Y_{N+1}}.
       \]
     \end{description}
+  \item Find an expression for the MLE $\hat{p}$.
+    \begin{description}
+    \item[Solution:] 
+      The score function is
+      \begin{align}
+        S\left(p\right)
+        &= \frac{\partial}{\partial p}\log L\left(p\right) \nonumber\\
+        &= \frac{\partial}{\partial p}\left[
+          NY_{N + 1}\log\left(1 - p\right)
+          + \sum_{t=1}^N Y_t\left(
+          \log p + \left(t - 1\right)
+          \log\left(1 - p\right)
+          \right)
+          \right]\nonumber\\
+        &= -\frac{NY_{N+1}}{1 - p}
+          + \sum_{t=1}^N Y_t\left(
+          \frac{1}{p}
+          -
+          \frac{t - 1}{1 - p}
+          \right)
+        = -\frac{NY_{N+1}}{1 - p}
+          + \sum_{t=1}^N Y_t
+          \frac{1-pt}{p\left(1 - p\right)}.
+          \label{eqn:p1_score}
+      \end{align}
+
+      Solving for $S\left(\hat{p}\right) = 0$, we find the MLE:
+      \begin{equation}
+        \hat{p}\left(
+          NY_{N+1} + \sum_{t=1}^{N}tY_t
+        \right) = \sum_{t=1}^N Y_t
+        \implies
+        \boxed{
+          \hat{p} = \frac{\sum_{t=1}^N Y_t}
+          {NY_{N+1} + \sum_{t=1}^{N}tY_t}.
+        }
+        \label{eqn:p1_mle}
+      \end{equation}
+    \end{description}
+  \item Find the form of the observed information and hence the asymptotic
+    variance of the MLE.
+    \begin{description}
+    \item[Solution:] Using Equation \ref{eqn:p1_score}, the expected observed
+      information is
+      \begin{align}
+        I\left(p\right)
+        &= \mathbb{E}\left[-\frac{\partial}{\partial p}S\left(p\right) \mid p\right]
+          \nonumber\\
+        &= \frac{N\mathbb{E}\left[Y_{N+1} \mid p\right]}{(1-p)^2}
+          + \sum_{t=1}^N\mathbb{E}\left[Y_t \mid p\right]
+          \left(
+          \frac{1}{p^2} + \frac{t-1}{\left(1-p\right)^2}
+          \right)
+          \nonumber \\
+        &= n\frac{N\left(1-p\right)^N}{(1-p)^2}
+          + np\sum_{t=1}^N
+          \left(1 - p\right)^{t-1}
+          \left(
+          \frac{1}{p^2} + \frac{t-1}{\left(1-p\right)^2}
+          \right)
+          \nonumber \\
+        &= n\left[
+          \frac{\left(1-p\right)^N}{(1-p)^2}
+          +
+          \frac{1 - \left(1 - p\right)^N}{p^2}
+          +
+          \frac{(1-p) - (1-p)^N}{p(1-p)^2}
+          \right] \nonumber \\
+        &= \boxed{n\frac{1 - \left(1 - p\right)^N}
+          {p^2\left(1 - p\right)}.} \label{eqn:p1_fisher_information}
+      \end{align}
+
+      From Equation \ref{eqn:p1_fisher_information}, the asymptotic variance of
+      $\hat{p}$ is
+      \begin{equation}
+        \operatorname{var}\left(\hat{p}\right)
+        \approx
+        I\left(\hat{p}\right)^{-1} = \frac{1}{n} \times \frac{p^2\left(1-p\right)}
+        {1 - \left(1-p\right)^N}.
+        \label{eqn:p1_variance}
+      \end{equation}
+    \end{description}
   \end{enumerate}
 \end{enumerate}
+
+\begin{table}
+  \centering
+  \input{failure_time_data.tex}
+  \caption{Time until failure for $n = 485$ components, along with average weekly
+    temperature.}
+  \label{tab:failure_time_data}
+\end{table}
 \end{document}
