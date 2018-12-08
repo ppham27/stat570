@@ -117,7 +117,7 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
       \end{equation}
     \end{description}
   \item Find the form of the observed information and hence the asymptotic
-    variance of the MLE.
+    variance of the maximum likelihood estimate (MLE).
     \begin{description}
     \item[Solution:] Using Equation \ref{eqn:p1_score}, the expected observed
       information is
@@ -146,18 +146,21 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
           \frac{(1-p) - (1-p)^N}{p(1-p)^2}
           \right] \nonumber \\
         &= \boxed{n\frac{1 - \left(1 - p\right)^N}
-          {p^2\left(1 - p\right)}.} \label{eqn:p1_fisher_information}
+          {p^2\left(1 - p\right)},} \label{eqn:p1_fisher_information}
       \end{align}
+      where $n = Y_{N+1} + \sum_{t=1}^N Y_t$.
 
       From Equation \ref{eqn:p1_fisher_information}, the asymptotic variance of
       $\hat{p}$ is
       \begin{equation}
         \operatorname{var}\left(\hat{p}\right)
         \approx
-        I\left(\hat{p}\right)^{-1} = \frac{1}{n} \times \frac{p^2\left(1-p\right)}
-        {1 - \left(1-p\right)^N}.
+        I\left(\hat{p}\right)^{-1} = \frac{1}{n} \times
+        \frac{\hat{p}^2\left(1-\hat{p}\right)}
+        {1 - \left(1-\hat{p}\right)^N}
         \label{eqn:p1_variance}
       \end{equation}
+      by asymptotic normality of the MLE.
     \end{description}
   \end{enumerate}
 \end{enumerate}
