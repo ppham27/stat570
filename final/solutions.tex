@@ -396,7 +396,10 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
             {\Gamma\left(\beta + s\right)}
             {\Gamma\left(\alpha + \beta + s + 1\right)} \nonumber\\
           &= 1 - \frac{1}{B\left(\alpha,\beta\right)}
-            \sum_{s=0}^{t-1} B\left(\alpha + 1, \beta + s\right),
+            \sum_{s=0}^{t-1} B\left(\alpha + 1, \beta + s\right)
+            = \frac{B\left(\alpha,\beta + t\right)}{B\left(\alpha,\beta\right)}
+            = \frac{\Gamma\left(\alpha + \beta\right)\Gamma\left(\beta + t\right)}
+            {\Gamma\left(\beta\right)\Gamma\left(\alpha + \beta + t\right)}
             \nonumber
         \end{align}
         where $B$ is the beta function, and we know
@@ -419,14 +422,101 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
       $\left\{Y_t\right\}_{t=1}^{N+1}$.
 
       \begin{description}
-      \item[Solution:] We can substitute Equations \ref{eqn:p2_pmf_beta} and
-        \ref{eqn:p2_survival_beta} into Equation \ref{eqn:p1_likelihood}: we'll
-        have $\mathbb{P}\left(T = t\right)$ in place of
-        $p\left(1 - p\right)^{t-1}$ and $\mathbb{P}\left(T > N\right)$ in place
-        of $\left(1 - p\right)^N$.
+      \item[Solution:] Our model for $T$ is different, so we can substitute
+        Equations \ref{eqn:p2_pmf_beta} and \ref{eqn:p2_survival_beta} into
+        Equation \ref{eqn:p1_likelihood}: we'll have
+        $\mathbb{P}\left(T = t\right)$ in place of $p\left(1 - p\right)^{t-1}$
+        and $\mathbb{P}\left(T > N\right)$ in place of $\left(1 - p\right)^N$.
+        \begin{align}
+          L\left(\alpha,\beta\right)
+          &= \left[\mathbb{P}\left(T > N\right)\right]^{Y_{N+1}}
+            \prod_{t=1}^N\left[\mathbb{P}\left(T = t\right)\right]^{Y_t}
+            \label{eqn:p2_likelihood} \\
+          &= \left[
+            \frac{B\left(\alpha, \beta + N\right)}{B\left(\alpha, \beta\right)}
+            \right]^{Y_{N+1}}
+            \prod_{t=1}^N \left[
+            \frac{B\left(\alpha + 1, \beta + t - 1\right)}
+            {B\left(\alpha, \beta\right)}
+            \right]^{Y_t}.
+            \nonumber
+        \end{align}
+      \end{description}
+    \item Find the MLEs  $\hat\alpha$ and $\hat\beta$ for the data of Table
+      \ref{tab:failure_time_data}.
+      \begin{description}
+      \item[Solution:] From Equation \ref{eqn:p2_likelihood}, we can consider
+        the log-likelihood function:
+        \begin{align}
+          &l\left(\alpha,\beta\right)
+          =
+          \log L\left(\alpha,\beta\right)
+          \label{eqn:p2_log_likelihood} \\
+          &= -n\log B\left(\alpha,\beta\right)
+            +
+            Y_{N+1}\log B\left(\alpha,\beta+N\right)
+            +
+            \sum_{t=1}^N Y_t\log 
+            B\left(\alpha + 1, \beta + t - 1 \right).
+            \nonumber
+        \end{align}
+
+        The score function is
+        \begin{align}
+          S\left(\alpha,\beta\right) &= 
+          \nabla l\left(\alpha,\beta\right)
+          = \begin{pmatrix}
+            S_\alpha\left(\alpha,\beta\right) \\
+            S_\beta\left(\alpha,\beta\right)
+          \end{pmatrix} \label{eqn:p2_score}\\
+          S_\alpha\left(\alpha,\beta\right)
+          &= -n\left[
+            \psi\left(\alpha\right) -
+            \psi\left(\alpha + \beta\right)
+            \right]
+            + Y_{N+1}\left[
+            \psi\left(\alpha\right)-
+            \psi\left(\alpha + \beta + N\right)              
+            \right] \nonumber\\
+          &~~~~~+ \sum_{t=1}^N Y_{t}\left[
+            \psi\left(\alpha + 1\right) -
+            \psi\left(\alpha + \beta + t\right)            
+            \right],
+            \nonumber \\
+          S_\beta\left(\alpha,\beta\right)
+          &= -n\left[
+            \psi\left(\beta\right) -
+            \psi\left(\alpha + \beta\right)
+            \right]
+            + Y_{N+1}\left[
+            \psi\left(\beta + N\right)-
+            \psi\left(\alpha + \beta + N\right)              
+            \right] \nonumber\\
+          &~~~~~+ \sum_{t=1}^N Y_{t}\left[
+            \psi\left(\beta + t - 1\right) -
+            \psi\left(\alpha + \beta + t\right)            
+            \right], \nonumber
+        \end{align}p
+        where
+        $\psi\left(x\right) = \Gamma^\prime\left(x\right)/\Gamma\left(x\right)$
+        is the digamma function.
+
+        Numerically solving Equation \ref{eqn:p2_score} for
+        $S\left(\hat\alpha,\hat\beta\right) = \mathbf{0}$, I obtain
+        $\boxed{\hat\alpha = 1.413336}$ and $\boxed{\hat\beta = 1.38001102}$
+        for the MLEs.
       \end{description}
     \end{enumerate}
-\end{enumerate}
+  \item \begin{enumerate}
+    \item Show that the likelihood in Equation \ref{eqn:p1_model} can be written
+      as a product of binomial distributions, the form of which you should
+      precisely give.
+
+      \begin{description}
+      \item[Solution:] 
+      \end{description}
+    \end{enumerate}
+  \end{enumerate}
 
 \begin{table}
   \centering
