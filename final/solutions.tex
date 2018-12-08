@@ -1,0 +1,79 @@
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{bm}
+\usepackage[hmargin=1.25in,vmargin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{subcaption}
+
+\title{Final: STAT 570}
+\author{Philip Pham}
+\date{\today}
+
+\begin{document}
+\maketitle
+\begin{enumerate}
+\item We describe a simple model for these data. Let $p$ ($0 < p < 1$) denote
+  the weekly failure probability, i.e., the probability of failure during any
+  week, and $T$ the random variable describing the week at which failure
+  occurred. Then $T$ may be modeled as a geometric random variable:
+  \begin{equation}
+    \mathbb{P}\left(T = t \mid p\right)
+    = \begin{cases}
+      p\left(1-p\right)^{t-1}, &t=1,2,\ldots; \\
+      0,&\text{otherwise}.      
+    \end{cases}
+    \label{eqn:p1_model}
+  \end{equation}
+
+  Let $Y_t$ represent the number of components that fail in week $t$,
+  $t = 1,2,\ldots,N$, and $Y_{N+1}$ the number of components that have not failed
+  by week $N$.
+
+  \begin{enumerate}
+  \item Show that the likelihood function is
+    \begin{equation}
+      L\left(p\right) =
+      \left[\left(1 - p\right)^N\right]^{Y_{N+1}}
+      \prod_{t=1}^N\left[
+        p\left(1 - p\right)^{t-1}
+      \right]^{Y_t}.
+      \label{eqn:p1_likelihood}      
+    \end{equation}
+    \begin{description}
+    \item[Solution:] An individual component's failure week has distribution
+      $\operatorname{Geometric}\left(p\right)$. The probability that a single
+      component fails in week $t$ is the probability that it survived $t - 1$
+      weeks and failed on week $t$, which is $p\left(1 - p\right)^{t-1}$. There
+      are $Y_t$ such components, which gives us the factors for
+      $t = 1,2,\ldots,N$.
+
+      The probability that a component fails at a later date is
+      \[
+        \left(1 - p\right)^N\sum_{k=1}^\infty p\left(1-p\right)^{k-1}
+        =
+        \left(1 - p\right)^N\frac{p}{1 - \left(1 - p\right)}
+        =
+        \left(1 - p\right)^N,
+      \]
+      which gives us the remaining factor. There are $Y_{N+1}$ remaining
+      components, so
+      \[
+        L\left(p\right) =
+        \left\{
+          \prod_{t=1}^N \left[
+            p\left(1 - p \right)^{t-1}
+          \right]^{Y_t}
+        \right\}
+        \times
+        \left[\left(1-p\right)^N\right]^{Y_{N+1}}.
+      \]
+    \end{description}
+  \end{enumerate}
+\end{enumerate}
+\end{document}
