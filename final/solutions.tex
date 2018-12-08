@@ -46,15 +46,15 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
       \prod_{t=1}^N\left[
         p\left(1 - p\right)^{t-1}
       \right]^{Y_t}.
-      \label{eqn:p1_likelihood}      
+      \label{eqn:p1_likelihood}
     \end{equation}
     \begin{description}
     \item[Solution:] An individual component's failure week has distribution
       $\operatorname{Geometric}\left(p\right)$. The probability that a single
       component fails in week $t$ is the probability that it survived $t - 1$
-      weeks and failed on week $t$, which is $p\left(1 - p\right)^{t-1}$. There
-      are $Y_t$ such components, which gives us the factors for
-      $t = 1,2,\ldots,N$.
+      weeks and failed on week $t$, which is $p\left(1 - p\right)^{t-1}$ from
+      Equation \ref{eqn:p1_model}. There are $Y_t$ such components, which gives
+      us the factors for $t = 1,2,\ldots,N$.
 
       The probability that a component fails at a later date is
       \[
@@ -288,6 +288,144 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
     \item[Solution:] 
     \end{description}
   \end{enumerate}
+\item
+  \begin{enumerate}
+  \item A more complex likelihood for these data would assume that the $i$-th
+    component had their own probability $p_i$, with the $p_i$'s arising from a
+    distribution $\pi\left(p\right)$. Show that
+      \begin{equation}
+        \mathbb{P}\left(T = t\right) =
+        \mathbb{E}\left[(1 - p)^{t-1}\right] -
+        E[(1 - p)^t],
+        \label{eqn:p2_pmf}
+      \end{equation}
+      and
+      \begin{equation}
+        \mathbb{P}\left(T > t\right) = \mathbb{E}\left[(1 - p)^t\right].
+        \label{eqn:p2_survival}
+      \end{equation}
+      \begin{description}
+      \item[Solution:] First let us find the survival function in
+        \ref{eqn:p2_survival}.
+        \begin{align*}
+          \mathbb{P}\left(T > t\right)
+          &= \int_0^1
+          \mathbb{P}\left(T > t \mid p\right)
+          \pi\left(p\right)\,\mathrm{d}p 
+          = \int_0^1 \left[\sum_{s=t + 1}^\infty p(1 - p)^{s-1}\right]
+            \pi\left(p\right)
+          \,\mathrm{d}p \\
+          &= \int_0^1 \left[p\sum_{s=0}^\infty (1 - p)^s\right]
+            (1 - p)^t
+            \pi\left(p\right)
+            \,\mathrm{d}p \\
+          &= \int_0^1 \left[p \times \frac{1}{1 - (1-p)}\right]
+            (1 - p)^t
+            \pi\left(p\right)
+            \,\mathrm{d}p
+          = \int_0^1 (1 - p)^t
+            \pi\left(p\right)
+            \,\mathrm{d}p \\
+          &= \mathbb{E}\left[\left(1-p\right)^t\right],
+        \end{align*}
+        which proves Equation \ref{eqn:p2_survival}.
+
+        The probability mass function in Equation \ref{eqn:p2_pmf} follows:
+        \begin{equation*}
+          \mathbb{P}\left(T = t\right)
+          = \mathbb{P}\left(T > t - 1\right)
+          - \mathbb{P}\left(T > t\right)
+          = \mathbb{E}\left[\left(1-p\right)^{t-1}\right]
+          - \mathbb{E}\left[\left(1-p\right)^{t}\right].
+        \end{equation*}
+      \end{description}
+    \item Obtain expressions for
+      $\mathbb{P}\left(T = t \mid \alpha, \beta\right)$ and
+      $\mathbb{P}\left(T > t \mid \alpha, \beta\right)$ with
+      $\pi\left(\cdot\right)$ taken as the beta distribution,
+      $\operatorname{Beta}\left(\alpha, \beta\right)$.
+
+      \begin{description}
+      \item[Solution:] These follow from Equations
+        \ref{eqn:p2_pmf} and \ref{eqn:p2_survival}.
+
+        \begin{align}
+          \mathbb{P}\left(T > t\right)          
+          &= \mathbb{E}\left[
+            (1 - p)^t
+            \right]
+            = \sum_{s=t}^\infty
+            \mathbb{E}\left[
+            p\left(1 - p\right)^s
+            \right] \label{eqn:p2_survival_beta}\\
+          &=
+            \sum_{s=t}^\infty
+            \int_0^p
+            p\left(1-p\right)^s
+            \frac{\Gamma\left(\alpha + \beta\right)}            
+            {\Gamma\left(\alpha\right)\Gamma\left(\beta\right)}
+            p^{\alpha - 1}\left(1-p\right)^{\beta-1}
+            \,\mathrm{d}p
+          \nonumber\\
+          &= \sum_{s=t}^\infty
+            \int_0^p
+            \frac{\Gamma\left(\alpha + \beta\right)}
+            {\Gamma\left(\alpha\right)\Gamma\left(\beta\right)}
+            p^{\alpha + 1 - 1}\left(1-p\right)^{\beta + s -1}
+            \,\mathrm{d}p \nonumber\\
+          &= \frac{\Gamma\left(\alpha + \beta\right)} 
+            {\Gamma\left(\alpha\right)\Gamma\left(\beta\right)}            
+            \sum_{s=t}^\infty
+            \frac
+            {\Gamma\left(\alpha + 1\right)\Gamma\left(\beta + s\right)}
+            {\Gamma\left(\alpha + \beta + s + 1\right)}
+            = \alpha\frac{\Gamma\left(\alpha + \beta\right)} 
+            {\Gamma\left(\beta\right)}
+            \sum_{s=t}^\infty
+            \frac
+            {\Gamma\left(\beta + s\right)}
+            {\Gamma\left(\alpha + \beta + s + 1\right)}
+          \nonumber\\
+          &= 
+            1
+            - \alpha
+            \frac{\Gamma\left(\alpha + \beta\right)} 
+            {\Gamma\left(\beta\right)}
+            \sum_{s=0}^{t-1}
+            \frac
+            {\Gamma\left(\beta + s\right)}
+            {\Gamma\left(\alpha + \beta + s + 1\right)} \nonumber\\
+          &= 1 - \frac{1}{B\left(\alpha,\beta\right)}
+            \sum_{s=0}^{t-1} B\left(\alpha + 1, \beta + s\right),
+            \nonumber
+        \end{align}
+        where $B$ is the beta function, and we know
+        $\mathbb{P}\left(T > 0\right) = 1$.
+
+        Plugging Equation \ref{eqn:p2_survival_beta} into Equation
+        \ref{eqn:p2_pmf}, one obtains
+        \begin{equation}
+          \mathbb{P}\left(T = t\right)
+          = \frac{B\left(\alpha + 1, \beta + t - 1\right)}{B\left(\alpha,\beta\right)}
+          = \alpha
+          \frac{\Gamma\left(\alpha + \beta\right)\Gamma\left(\beta + t - 1\right)}
+          {\Gamma\left(\beta\right)\Gamma\left(\alpha + \beta + t\right)}
+          \label{eqn:p2_pmf_beta}
+        \end{equation}
+        for $t \in \mathbb{N}$.
+      \end{description}
+    \item Using the previous part, write down the likelihood function
+      $L\left(\alpha, \beta\right)$ corresponding to data
+      $\left\{Y_t\right\}_{t=1}^{N+1}$.
+
+      \begin{description}
+      \item[Solution:] We can substitute Equations \ref{eqn:p2_pmf_beta} and
+        \ref{eqn:p2_survival_beta} into Equation \ref{eqn:p1_likelihood}: we'll
+        have $\mathbb{P}\left(T = t\right)$ in place of
+        $p\left(1 - p\right)^{t-1}$ and $\mathbb{P}\left(T > N\right)$ in place
+        of $\left(1 - p\right)^N$.
+      \end{description}
+    \end{enumerate}
 \end{enumerate}
 
 \begin{table}
