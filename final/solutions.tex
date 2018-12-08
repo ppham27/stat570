@@ -155,12 +155,137 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
       \begin{equation}
         \operatorname{var}\left(\hat{p}\right)
         \approx
+        \hat{\operatorname{var}}\left(\hat{p}\right) = 
         I\left(\hat{p}\right)^{-1} = \frac{1}{n} \times
         \frac{\hat{p}^2\left(1-\hat{p}\right)}
         {1 - \left(1-\hat{p}\right)^N}
         \label{eqn:p1_variance}
       \end{equation}
       by asymptotic normality of the MLE.
+    \end{description}
+  \item For the data in Table \ref{tab:failure_time_data}, calculate the MLE,
+    $\hat{p}$. the variance of $\hat{p}$, and an asymptotic
+    95\% confidence interval for $p$.
+
+    \begin{description}
+    \item[Solution:] The MLE can be calculated with Equation \ref{eqn:p1_mle} to
+      be $\boxed{\hat{p} = 0.354717.}$ The variance can be found with Equation
+      \ref{eqn:p1_variance} to be
+      $\boxed{\hat{\operatorname{var}}\left(\hat{p}\right) = 0.00016828.}$
+
+      If $\Phi$ is the cumulative distribution function for a standard normal,
+      we can use asymptotic normality to find the 95\% confidence interval as
+      \begin{equation*}
+        \left[
+          \hat{p} +
+          \Phi^{-1}\left(0.025\right)\sqrt{\hat{\operatorname{var}}\left(\hat{p}\right)},
+          \hat{p} +
+          \Phi^{-1}\left(0.975\right)\sqrt{\hat{\operatorname{var}}\left(\hat{p}\right)}
+        \right]
+        =
+        \boxed{\left[0.32929,0.38014\right].}
+      \end{equation*}
+    \end{description}
+  \item We now consider a Bayesian analysis. The conjugate prior for $p$ is a
+    beta distribution, $\operatorname{Beta}\left(a, b\right)$. State the form of
+    the posterior with this choice. Give the form of the posterior mean and
+    write as a weighted combination of the MLE and the prior mean.
+
+    \begin{description}
+    \item[Solution:] By Bayes' rule, we know the posterior density is
+      proportional to the likelihood times the prior. From Equation
+      \ref{eqn:p1_likelihood}, we'll have
+      \begin{align*}
+        L\left(p\right) \times \left[
+        p^{a-1}\left(1-p\right)^{b-1}
+        \right]
+        &= p^{a-1}\left(1 - p\right)^{b + NY_{N+1} - 1}
+          \prod_{t=1}^N\left[
+          p\left(1 - p\right)^{t-1}
+          \right]^{Y_t} \\
+        &= p^{a + \sum_{t=1}^N Y_t -1}
+          \left(1 - p\right)^{b + \sum_{t=1}^N (t-1)Y_t + NY_{N+1} - 1},
+      \end{align*}
+      whose form we recognize as the integrand of beta function, so the
+      posterior also has beta distribution, that is,
+      \begin{align}
+        p \mid Y_1,Y_2,\ldots,Y_{N+1}
+        &\sim \operatorname{Beta}\left(
+          a + \sum_{t=1}^N Y_t,
+          b + \sum_{t=1}^N (t-1)Y_t + NY_{N+1}
+          \right) \nonumber\\
+        &= \frac{\Gamma\left(a^\prime + b^\prime\right)}
+          {\Gamma\left(a^\prime\right)\Gamma\left(b^\prime\right)}
+          p^{a^\prime -1}\left(1 - p\right)^{b^\prime - 1},
+      \end{align}
+      where $a^\prime = a + \sum_{t=1}^N Y_t$ and
+      $b^\prime = b + \sum_{t=1}^N (t-1)Y_t + NY_{N+1}$.
+
+      The posterior mean takes the form
+      \begin{align}
+        \mathbb{E}\left[
+        p \mid Y_1,Y_2,\ldots,Y_{N+1}
+        \right]
+        &= \frac{a^\prime}{a^\prime + b^\prime}
+          \nonumber \\
+        &= \frac{a + \sum_{t=1}^N Y_t}
+          {a + b + \sum_{t=1}^N tY_t + NY_{N+1}}. \label{eqn:p1_posterior_mean}
+      \end{align}
+
+      We have that the prior mean is $p_{\mathrm{prior}} = \frac{a}{a + b}$.
+      Equation \ref{eqn:p1_posterior_mean} can be rewritten as
+      \begin{equation}
+        \boxed{
+        \frac{
+          \left(a + b\right)
+          p_{\mathrm{prior}}
+          +
+          \left(
+            \sum_{t=}^N tY_t + NY_{N+1}
+          \right)
+          \hat{p}}
+          {a + b + \sum_{t=}^N tY_t + NY_{N+1}},}
+        \label{eqn:p1_posterior_mean_sum}
+      \end{equation}
+      so the posterior mean is a convex combination of the prior mean and MLE.
+    \end{description}
+  \item Suppose we wish to fix the parameters of the prior, $a$ and $b$, so that
+    the mean is $\mu$ and the prior standard deviation is $\sigma$. Obtain
+    expressions for $a$ and $b$ in terms of $\mu$ and $\sigma^2$.
+    \begin{description}
+    \item[Solution:] It is well known that the mean and variance of the
+      $\operatorname{Beta}\left(a,b\right)$ distribution are $\frac{a}{a+b}$ and
+      $\frac{ab}{(a+b)^2(a+b+1)}$, respectively.
+
+      Solving equations
+      \begin{align*}
+        \frac{a}{a + b}
+        &= \mu \\
+        \frac{ab}{(a+b)^2(a+b+1)} &= \sigma^2,
+      \end{align*}
+      we find that
+      \begin{align}
+        a
+        &= \mu\left[
+          \frac{\mu\left(1 - \mu\right)}{\sigma^2} - 1
+          \right]
+          \label{eqn:p1_a} \\
+        b
+        &=  \left(1 - \mu\right)\left[
+          \frac{\mu\left(1 - \mu\right)}{\sigma^2} - 1
+          \right].
+          \label{eqn:p1_b}
+      \end{align}
+    \end{description}
+  \item For the data in Table \ref{tab:failure_time_data}, assume we wish to
+    have a beta prior with $\mu = 0.2$ and $\sigma = 0.08$. State the posterior
+    for the prior corresponding to this choice and evaluate the posterior
+    mean. Simulate samples from the posterior distribution. Provide a histogram
+    representation of the posterior distribution and calculate the 5\%, 50\% and
+    95\% points of the posterior distribution.
+
+    \begin{description}
+    \item[Solution:] 
     \end{description}
   \end{enumerate}
 \end{enumerate}
