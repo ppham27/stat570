@@ -217,6 +217,7 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
         &= \frac{\Gamma\left(a^\prime + b^\prime\right)}
           {\Gamma\left(a^\prime\right)\Gamma\left(b^\prime\right)}
           p^{a^\prime -1}\left(1 - p\right)^{b^\prime - 1},
+          \label{eqn:p1_posterior}
       \end{align}
       where $a^\prime = a + \sum_{t=1}^N Y_t$ and
       $b^\prime = b + \sum_{t=1}^N (t-1)Y_t + NY_{N+1}$.
@@ -284,8 +285,33 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
     representation of the posterior distribution and calculate the 5\%, 50\% and
     95\% points of the posterior distribution.
 
+    \begin{figure}
+      \centering
+      \includegraphics{p1_posterior_samples.pdf}
+      \caption{2,048 samples drawn from the posterior in Equation
+        \ref{eqn:p1_posterior_data}. The red ticks denote the 5\%, 50\% and
+        95\% quantiles.}
+      \label{fig:p1_posterior_samples}
+    \end{figure}
+    
     \begin{description}
-    \item[Solution:] 
+    \item[Solution:] Apply Equations \ref{eqn:p1_a} and \ref{eqn:p1_b} with
+      $\mu = 0.2$ and $\sigma = 0.08$, we find the prior:
+      \begin{equation}
+        p \sim \operatorname{Beta}\left(4.8, 19.2\right).
+        \label{eqn:p1_prior}
+      \end{equation}
+
+      Using Equation \ref{eqn:p1_posterior}, we have find the posterior:
+      \begin{equation}
+        p \sim \operatorname{Beta}\left(474.8, 874.2\right).
+        \label{eqn:p1_posterior_data}
+      \end{equation}
+      
+      A histogram of samples drawn from the distribution in Equation
+      \ref{eqn:p1_posterior_data} can be found in Figure
+      \ref{fig:p1_posterior_samples}. The 5\%, 50\%, and 95\% posterior
+      quantiles are 0.33070873, 0.35189124, and 0.37346975, respectively.
     \end{description}
   \end{enumerate}
 \item
@@ -534,6 +560,26 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
         probability mass functions, where
         $Y_t \mid Y_1,\ldots,Y_{t-1} \sim \operatorname{Binomial}\left(
           n - \sum_{s=1}^{t - 1}Y_s, p \right).$
+      \end{description}
+    \item Fit the binomial model, and show that the estimate of the probability
+      is identical to that under the previous MLE analysis. Obtain a 95\%
+      asymptotic confidence interval for $p$.
+      \begin{description}
+      \item[Solution:] Since Equation \ref{eqn:p3_likelihood} only differs from
+        Equation \ref{eqn:p1_likelihood} by a constant of proporitionality, the
+        score function is also Equation \ref{eqn:p1_score}, so the MLE is same
+        $\hat{p} = 0.354717$.
+
+        
+      \end{description}
+    \item Obtain Pearson residuals and comment on the fit of the model, using
+      any plots you feel are appropriate.
+      \begin{description}
+      \item[Solution:] 
+      \end{description}
+    \item Fit a binomial model you feel is appropriate.
+      \begin{description}
+      \item[Solution:] 
       \end{description}
     \end{enumerate}
   \end{enumerate}
