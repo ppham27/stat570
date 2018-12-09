@@ -508,12 +508,32 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
       \end{description}
     \end{enumerate}
   \item \begin{enumerate}
-    \item Show that the likelihood in Equation \ref{eqn:p1_model} can be written
-      as a product of binomial distributions, the form of which you should
-      precisely give.
+    \item Show that the likelihood in Equation \ref{eqn:p1_likelihood} can be
+      written as a product of binomial distributions.
 
       \begin{description}
-      \item[Solution:] 
+      \item[Solution:] We can model the data as taking $N$ draws from a binomial
+        distribution. Following each draw, we discard the failures and make
+        another draw if $t < N$:
+        \begin{align}
+          L\left(p\right)
+          &= \prod_{t=1}^N \left[
+            {n - \sum_{s=1}^{t-1}Y_s
+            \choose Y_t}p^{Y_t}\left(1 - p\right)^{n - \sum_{s=1}^{t}Y_s}
+            \right]
+            \label{eqn:p3_likelihood} \\
+          &= \prod_{t=1}^N \left[
+            {\sum_{s = t}^{N+1}Y_s \choose Y_t}
+            p^{Y_t}\left(1 - p\right)^{\sum_{s = t + 1}^{N+1} Y_s}\right],
+            \nonumber
+        \end{align}
+        which is equivlaent to Equation \ref{eqn:p1_likelihood} up to a constant
+        of proportionality,
+
+        In Equation \ref{eqn:p3_likelihood}, we have a product of binomial
+        probability mass functions, where
+        $Y_t \mid Y_1,\ldots,Y_{t-1} \sim \operatorname{Binomial}\left(
+          n - \sum_{s=1}^{t - 1}Y_s, p \right).$
       \end{description}
     \end{enumerate}
   \end{enumerate}
