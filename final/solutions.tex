@@ -567,10 +567,56 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
       \begin{description}
       \item[Solution:] Since Equation \ref{eqn:p3_likelihood} only differs from
         Equation \ref{eqn:p1_likelihood} by a constant of proporitionality, the
-        score function is also Equation \ref{eqn:p1_score}, so the MLE is same
-        $\hat{p} = 0.354717$.
+        score function is also Equation \ref{eqn:p1_score}. Thus, the MLE is
+        same $\hat{p} = 0.354717$.
 
+        The observed information will also be the same. To calculate the
+        expected observed information, we can use the law of total expectation
+        and strong induction. For the base case
+        $\mathbb{E}\left[Y_1\right] = np$. In general,
+        $\mathbb{E}\left[Y_t\right] = np\left(1 - p\right)^{t-1}$ for
+        $t = 1,2,\ldots,N$. For $t > 1$, we have
+        \begin{align}
+          \mathbb{E}\left[Y_t\right]
+          &=  
+            \mathbb{E}\left[\mathbb{E}\left[Y_t \mid Y_1,\ldots,Y_{t-1}\right]\right]
+          =
+            \mathbb{E}\left[
+            p\left(n - \sum_{s=1}^{t-1}Y_s\right)
+            \right] \nonumber\\
+          &= p\left(n - \sum_{s=1}^{t-1}\mathbb{E}\left[Y_s\right]\right)
+          =
+            p\left(n - \sum_{s=1}^{t-1} np\left(1 - p\right)^{s-1}\right)
+            \nonumber\\
+          &= np\left(1 - p\sum_{s=0}^{t-2}\left(1 - p\right)^r\right)
+            = np\left(
+            1 - p\frac{1 - \left(1 - p\right)^{t - 1}}{p}\right)
+          \nonumber\\
+          &= np\left(1 - p\right)^{t-1},
+            \label{eqn:p3_yt_mean}
+        \end{align}
+        which is same as it was under the geometric model.
         
+        For $Y_{N+1}$, we have
+        \begin{align}
+          \mathbb{E}\left[Y_{N+1}\right]
+          &= \mathbb{E}\left[
+            \mathbb{E}\left[Y_{N+1} \mid Y_1,Y_2,\ldots,Y_N\right]\right]
+          = \mathbb{E}\left[
+          n - \sum_{t=1}^{N} Y_t
+          \right]
+          \nonumber\\
+          &= n - \sum_{t=1}^{N} \mathbb{E}\left[Y_t\right]
+            = n - np\sum_{t=1}^N\left(1 - p\right)^{t-1} \nonumber\\
+          &= n - np \frac{1 - \left(1 - p\right)^N}{p} = \left(1 - p\right)^N,
+            \label{eqn:p3_yn1_mean}
+        \end{align}
+        which is also the same as under the geometric model. Therefore, the
+        expected observed information is the same as Equation
+        \ref{eqn:p1_fisher_information}.
+
+        Then, the asymptotic 95\% confidence interval for $p$ is also
+        $\left[0.32929,0.38014\right]$.
       \end{description}
     \item Obtain Pearson residuals and comment on the fit of the model, using
       any plots you feel are appropriate.
