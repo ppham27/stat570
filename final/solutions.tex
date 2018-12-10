@@ -24,7 +24,7 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
 \item We describe a simple model for these data. Let $p$ ($0 < p < 1$) denote
   the weekly failure probability, i.e., the probability of failure during any
   week, and $T$ the random variable describing the week at which failure
-  occurred. Then $T$ may be modeled as a geometric random variable:
+  occurred. Then, $T$ may be modeled as a geometric random variable:
   \begin{equation}
     \mathbb{P}\left(T = t \mid p\right)
     = \begin{cases}
@@ -206,7 +206,7 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
         &= p^{a + \sum_{t=1}^N Y_t -1}
           \left(1 - p\right)^{b + \sum_{t=1}^N (t-1)Y_t + NY_{N+1} - 1},
       \end{align*}
-      whose form we recognize as the integrand of beta function, so the
+      whose form we recognize as the integrand of the beta function, so the
       posterior also has beta distribution, that is,
       \begin{align}
         p \mid Y_1,Y_2,\ldots,Y_{N+1}
@@ -233,13 +233,14 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
           {a + b + \sum_{t=1}^N tY_t + NY_{N+1}}. \label{eqn:p1_posterior_mean}
       \end{align}
 
-      We have that the prior mean is $p_{\mathrm{prior}} = \frac{a}{a + b}$.
-      Equation \ref{eqn:p1_posterior_mean} can be rewritten as
+      We have that the prior mean is
+      $\overline{p}_{\mathrm{prior}} = \frac{a}{a + b}$.  Equation
+      \ref{eqn:p1_posterior_mean} can be rewritten as
       \begin{equation}
         \boxed{
         \frac{
           \left(a + b\right)
-          p_{\mathrm{prior}}
+          \overline{p}_{\mathrm{prior}}
           +
           \left(
             \sum_{t=}^N tY_t + NY_{N+1}
@@ -335,7 +336,7 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
       \end{equation}
       \begin{description}
       \item[Solution:] First let us find the survival function in
-        \ref{eqn:p2_survival}.
+        Equation \ref{eqn:p2_survival}.
         \begin{align*}
           \mathbb{P}\left(T > t\right)
           &= \int_0^1
@@ -542,8 +543,9 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
 
       \begin{description}
       \item[Solution:] We can model the data as taking $N$ draws from a binomial
-        distribution. Following each draw, we discard the failures and make
-        another draw if $t < N$:
+        distribution. For $t = 1$, we draw from all $n$ components. For
+        $t = 2,3,\ldots,N$ we discard the failures and make another draw from
+        the remaining components.
         \begin{align}
           L\left(p\right)
           &= \prod_{t=1}^N \left[
@@ -578,7 +580,7 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
         and strong induction. For the base case
         $\mathbb{E}\left[Y_1\right] = np$. In general,
         $\mathbb{E}\left[Y_t\right] = np\left(1 - p\right)^{t-1}$ for
-        $t = 1,2,\ldots,N$. For $t > 1$, we have
+        $t = 1,2,\ldots,N$. For such $t > 1$, we have
         \begin{align}
           \mathbb{E}\left[Y_t\right]
           &=  
@@ -647,7 +649,7 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
         for $t = 1,2,\ldots,N$.
 
         The residuals are plotted in Figure \ref{fig:p3_residuals}. Clearly,
-        there are not independent with respect to time. For earlier time steps,
+        they are not independent with respect to time. For earlier time steps,
         the probability of failure is underestimated, and for later time steps,
         the probability of failure is overestimated. Thus, component failure may
         not be a memoryless processe as assumed by our model.
@@ -655,10 +657,10 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
         The Q--Q plot in Figure \ref{fig:p3_qq} indicates that the sample
         residuals are overdispersed relative to the theoretical quantiles. Since
         only the asymptotic behavior is normal, given only 12 observations, we
-        might expect some deviation from normality, but qualitatively, the
-        deviation is quite significant.
+        might expect some deviation from normality. Qualitatively, however, the
+        deviation is quite significant and might indicate that our model's
+        variance structure is incorrect.
       \end{description}
-      \clearpage
     \item Fit a binomial model you feel is appropriate.
       \begin{table}
         \centering
