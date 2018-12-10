@@ -563,7 +563,7 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
         probability mass functions, where
         $Y_t \mid Y_1,\ldots,Y_{t-1} \sim \operatorname{Binomial}\left(
           n - \sum_{s=1}^{t - 1}Y_s, p \right).$
-      \end{description}
+      \end{description}      
     \item Fit the binomial model, and show that the estimate of the probability
       is identical to that under the previous MLE analysis. Obtain a 95\%
       asymptotic confidence interval for $p$.
@@ -658,6 +658,7 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
         might expect some deviation from normality, but qualitatively, the
         deviation is quite significant.
       \end{description}
+      \clearpage
     \item Fit a binomial model you feel is appropriate.
       \begin{table}
         \centering
@@ -671,7 +672,7 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
       \item[Solution:] From Figure \ref{fig:p3_residuals}, there seems to be
         some sort of time dependence on the failure probability. That is, the
         probability of failure is not memoryless. Intuitively, one might
-        hypothesize the longer that a component has surivived, the more robust
+        hypothesize the longer that a component has survived, the more robust
         it is, so the probability of failure should decrease with time.
 
         To test this hypothesis, we might fit the model:
@@ -710,19 +711,20 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
           \label{eqn:p3_observed_information}
         \end{equation}
 
-        Using Equations \ref{eqn:p3_score}
-        and \label{eqn:p3_observed_information}, we obtain MLE estimates and
+        Using Equations \ref{eqn:p3_score} and
+        \ref{eqn:p3_observed_information}, we obtain MLE estimates and
         confidence intervals in Table \ref{tab:p3_model_summary}. The 95\%
-        confidence interval for $\beta_1$ does not contain time, so we could
-        reject a null hypothesis $\beta_1 = 0$ in test with significance level
+        confidence interval for $\beta_1$ does not contain $0$, so we could
+        reject a null hypothesis $\beta_1 = 0$ in a test with significance level
         $0.05$. So, there is likely some correlation between time and failure
         probability.
 
-        Figures \ref{fig:p3_residuals_time} and \ref{fig:p3_qq_time} indicate
-        that our new model is much more appropriate. In Figure
-        \ref{fig:p3_residuals_time}, there's no longer any obvious relationship
-        between time and the residuals. In Figure \ref{fig:p3_qq_time}, we see
-        the distribution of the residuals is quite close to normal.
+        Resdual plots in Figures \ref{fig:p3_residuals_time} and
+        \ref{fig:p3_qq_time} indicate that our new model is much more
+        appropriate. In Figure \ref{fig:p3_residuals_time}, there's no longer
+        any obvious relationship between time and the residuals. In Figure
+        \ref{fig:p3_qq_time}, we see the distribution of the residuals is quite
+        close to normal.
       \end{description}
 
       \begin{figure}
