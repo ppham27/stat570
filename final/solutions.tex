@@ -312,6 +312,9 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
       \ref{eqn:p1_posterior_data} can be found in Figure
       \ref{fig:p1_posterior_samples}. The 5\%, 50\%, and 95\% posterior
       quantiles are 0.33070873, 0.35189124, and 0.37346975, respectively.
+
+      Code for the histogram can be found in
+      \href{http://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/final/failure\_time.ipynb}{\texttt{failure\_time.ipynb}}.
     \end{description}
   \end{enumerate}
 \item
@@ -618,16 +621,129 @@ Consider the failure time data in Table \ref{tab:failure_time_data}.
         Then, the asymptotic 95\% confidence interval for $p$ is also
         $\left[0.32929,0.38014\right]$.
       \end{description}
-    \item Obtain Pearson residuals and comment on the fit of the model, using
-      any plots you feel are appropriate.
-      \begin{description}
-      \item[Solution:] 
+    \item Obtain Pearson residuals and comment on the fit of the model.
+      \begin{figure}
+        \centering
+        \includegraphics{p3_residuals.pdf}
+        \caption{Residuals as a function of time with the MLE estimate.}
+        \label{fig:p3_residuals}
+      \end{figure}
+
+      \begin{figure}
+        \centering
+        \includegraphics{p3_qq.pdf}
+        \caption{Q--Q plot of residuals for the binomial model.}
+        \label{fig:p3_qq}
+      \end{figure}
+            
+      \begin{description}        
+      \item[Solution:] Define $n_t = n - \sum_{s=1}^{t-1} Y_s$. The Pearson
+        residuals are
+        \begin{equation}
+          \epsilon_t^\star = \frac{Y_t - n_t\hat{p}}
+          {\sqrt{n_t\hat{p}\left(1 - \hat{p}\right)}}
+          \label{eqn:p3_pearson_residual}          
+        \end{equation}
+        for $t = 1,2,\ldots,N$.
+
+        The residuals are plotted in Figure \ref{fig:p3_residuals}. Clearly,
+        there are not independent with respect to time. For earlier time steps,
+        the probability of failure is underestimated, and for later time steps,
+        the probability of failure is overestimated. Thus, component failure may
+        not be a memoryless processe as assumed by our model.
+
+        The Q--Q plot in Figure \ref{fig:p3_qq} indicates that the sample
+        residuals are overdispersed relative to the theoretical quantiles. Since
+        only the asymptotic behavior is normal, given only 12 observations, we
+        might expect some deviation from normality, but qualitatively, the
+        deviation is quite significant.
       \end{description}
     \item Fit a binomial model you feel is appropriate.
+      \begin{table}
+        \centering
+        \input{p3_model_summary.tex}
+        \caption{MLE estimates for the model in Equation
+          \ref{eqn:p3_binomial_model}.}
+        \label{tab:p3_model_summary}
+      \end{table}
+      
       \begin{description}
-      \item[Solution:] 
+      \item[Solution:] From Figure \ref{fig:p3_residuals}, there seems to be
+        some sort of time dependence on the failure probability. That is, the
+        probability of failure is not memoryless. Intuitively, one might
+        hypothesize the longer that a component has surivived, the more robust
+        it is, so the probability of failure should decrease with time.
+
+        To test this hypothesis, we might fit the model:
+        \begin{align}
+          Y_t \mid Y_1,Y_2,\ldots, Y_{t-1}
+          &\sim \operatorname{Binomial}\left(n_t, p_t\right)
+          \label{eqn:p3_binomial_model} \\
+          \operatorname{logit}\left(p_t\right)
+          &= \beta_0 + \beta_1t. \nonumber
+        \end{align}
+
+        The score function for such a model would be obtained by replacing $p$
+        with $p_t$ in Equation \ref{eqn:p3_likelihood}, taking the $\log$, and
+        deriving with respect to $\beta = \begin{pmatrix} \beta_0 & \beta_1
+        \end{pmatrix}^\intercal$.
+        \begin{equation}
+          S\left(\beta\right)
+          = \sum_{t = 1}^N \left(
+            Y_t - n_tp_t
+          \right)
+          \begin{pmatrix}
+            1 \\
+            t
+          \end{pmatrix}.
+          \label{eqn:p3_score}          
+        \end{equation}
+
+        The observed information is then
+        \begin{equation}
+          J\left(\beta\right)
+          = \sum_{t=1}^N n_tp_t\left(1 - p_t\right)
+          \begin{pmatrix}
+            1 & t \\
+            t & t^2
+          \end{pmatrix}.
+          \label{eqn:p3_observed_information}
+        \end{equation}
+
+        Using Equations \ref{eqn:p3_score}
+        and \label{eqn:p3_observed_information}, we obtain MLE estimates and
+        confidence intervals in Table \ref{tab:p3_model_summary}. The 95\%
+        confidence interval for $\beta_1$ does not contain time, so we could
+        reject a null hypothesis $\beta_1 = 0$ in test with significance level
+        $0.05$. So, there is likely some correlation between time and failure
+        probability.
+
+        Figures \ref{fig:p3_residuals_time} and \ref{fig:p3_qq_time} indicate
+        that our new model is much more appropriate. In Figure
+        \ref{fig:p3_residuals_time}, there's no longer any obvious relationship
+        between time and the residuals. In Figure \ref{fig:p3_qq_time}, we see
+        the distribution of the residuals is quite close to normal.
       \end{description}
+
+      \begin{figure}
+        \centering
+        \includegraphics{p3_residuals_time.pdf}
+        \caption{Residuals for the model in Equation \ref{eqn:p3_binomial_model}
+          that lets the probability depend on time.}
+        \label{fig:p3_residuals_time}
+      \end{figure}
+
+      \begin{figure}
+        \centering
+        \includegraphics{p3_qq_time.pdf}
+        \caption{Q--Q plot for the residuals plotted in Figure
+          \ref{fig:p3_residuals_time}.}
+        \label{fig:p3_qq_time}
+      \end{figure}
     \end{enumerate}
+
+    Code for histograms and model fitting can be found in
+    \href{http://nbviewer.jupyter.org/github/ppham27/stat570/blob/master/final/failure\_time.ipynb}{\texttt{failure\_time.ipynb}}.
   \end{enumerate}
 
 \begin{table}
